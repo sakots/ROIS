@@ -5,7 +5,7 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.1.0'); //lot.210603.0
+define('ROIS_VER','v0.1.1'); //lot.210605.1
 
 //設定の読み込み
 require(__DIR__.'/config.php');
@@ -1018,8 +1018,6 @@ function paintform(){
 	$var_b += array('message'=>$message);
 	$var_b += array('pdefw'=>PDEF_W);
 	$var_b += array('pdefh'=>PDEF_H);
-	$var_b += array('themedir'=>THEMEDIR);
-	$var_b += array('tver'=>TEMPLATE_VER);
 
 	$picw = filter_input(INPUT_POST, 'picw',FILTER_VALIDATE_INT);
 	$pich = filter_input(INPUT_POST, 'pich',FILTER_VALIDATE_INT);
