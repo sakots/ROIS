@@ -6,8 +6,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="stylesheet" href="./templates/{{$themedir}}/css/mono_main.css" type="text/css">
 		@if ($useneo == true)
-		<link rel="stylesheet" href="neo.css?{{$stime}}" type="text/css">
-		<script src="neo.js?{{$stime}}" charset="utf-8"></script>
+		<link rel="stylesheet" href="neo.css?{{$a_stime}}" type="text/css">
+		<script src="neo.js?{{$a_stime}}" charset="utf-8"></script>
 		@else
 		<!-- Javaが使えるかどうか判定 使えなければcheerpJをロード -->
 		<script>

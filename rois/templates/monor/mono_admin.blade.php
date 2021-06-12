@@ -54,7 +54,7 @@
 		<main>
 			<div>
 				<section class="thread">
-					<table>
+					<table class="delfo">
 						<tr>
 							<th>ID</th>
 							<th>name</th>
@@ -71,9 +71,9 @@
 							<td>{{$bbsline['tid']}}</td>
 							<td>{{$bbsline['name']}}</td>
 							<td>{{$bbsline['modified']}}</td>
-							<td>{{str_limit($bbsline['sub'], $limit = 6, $end = '...')}}</td>
+							<td>{!! mb_substr($bbsline['sub'], 0, 6)!!}</td>
 							<td>@if ($bbsline['picfile'] == true) <a href="{{$path}}{{$bbsline['picfile']}}" target="_brank">{{$bbsline['picfile']}}</a>@endif</td>
-							<td>{{str_limit($bbsline['com'], $limit = 10, $end = '...')}}</td>
+							<td>{!! mb_substr($bbsline['com'], 0, 10)!!}</td>
 							<td>{{$bbsline['host']}}</td>
 							<td>@if ($bbsline['invz'] == 1)invz@endif</td>
 						</tr>
@@ -84,9 +84,9 @@
 							<td>└{{$res['iid']}}</td>
 							<td>{{$res['name']}}</td>
 							<td>{{$res['modified']}}</td>
-							<td>{{str_limit($res['sub'], $limit = 6, $end = '...')}}/td>
+							<td>{!! mb_substr($res['sub'], 0, 6)!!}</td>
 							<td>{{$res['picfile']}}</td>
-							<td>{{str_limit($res['com'], $limit = 10, $end = '...')}}</td>
+							<td>{!! mb_substr($res['com'], 0, 10)!!}</td>
 							<td>{{$res['host']}}</td>
 							<td>@if ($res['invz'] == 1)invz@endif</td>
 						</tr>
@@ -95,7 +95,7 @@
 						@endif
 						@endforeach
 						@endif
-					</table>
+					</tabledelfo>
 				</section>
 			</div>
 			<script src="loadcookie.js"></script>

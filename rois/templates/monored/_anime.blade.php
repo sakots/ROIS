@@ -33,8 +33,8 @@
 			<link rel="stylesheet" href="./templates/{{$themedir}}/css/mono_red.min.css" type="text/css">
 		</noscript>
 		@if ($useneo == true)
-		<link rel="stylesheet" href="neo.css?{{$stime}}" type="text/css">
-		<script src="neo.js?{{$stime}}" charset="utf-8"></script>
+		<link rel="stylesheet" href="neo.css?{{$a_stime}}" type="text/css">
+		<script src="neo.js?{{$a_stime}}" charset="utf-8"></script>
 		@else
 		<!-- Javaが使えるかどうか判定 使えなければcheerpJをロード -->
 		<script>
@@ -99,8 +99,8 @@
 				<hr>
 				<p>
 					<a href="{{$path}}{{$pchfile}}" target="_blank">Download</a>
-					@if
-					(isset($datasize)) - Datasize {{$datasize}} B
+					@if (isset($datasize))
+						- Datasize {{$datasize}} B
 					@endif
 				</p>
 				<hr>

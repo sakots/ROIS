@@ -118,7 +118,7 @@
 										</p>
 									@else
 										<p>
-											<a href="{{$self}}?mode=res&amp;res={{$res['tid']}}" title="{{$res['sub']}} (by {{$res['name']}})">{{str_limit($res['com'], $limit = 30, $end = '...')}}</a>
+											<a href="{{$self}}?mode=res&amp;res={{$res['tid']}}" title="{{$res['sub']}} (by {{$res['name']}})">{!! mb_substr($res['com'], 0, 30)!!}</a>
 										</p>
 									@endif
 									<p>
