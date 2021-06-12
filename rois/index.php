@@ -5,7 +5,7 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.1.1'); //lot.210605.1
+define('ROIS_VER','v0.1.2'); //lot.210613.0
 
 //設定の読み込み
 require(__DIR__.'/config.php');
@@ -17,7 +17,7 @@ use eftec\bladeone\BladeOne;
 
 $views = __DIR__.'/templates/'.THEMEDIR; // テンプレートフォルダ
 $cache = __DIR__.'/cache'; // キャッシュフォルダ 
-$blade = new BladeOne($views,$cache,BladeOne::MODE_AUTO); // MODE_DEBUGだと開発モード
+$blade = new BladeOne($views,$cache,BladeOne::MODE_DEBUG); // MODE_DEBUGだと開発モード MODE_AUTOが速い。
 
 $var_b = array(); // bladeに格納する変数
 
@@ -1171,6 +1171,7 @@ function openpch($pch,$sp="") {
 	$var_b += array('speed'=>PCH_SPEED);
 
 	$var_b += array('path'=>IMG_DIR);
+	$var_b += array('a_stime'=>time());
 
 	echo $blade->run(ANIMEFILE,$var_b);
 }
