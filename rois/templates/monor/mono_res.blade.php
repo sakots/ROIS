@@ -143,7 +143,7 @@
 							<div class="thfoot">
 								<script>
 									(function(){ //byさとぴあさん
-										var url = encodeURIComponent("{{$base}}{{$self}}?mode=res&amp;{{$resno}}"); //ページURL
+										var url = encodeURIComponent("{{$base}}{{$self}}?mode=res&amp;res={{$resno}}"); //ページURL
 										var title = encodeURIComponent("[{{$bbsline['tid']}}] {{$bbsline['sub']}} by {{$bbsline['name']}} - {{$btitle}}"); //ページタイトル
 										document.write( '<span class="button"><a target="_blank" href="https://twitter.com/intent/tweet?&amp;text=' + title + '&amp;url=' + url + '"><img src="./templates/{{$themedir}}/icons/twitter.svg" width="16" height="16"> tweet</a></span> <span class="button"><a target="_blank" class="fb btn" href="http://www.facebook.com/share.php?u=' + url + '"><img src="./templates/{{$themedir}}/icons/facebook.svg" width="16" height="16"> share</a></span>' );}
 									)();
