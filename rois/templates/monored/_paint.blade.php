@@ -51,6 +51,46 @@
 			window.addEventListener("load", function() { cheerpJLoad(); }, false);
 		</script>
 		@endif
+		<!-- アプレットフィット -->
+		<script>
+			function appfit(f) {
+				var d = document;
+				var client = d.compatMode && d.compatMode != "BackCompat" ? d.documentElement : d.body;
+				var chei = client.clientHeight - 10;
+				var neo = d.getElementById("NEO");
+				if (!neo) { //しぃぺいんたー
+					var target = d.paintbbs;
+					if(f == 0) { //ひろげる
+						var cwid = client.clientWidth - 360;
+						if (cwid > target.width) { target.width = cwid; }
+						if (chei > target.height) { target.height = chei; }
+						document.getElementById("fit_exp").style.display="none";
+						document.getElementById("fit_comp").style.display="block";
+					} else if (f == 1) { //もどす
+						target.width = {{$w}};
+						target.height = {{$h}};
+						document.getElementById("fit_exp").style.display="block";
+						document.getElementById("fit_comp").style.display="none";
+					}
+				} else { //NEO
+					var target = d.getElementById("pageView");
+					if (f == 0) { //ひろげる
+						var cwid = d.getElementById("appstage").scrollWidth - 360;
+						if (cwid > target.clientWidth) { target.style.width = cwid + "px"; }
+						if (chei > target.clientHeight) { target.style.height = chei + "px"; }
+						document.getElementById("fit_exp").style.display="none";
+						document.getElementById("fit_comp").style.display="block";
+					} else if (f == 1) { //もどす
+					target.style.width = {{$w}} + "px";
+					target.style.height = {{$h}} + "px";
+					document.getElementById("fit_exp").style.display="block";
+					document.getElementById("fit_comp").style.display="none";
+					}
+				//ツールの縦の位置をキャンバス中央に修正
+				d.getElementById("toolsWrapper").style.top = (target.clientHeight - d.getElementById("toolsWrapper").clientHeight)/2 + "px";
+				} //▲NEO
+			}
+		</script>
 	</head>
 	<body id="paintmode">
 		<header>
@@ -386,7 +426,6 @@
 						<param name=dir_resource value="./">
 						<param name="tt.zip" value="tt_def.zip">
 						<param name="res.zip" value="res.zip">
-						<!--(しぃペインターv1.05_9以前を使うなら res_normal.zip に変更)-->
 						<param name=tools value="normal">
 						<param name=layer_count value="{{$layer_count}}">
 						@if ($quality == true)<param name=quality value="{{$quality}}">@endif
