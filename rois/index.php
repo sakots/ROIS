@@ -5,7 +5,7 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.1.2'); //lot.210613.0
+define('ROIS_VER','v0.2.0'); //lot.210613.1
 
 //設定の読み込み
 require(__DIR__.'/config.php');
@@ -17,7 +17,7 @@ use eftec\bladeone\BladeOne;
 
 $views = __DIR__.'/templates/'.THEMEDIR; // テンプレートフォルダ
 $cache = __DIR__.'/cache'; // キャッシュフォルダ 
-$blade = new BladeOne($views,$cache,BladeOne::MODE_DEBUG); // MODE_DEBUGだと開発モード MODE_AUTOが速い。
+$blade = new BladeOne($views,$cache,BladeOne::MODE_AUTO); // MODE_DEBUGだと開発モード MODE_AUTOが速い。
 
 $var_b = array(); // bladeに格納する変数
 
@@ -1001,6 +1001,7 @@ function paintform(){
 	global $mode,$ctype,$pch,$type;
 	global $useneo; //NEOを使う
 	global $blade,$var_b;
+	global $pallets_dat;
 
 	//NEOを使う or しぃペインター
 	if (filter_input(INPUT_POST, 'useneo')){
@@ -1087,6 +1088,50 @@ function paintform(){
 		$var_b += array('newpaint'=>true);
 	}
 	$var_b += array('security_url'=>SECURITY_URL);
+
+	//パレット設定
+	$initial_palette = 'Palettes[0] = "#000000\n#FFFFFF\n#B47575\n#888888\n#FA9696\n#C096C0\n#FFB6FF\n#8080FF\n#25C7C9\n#E7E58D\n#E7962D\n#99CB7B\n#FCECE2\n#F9DDCF";';
+	if(USE_SELECT_PALETTES){ //パレット切り替え機能を使う時
+		foreach($pallets_dat as $i=>$value){
+			if($i==filter_input(INPUT_POST, 'selected_palette_no',FILTER_VALIDATE_INT)){//キーと入力された数字が同じなら
+				setcookie("palettec", $i, time()+(86400*SAVE_COOKIE));//Cookie保存
+				if(is_array($value)){
+					list($p_name,$p_dat)=$value;
+					$lines=file($p_dat);
+				}else{
+					$lines=file($value);
+				}
+				break;
+			}
+		}
+	}else{
+		$lines=file(PALETTEFILE);//初期パレット
+	}
+
+	$pal=array();
+	$DynP=array();
+
+	$pal=array();
+	$DynP=array();
+	foreach ( $lines as $i => $line ) {
+		$line=charconvert(str_replace(["\r","\n","\t"],"",$line));
+		list($pid,$pname,$pal[0],$pal[2],$pal[4],$pal[6],$pal[8],$pal[10],$pal[1],$pal[3],$pal[5],$pal[7],$pal[9],$pal[11],$pal[12],$pal[13]) = explode(",", $line);
+		$DynP[]=newstring($pname);
+		$p_cnt=$i+1;
+		$palettes = 'Palettes['.$p_cnt.'] = "#';
+		ksort($pal);
+		$palettes.=implode('\n#',$pal);
+		$palettes.='";';
+		$arr_pal[$i] = $palettes;
+	}
+	$var_b += array('palettes'=>$initial_palette.implode('',$arr_pal));
+
+	$var_b += array('palsize'=>(count($DynP) + 1));
+
+	foreach ($DynP as $p){
+		$arr_dynp[] = '<option>'.$p.'</option>';
+	}
+	$var_b += array('dynp'=>implode('',$arr_dynp));
 
 	if($ctype=='pch'){
 		$pchfile = filter_input(INPUT_POST, 'pch');
@@ -1856,6 +1901,12 @@ function deltemp(){
 		}
 	}
 	closedir($handle);
+}
+
+// 文字コード変換 
+function charconvert($str){
+	mb_language(LANG);
+		return mb_convert_encoding($str, "UTF-8", "auto");
 }
 
 /* NGワードがあれば拒絶 */

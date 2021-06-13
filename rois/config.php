@@ -1,6 +1,6 @@
 <?php
 /*
-  * ROIS v0.0.0～
+  * ROIS v0.2.0～
   * by sakots >> https://dev.oekakibbs.net/
   *
   * ROISの設定ファイルです。
@@ -267,8 +267,13 @@ define('SEC_PAINTTIME', '1');
 define('PTIME_SEC', '秘密');
 
 //パレットデータファイル名
-//直接組み込んだので使用しない
-//define('PALETTEFILE', 'palette.txt');
+define('PALETTEFILE', 'palette.txt');
+
+//パレットデータファイル切り替え機能を使用する する:1 しない:0
+define('USE_SELECT_PALETTES', '0');
+
+//パレットデータファイル切り替え機能を使用する する:1 の時のパレットデーターファイル名
+$pallets_dat=array(['標準','palette.txt'],['プロ','palette.dat']);
 
 //動画機能を使用する する:1 しない:0
 define('USE_ANIME', '1');
