@@ -145,7 +145,7 @@
 									(function(){ //byさとぴあさん
 										var url = encodeURIComponent("{{$base}}{{$self}}?mode=res&amp;res={{$resno}}"); //ページURL
 										var title = encodeURIComponent("[{{$bbsline['tid']}}] {{$bbsline['sub']}} by {{$bbsline['name']}} - {{$btitle}}"); //ページタイトル
-										document.write( '<span class="button"><a target="_blank" href="https://twitter.com/intent/tweet?&amp;text=' + title + '&amp;url=' + url + '"><img src="./templates/{{$themedir}}/icons/twitter.svg" width="16" height="16"> tweet</a></span> <span class="button"><a target="_blank" class="fb btn" href="http://www.facebook.com/share.php?u=' + url + '"><img src="./templates/{{$themedir}}/icons/facebook.svg" width="16" height="16"> share</a></span>' );}
+										document.write( '<span class="button"><a target="_blank" href="https://twitter.com/intent/tweet?&amp;text=' + title + '&amp;url=' + url + '"><img src="./templates/{{$themedir}}/icons/twitter.svg" width="12" height="12"> tweet</a></span> <span class="button"><a target="_blank" class="fb btn" href="http://www.facebook.com/share.php?u=' + url + '"><img src="./templates/{{$themedir}}/icons/facebook.svg" width="12" height="12"> share</a></span>' );}
 									)();
 								</script>
 							</div>
@@ -197,7 +197,6 @@
 													@else
 														<input type="text" name="sub" size="18" value="" autocomplete="section-sub">
 													@endif
-													<input type="submit" name="send" value="書き込む">
 													<input type="hidden" name="picfile" value="">
 													<input type="hidden" name="parent" value="{{$resno}}">
 													<input type="hidden" name="invz" value="0">
@@ -216,7 +215,7 @@
 													@endif
 												</td>
 												<td>
-													<textarea name="com" rows="4" cols="48" id="p_input_com"></textarea>
+													<textarea name="com" rows="4" cols="48" id="p_input_com" onkeydown="if(event.ctrlKey&&event.keyCode==13){document.getElementById('submit').click();return false};"></textarea>
 												</td>
 											</tr>
 											<tr>
@@ -224,6 +223,12 @@
 												<td>
 													<input type="password" name="pwd" size="8" value="" autocomplete="current-password">
 													(記事の編集削除用。英数字で)
+												</td>
+											</tr>
+											<tr>
+												<td><input type="submit" id="submit" name="send" value="書き込む"></td>
+												<td>
+													(PCならCtrl + Enterでも書き込めます)
 												</td>
 											</tr>
 										</table>
@@ -260,6 +265,7 @@
 				<p>
 					UseFunction -
 					<!-- http://wondercatstudio.com/ -->DynamicPalette,
+					<a href="https://huruihone.tumblr.com/" target="_top" rel="noopener noreferrer" title="by Soto">AppletFit</a>,
 					<a href="https://github.com/EFTEC/BladeOne" target="_top" rel="noopener noreferrer" title="by EFTEC">BladeOne</a>
 				</p>
 			</div>

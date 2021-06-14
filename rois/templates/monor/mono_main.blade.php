@@ -175,12 +175,12 @@
 										(function(){ //byさとぴあさん
 											var url = encodeURIComponent("{{$base}}{{$self}}?mode=res&amp;res={{$bbsline['tid']}}"); //ページURL
 											var title = encodeURIComponent("[{{$bbsline['tid']}}] {{$bbsline['sub']}} by {{$bbsline['name']}} - {{$btitle}}"); //ページタイトル
-											document.write( '<span class="button"><a target="_blank" href="https://twitter.com/intent/tweet?&amp;text=' + title + '&amp;url=' + url + '"><img src="./templates/{{$themedir}}/icons/twitter.svg" width="16" height="16"> tweet</a></span> <span class="button"><a target="_blank" class="fb btn" href="http://www.facebook.com/share.php?u=' + url + '"><img src="./templates/{{$themedir}}/icons/facebook.svg" width="16" height="16"> share</a></span>' );}
+											document.write( '<span class="button"><a target="_blank" href="https://twitter.com/intent/tweet?&amp;text=' + title + '&amp;url=' + url + '"><img src="./templates/{{$themedir}}/icons/twitter.svg" width="12" height="12"> tweet</a></span> <span class="button"><a target="_blank" class="fb btn" href="http://www.facebook.com/share.php?u=' + url + '"><img src="./templates/{{$themedir}}/icons/facebook.svg" width="12" height="12"> share</a></span>' );}
 										)();
 									</script>
 									@endif
 									@if ($elapsed_time == 0 || $nowtime - $bbsline['utime'] < $elapsed_time)
-										<span class="button"><a href="{{$self}}?mode=res&amp;res={{$bbsline['tid']}}"><img src="./templates/{{$themedir}}/icons/rep.svg" width="16" height="16"> 返信</a></span>
+										<span class="button"><a href="{{$self}}?mode=res&amp;res={{$bbsline['tid']}}"><img src="./templates/{{$themedir}}/icons/rep.svg" width="12" height="12"> 返信</a></span>
 									@else
 										このスレは古いので返信できません…
 									@endif
@@ -263,6 +263,7 @@
 				<p>
 					UseFunction -
 					<!-- http://wondercatstudio.com/ -->DynamicPalette,
+					<a href="https://huruihone.tumblr.com/" target="_top" rel="noopener noreferrer" title="by Soto">AppletFit</a>,
 					<a href="https://github.com/EFTEC/BladeOne" target="_top" rel="noopener noreferrer" title="by EFTEC">BladeOne</a>
 				</p>
 			</div>

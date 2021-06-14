@@ -173,6 +173,7 @@
 				<p>
 					UseFunction -
 					<!-- http://wondercatstudio.com/ -->DynamicPalette,
+					<a href="https://huruihone.tumblr.com/" target="_top" rel="noopener noreferrer" title="by Soto">AppletFit</a>,
 					<a href="https://github.com/EFTEC/BladeOne" target="_top" rel="noopener noreferrer" title="by EFTEC">BladeOne</a>
 				</p>
 			</div>

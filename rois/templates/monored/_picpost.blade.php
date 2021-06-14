@@ -106,7 +106,6 @@
 								</td>
 								<td>
 									<input type="text" name="sub" size="35" autocomplete="section-sub">
-									<input type="submit" name="send" value="書き込む">
 									<input type="hidden" name="parent" value="{{$parent}}">
 									<input type="hidden" name="invz" value="0">
 									<input type="hidden" name="img_w" value="0">
@@ -122,7 +121,7 @@
 									*
 									@endif
 								</td>
-								<td><textarea name="com" cols="48" rows="4" wrap="soft"></textarea></td>
+								<td><textarea name="com" cols="48" rows="4" wrap="soft" onkeydown="if(event.ctrlKey&&event.keyCode==13){document.getElementById('submit').click();return false};"></textarea></td>
 							</tr>
 							@if (isset($temp))
 							<tr>
@@ -142,6 +141,12 @@
 								<td>
 									<input type="password" name="pwd" size="8" value="" autocomplete="current-password">
 									(記事の編集削除用。英数字で)
+								</td>
+							</tr>
+							<tr>
+								<td><input type="submit" id="submit" name="send" value="書き込む"></td>
+								<td>
+									(PCならCtrl + Enterでも書き込めます)
 								</td>
 							</tr>
 						</table>
@@ -169,6 +174,7 @@
 				<p>
 					UseFunction -
 					<!-- http://wondercatstudio.com/ -->DynamicPalette,
+					<a href="https://huruihone.tumblr.com/" target="_top" rel="noopener noreferrer" title="by Soto">AppletFit</a>,
 					<a href="https://github.com/EFTEC/BladeOne" target="_top" rel="noopener noreferrer" title="by EFTEC">BladeOne</a>
 				</p>
 			</div>
