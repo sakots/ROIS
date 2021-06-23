@@ -61,7 +61,11 @@
 					}
 				//ツールの縦の位置をキャンバス中央に修正
 				d.getElementById("toolsWrapper").style.top = (target.clientHeight - d.getElementById("toolsWrapper").clientHeight)/2 + "px";
-				} //▲NEO
+				//ズームをリセット
+				Neo.painter.setZoom(1);
+				Neo.resizeCanvas();
+				Neo.painter.updateDestCanvas();
+				} //NEO
 			}
 		</script>
 	</head>
