@@ -171,16 +171,11 @@
 								@endif
 								<div class="thfoot">
 									@if ($share_button == 1)
-									<script>
-										(function(){ //byさとぴあさん
-											var url = encodeURIComponent("{{$base}}{{$self}}?mode=res&amp;res={{$bbsline['tid']}}"); //ページURL
-											var title = encodeURIComponent("[{{$bbsline['tid']}}] {{$bbsline['sub']}} by {{$bbsline['name']}} - {{$btitle}}"); //ページタイトル
-											document.write( '<span class="button"><a target="_blank" href="https://twitter.com/intent/tweet?&amp;text=' + title + '&amp;url=' + url + '"><img src="./templates/{{$themedir}}/icons/twitter.svg" width="12" height="12"> tweet</a></span> <span class="button"><a target="_blank" class="fb btn" href="http://www.facebook.com/share.php?u=' + url + '"><img src="./templates/{{$themedir}}/icons/facebook.svg" width="12" height="12"> share</a></span>' );}
-										)();
-									</script>
+									<span class="button"><a href="https://twitter.com/intent/tweet?&amp;text=[{{$bbsline['tid']}}] {{$bbsline['sub']}} by {{$bbsline['name']}} - {{$btitle}}&amp;url={{$base}}{{$self}}?mode=res&amp;res={{$bbsline['tid']}}" target="_blank"><img src="./templates/{{$themedir}}/icons/twitter.svg"> tweet</a></span>
+									<span class="button"><a href="http://www.facebook.com/share.php?u={{$base}}{{$self}}?mode=res&amp;res={{$bbsline['tid']}}" class="fb btn" target="_blank"><img src="./templates/{{$themedir}}/icons/facebook.svg"> share</a></span>
 									@endif
 									@if ($elapsed_time == 0 || $nowtime - $bbsline['utime'] < $elapsed_time)
-										<span class="button"><a href="{{$self}}?mode=res&amp;res={{$bbsline['tid']}}"><img src="./templates/{{$themedir}}/icons/rep.svg" width="12" height="12"> 返信</a></span>
+										<span class="button"><a href="{{$self}}?mode=res&amp;res={{$bbsline['tid']}}"><img src="./templates/{{$themedir}}/icons/rep.svg"> 返信</a></span>
 									@else
 										このスレは古いので返信できません…
 									@endif
