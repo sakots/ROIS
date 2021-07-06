@@ -4,34 +4,13 @@
 		<meta charset="utf-8">
 		<title>{{$btitle}}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<script>
-			var css = GetCookie("CSS");
-			if(css == ""){css = "mono_red.min.css";}
-			document.write('<link rel="stylesheet" href="./templates/{{$themedir}}/css/' + css + '" type="text/css">');
-			function SetCss(obj){
-				var idx = obj.selectedIndex;
-				file = obj.options[idx].value;
-				SetCookie("CSS", file);
-				window.location.reload();
-			}
-			function GetCookie(key){
-				var tmp = document.cookie + ";";
-				var tmp1 = tmp.indexOf(key, 0);
-				if(tmp1 != -1){
-					tmp = tmp.substring(tmp1, tmp.length);
-					var start = tmp.indexOf("=", 0) + 1;
-					var end = tmp.indexOf(";", start);
-					return(unescape(tmp.substring(start,end)));
-					}
-				return("");
-			}
-			function SetCookie(key, val){
-				document.cookie = key + "=" + escape(val) + ";max-age=31536000;";
-			}
-		</script>
-		<noscript>
-			<link rel="stylesheet" href="./templates/{{$themedir}}/css/mono_red.min.css" type="text/css">
-		</noscript>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_red.min.css">
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_main.min.css" id="css1" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_dark.min.css" id="css2" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_deep.min.css" id="css3" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_mayo.min.css" id="css4" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_dev.min.css" id="css5" disabled>
+		<script src="templates/{{$themedir}}/switchcss.js"></script>
 		@if ($useneo == true)
 		<link rel="stylesheet" href="neo.css?{{$a_stime}}" type="text/css">
 		<script src="neo.js?{{$a_stime}}" charset="utf-8"></script>
@@ -126,5 +105,9 @@
 				</p>
 			</div>
 		</footer>
+		<script>
+			colorIdx = GetCookie('colorIdx');
+			document.getElementById("mystyle").selectedIndex = colorIdx;
+		</script>
 	</body>
 </html>

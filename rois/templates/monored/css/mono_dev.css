@@ -134,6 +134,10 @@ input[name="upfile"], select[name="upfile"] {
   width: 10em;
 }
 
+input[type="color"], select[type="color"] {
+  height: 1em;
+}
+
 input[type="number"], select[type="number"] {
   -moz-appearance: textfield;
 }
@@ -274,7 +278,6 @@ button, .button {
   border-left: solid 1ex #396;
   background: -webkit-gradient(linear, left top, right top, from(#111111), color-stop(#444444), to(#331122)) fixed;
   background: linear-gradient(to right, #111111, #444444, #331122) fixed;
-  background-color: #111111;
   padding: 0.2em;
 }
 

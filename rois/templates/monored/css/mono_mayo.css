@@ -10,7 +10,8 @@ label {
 }
 
 body {
-  background-color: #d1ce9e;
+  background-attachment: unset;
+  background: #d1ce9e;
   color: #000;
   font-family: sans-serif;
   word-wrap: break-word;
@@ -130,6 +131,10 @@ input[type="submit"], select[type="submit"], button, .button {
 
 input[name="upfile"], select[name="upfile"] {
   width: 10em;
+}
+
+input[type="color"], select[type="color"] {
+  height: 1em;
 }
 
 input[type="number"], select[type="number"] {
@@ -270,8 +275,7 @@ button, .button {
 
 .oyat, .siihelp h2 {
   border-left: solid 1ex #000;
-  background-color: #F66;
-  background-color: #F66;
+  background: #F66;
   padding: 0.2em;
 }
 

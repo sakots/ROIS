@@ -21,7 +21,8 @@ body {
 		background-attachment: fixed;
 		background: linear-gradient($ushiro, lighten($ushiro,20%)) fixed;
 	} @else {
-		background-color: $ushiro;
+		background-attachment: unset;
+		background: $ushiro;
 	}
 	color: $moji;
 	font-family: sans-serif;
@@ -126,6 +127,9 @@ input[type="submit"] {
 }
 input[name="upfile"] {
 	width: 10em;
+}
+input[type="color"] {
+	height: 1em;
 }
 //スポンボタン（上下の矢印ボタン）を非表示にする
 input[type="number"] { 
@@ -252,9 +256,8 @@ button {
 	} @else if $dev == -1 {
 		background: linear-gradient(to right, $th_bg, darken($th_bg,15%), $th_bg - #220011) fixed;
 	} @else {
-		background-color: $th_bg;
+		background: $th_bg;
 	}
-	background-color: $th_bg;
 	padding: 0.2em;
 }
 .oekaki {

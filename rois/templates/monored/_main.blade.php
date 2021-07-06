@@ -4,34 +4,13 @@
 		<meta charset="utf-8">
 		<title>{{$btitle}}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<script>
-			var css = GetCookie("CSS");
-			if(css == ""){css = "mono_red.min.css";}
-			document.write('<link rel="stylesheet" href="./templates/{{$themedir}}/css/' + css + '" type="text/css">');
-			function SetCss(obj){
-				var idx = obj.selectedIndex;
-				file = obj.options[idx].value;
-				SetCookie("CSS", file);
-				window.location.reload();
-			}
-			function GetCookie(key){
-				var tmp = document.cookie + ";";
-				var tmp1 = tmp.indexOf(key, 0);
-				if(tmp1 != -1){
-					tmp = tmp.substring(tmp1, tmp.length);
-					var start = tmp.indexOf("=", 0) + 1;
-					var end = tmp.indexOf(";", start);
-					return(unescape(tmp.substring(start,end)));
-					}
-				return("");
-			}
-			function SetCookie(key, val){
-				document.cookie = key + "=" + escape(val) + ";max-age=31536000;";
-			}
-		</script>
-		<noscript>
-			<link rel="stylesheet" href="./templates/{{$themedir}}/css/mono_red.min.css" type="text/css">
-		</noscript>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_red.min.css">
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_main.min.css" id="css1" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_dark.min.css" id="css2" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_deep.min.css" id="css3" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_mayo.min.css" id="css4" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_dev.min.css" id="css5" disabled>
+		<script src="templates/{{$themedir}}/switchcss.js"></script>
 	</head>
 	<body>
 		<header id="header">
@@ -263,13 +242,12 @@
 							<input class="button" type="submit" value=" OK ">
 							<span class="stylechanger">
 								<select class="form" name="select" id="mystyle" onchange="SetCss(this);">
-									<option value="mono_red.min.css">Color</option>
 									<option value="mono_red.min.css"> RED</option>
+									<option value="mono_main.min.css">MONO</option>
+									<option value="mono_dark.min.css">dark</option>
+									<option value="mono_deep.min.css">deep</option>
+									<option value="mono_mayo.min.css">MAYO</option>
 									<option value="mono_dev.min.css"> DEV</option>
-									<option value="mono_main.min.css"> MONO</option>
-									<option value="mono_dark.min.css"> dark</option>
-									<option value="mono_deep.min.css"> deep</option>
-									<option value="mono_mayo.min.css"> MAYO</option>
 								</select>
 							</span>
 						</p>
@@ -301,14 +279,9 @@
 				</p>
 			</div>
 		</footer>
-		<script src="./templates/{{$themedir}}/jquery-3.5.1.min.js"></script>
 		<script>
-			$(function(){//2度押し対策
-				$('[type="submit"]').click(function(){
-					$(this).prop('disabled',true);
-					$(this).closest('form').submit();
-				});
-			});
+			colorIdx = GetCookie('colorIdx');
+			document.getElementById("mystyle").selectedIndex = colorIdx;
 		</script>
 	</body>
 </html>
