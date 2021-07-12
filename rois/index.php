@@ -5,7 +5,7 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.2.2'); //lot.210706.0
+define('ROIS_VER','v0.2.3'); //lot.210712.0
 
 //設定の読み込み
 require(__DIR__.'/config.php');
@@ -730,8 +730,16 @@ function def() {
 					break;
 				} //抜ける
 				$res['resno'] = ($j +1); //レス番号
+				// http、https以外のURLの場合表示しない
+				if(!filter_var($res['url'], FILTER_VALIDATE_URL) && !preg_match('|^https?://.*$|', $res['url'])) {
+					$res['url'] = "";
+				}
 				$ko[] = $res;
 				$j++;
+			}
+			// http、https以外のURLの場合表示しない
+			if(!filter_var($bbsline['url'], FILTER_VALIDATE_URL) && !preg_match('|^https?://.*$|', $bbsline['url'])) {
+				$bbsline['url'] = "";
 			}
 			$oya[] = $bbsline;
 			$i++;
@@ -956,10 +964,18 @@ function res(){
 				if (!in_array($res['name'], $rresname)) {//重複除外
 					$rresname[] = $res['name'];//投稿者名を配列に入れる
 				}
+				// http、https以外のURLの場合表示しない
+				if(!filter_var($res['url'], FILTER_VALIDATE_URL) && !preg_match('|^https?://.*$|', $res['url'])) {
+					$res['url'] = "";
+				}
 			}
 			$oya[] = $bbsline;
 			if (!in_array($bbsline['name'], $rresname)) {
 				$rresname[] = $bbsline['name'];
+			}
+			// http、https以外のURLの場合表示しない
+			if(!filter_var($bbsline['url'], FILTER_VALIDATE_URL) && !preg_match('|^https?://.*$|', $bbsline['url'])) {
+				$bbsline['url'] = "";
 			}
 			$resname = implode('さん ',$rresname);
 			$var_b += array('resname'=>$resname);
