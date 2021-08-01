@@ -53,7 +53,7 @@
 						@endif
 					</div>
 					@if (isset($temp))
-					<form class="ppost postform" action="{{$self}}?mode=regist" method="post">
+					<form class="ppost postform" action="{{$self}}?mode=regist" method="post" enctype="multipart/form-data">
 						@if (isset($ptime))
 						<p>
 							描画時間：{{$ptime}}
@@ -91,6 +91,11 @@
 									<input type="hidden" name="img_h" value="0">
 									@if (isset($ptime))<input type="hidden" name="ptime" value="{{$ptime}}">@endif
 									<input type="hidden" name="exid" value="0">
+									@if ($token != null)
+										<input type="hidden" name="token" value="{{$token}}">
+									@else
+										<input type="hidden" name="token" value="">
+									@endif
 								</td>
 							</tr>
 							<tr>

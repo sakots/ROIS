@@ -166,7 +166,7 @@
 										<button class="copy_button" onclick="add_to_com()">投稿者名をコピー</button>
 										（投稿者名をコピぺできます）
 									</p>
-									<form action="{{$self}}?mode=regist" method="post" class="postform">
+									<form action="{{$self}}?mode=regist" method="post" class="postform" enctype="multipart/form-data">
 										<table>
 											<tr>
 												<td>
@@ -206,6 +206,11 @@
 													<input type="hidden" name="time" value="0">
 													<input type="hidden" name="exid" value="0">
 													<input type="hidden" name="modid" value="{{$resno}}">
+													@if ($token != null)
+														<input type="hidden" name="token" value="{{$token}}">
+													@else
+														<input type="hidden" name="token" value="">
+													@endif
 												</td>
 											</tr>
 											<tr>

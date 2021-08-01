@@ -63,10 +63,15 @@
 									<input type="hidden" name="invz" value="0">
                                     <input type="hidden" name="exid" value="0">
 									@if (isset($resedit))
-									<input type="hidden" name="resedit" value="1">
-									<input type="hidden" name="e_no" value="{{$bbsline['iid']}}">
+										<input type="hidden" name="resedit" value="1">
+										<input type="hidden" name="e_no" value="{{$bbsline['iid']}}">
 									@else
-									<input type="hidden" name="e_no" value="{{$bbsline['tid']}}">
+										<input type="hidden" name="e_no" value="{{$bbsline['tid']}}">
+									@endif
+									@if ($token != null)
+										<input type="hidden" name="token" value="{{$token}}">
+									@else
+										<input type="hidden" name="token" value="">
 									@endif
 								</td>
 							</tr>
