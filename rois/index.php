@@ -5,11 +5,20 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.2.4'); //lot.210713.0
+define('ROIS_VER','v0.3.0'); //lot.210802.0
 
 //設定の読み込み
 require(__DIR__.'/config.php');
 require(__DIR__.'/templates/'.THEMEDIR.'/template_ini.php');
+
+//phpのバージョンが古い場合動かさせない
+if (($phpver = phpversion()) < "5.5.0") {
+	die("PHP version 5.5.0 or higher is required for this program to work. <br>\n(Current PHP version:{$phpver})");
+}
+//コンフィグのバージョンが古くて互換性がない場合動かさせない
+if (CONF_VER < 30 || !defined('CONF_VER')) {
+	die("コンフィグファイルに互換性がないようです。再設定をお願いします。<br>\n The configuration file is incompatible. Please reconfigure it.");
+}
 
 //BladeOne v3.52
 include (__DIR__.'/blade/lib/BladeOne.php');
@@ -18,10 +27,15 @@ use eftec\bladeone\BladeOne;
 $views = __DIR__.'/templates/'.THEMEDIR; // テンプレートフォルダ
 $cache = __DIR__.'/cache'; // キャッシュフォルダ 
 $blade = new BladeOne($views,$cache,BladeOne::MODE_AUTO); // MODE_DEBUGだと開発モード MODE_AUTOが速い。
+$blade->pipeEnable = true; // パイプのフィルターを使えるようにする
 
 $var_b = array(); // bladeに格納する変数
 
 //var_dump($_POST);
+
+//絶対パス取得
+$path = realpath("./").'/'.IMG_DIR;
+$temppath = realpath("./").'/'.TEMP_DIR;
 
 $message = "";
 $self = PHP_SELF;
@@ -87,14 +101,6 @@ if(!defined('CRYPT_PASS')){//config.phpで未定義なら初期値が入る
 define('CRYPT_METHOD','aes-128-cbc');
 define('CRYPT_IV','T3pkYxNyjN7Wz3pu');//半角英数16文字
 
-//スパム無効化関数
-function newstring($string) {
-	$string = htmlspecialchars($string,ENT_QUOTES,'utf-8');
-	$string = str_replace(",","，",$string);
-	return $string;
-}
-//無効化ここまで
-
 /* オートリンク */
 function auto_link($proto){
 	if(!(stripos($proto,"script")!==false)){//scriptがなければ続行
@@ -112,11 +118,11 @@ function hashtag_link($hashtag) {
 	return $hashtag;
 }
 
-$mode = newstring(filter_input(INPUT_POST, 'mode'));
+$mode = filter_input(INPUT_POST, 'mode');
 
 //var_dump($_GET);
 if(filter_input(INPUT_GET, 'mode')==="anime"){
-	$pch = newstring(filter_input(INPUT_GET, 'pch'));
+	$pch = filter_input(INPUT_GET, 'pch');
 	$mode = "anime";
 }
 if(filter_input(INPUT_GET, 'mode')==="continue"){
@@ -136,8 +142,8 @@ if(filter_input(INPUT_GET, 'mode')==="piccom"){
 }
 if(filter_input(INPUT_GET, 'mode')==="picrep"){
 	$no = filter_input(INPUT_GET, 'no');
-	$pwd = newstring(filter_input(INPUT_GET, 'pwd'));
-	$repcode = newstring(filter_input(INPUT_GET, 'repcode'));
+	$pwd = filter_input(INPUT_GET, 'pwd');
+	$repcode = filter_input(INPUT_GET, 'repcode');
 	$stime = filter_input(INPUT_GET, 'stime',FILTER_VALIDATE_INT);
 	$mode = "picrep";
 }
@@ -176,20 +182,20 @@ if(filter_input(INPUT_GET, 'mode')==="search"){
 }
 
 $message ="";
-$sub = newstring(filter_input(INPUT_POST, 'sub'));
-$name = newstring(filter_input(INPUT_POST, 'name'));
-$mail = newstring(filter_input(INPUT_POST, 'mail'));
-$url = newstring(filter_input(INPUT_POST, 'url'));
-$com = newstring(filter_input(INPUT_POST, 'com'));
-$parent = newstring(trim(filter_input(INPUT_POST, 'parent')));
-$picfile = newstring(trim(filter_input(INPUT_POST, 'picfile')));
-$invz = newstring(trim(filter_input(INPUT_POST, 'invz')));
-$img_w = newstring(trim(filter_input(INPUT_POST, 'img_w')));
-$img_h = newstring(trim(filter_input(INPUT_POST, 'img_h')));
-$time = newstring(trim(filter_input(INPUT_POST, 'time')));
-$pwd = newstring(trim(filter_input(INPUT_POST, 'pwd')));
+$sub = filter_input(INPUT_POST, 'sub');
+$name = filter_input(INPUT_POST, 'name');
+$mail = filter_input(INPUT_POST, 'mail');
+$url = filter_input(INPUT_POST, 'url');
+$com = filter_input(INPUT_POST, 'com');
+$parent = trim(filter_input(INPUT_POST, 'parent'));
+$picfile = trim(filter_input(INPUT_POST, 'picfile'));
+$invz = trim(filter_input(INPUT_POST, 'invz'));
+$img_w = trim(filter_input(INPUT_POST, 'img_w'));
+$img_h = trim(filter_input(INPUT_POST, 'img_h'));
+$time = trim(filter_input(INPUT_POST, 'time'));
+$pwd = trim(filter_input(INPUT_POST, 'pwd'));
 $pwdh = password_hash($pwd,PASSWORD_DEFAULT);
-$exid = newstring(trim(filter_input(INPUT_POST, 'exid')));
+$exid = trim(filter_input(INPUT_POST, 'exid'));
 
 //var_dump($_COOKIE);
 
@@ -204,16 +210,31 @@ $req_method = ( isset($_SERVER["REQUEST_METHOD"]) === true ) ? ($_SERVER["REQUES
 
 //ユーザーip
 function get_uip(){
-	$userip = getenv("HTTP_CLIENT_IP");
-	if(!$userip){
-		$userip = getenv("HTTP_X_FORWARDED_FOR");
-	} 
-	if(!$userip){
-		$userip = getenv("REMOTE_ADDR");
-	} 
-	return $userip;
+	if ($userip = getenv("HTTP_CLIENT_IP")) {
+		return $userip;
+	} elseif ($userip = getenv("HTTP_X_FORWARDED_FOR")) {
+		return $userip;
+	}
 }
-$var_b += array('usercode'=>$usercode);
+//csrfトークンを作成
+function get_csrf_token(){
+	if(!isset($_SESSION)){
+		session_start();
+	}
+	header('Expires:');
+	header('Cache-Control:');
+	header('Pragma:');
+	return hash('sha256', session_id(), false);
+}
+//csrfトークンをチェック	
+function check_csrf_token(){
+	session_start();
+	$token=filter_input(INPUT_POST,'token');
+	$session_token=isset($_SESSION['token']) ? $_SESSION['token'] : '';
+	if(!$session_token||$token!==$session_token){
+		error(MSG006);
+	}
+}
 
 //user-codeの発行
 if(!$usercode){//falseなら発行
@@ -223,6 +244,8 @@ if(!$usercode){//falseなら発行
 	$usercode = strtr($usercode,"!\"#$%&'()+,/:;<=>?@[\\]^`/{|}~","ABCDEFGHIJKLMNOabcdefghijklmn");
 }
 setcookie("usercode", $usercode, time()+(86400*365));//1年間
+
+$var_b += array('usercode'=>$usercode);
 
 /*-----------Main-------------*/
 
@@ -288,15 +311,20 @@ function regist() {
 
 	$secptime = filter_input(INPUT_POST, 'secptime' ,FILTER_VALIDATE_BOOLEAN);
 
+	//CSRFトークンをチェック
+	if(CHECK_CSRF_TOKEN){
+		check_csrf_token();
+	}
+
 	if($req_method !== "POST") {error(MSG006);}
 
 	//NGワードがあれば拒絶
 	Reject_if_NGword_exists_in_the_post($com,$name,$mail,$url,$sub);
-	if(USE_NAME&&!$name) {error(MSG009);}
+	if(USE_NAME && !$name) {error(MSG009);}
 	//レスの時は本文必須
-	if(filter_input(INPUT_POST, 'modid')&&!$com) {error(MSG008);}
-	if(USE_COM&&!$com) {error(MSG008);}
-	if(USE_SUB&&!$sub) {error(MSG010);}
+	if(filter_input(INPUT_POST, 'modid') && !$com) {error(MSG008);}
+	if(USE_COM && !$com) {error(MSG008);}
+	if(USE_SUB && !$sub) {error(MSG010);}
 
 	if(strlen($com) > MAX_COM) {error(MSG011);}
 	if(strlen($name) > MAX_NAME) {error(MSG012);}
@@ -421,14 +449,6 @@ function regist() {
 
 			// 連続する空行を一行
 			$com = preg_replace("/\n((　| )*\n){3,}/","\n",$com);
-			//改行をタグに
-			if(TH_XHTML == 1){
-				//<br />に
-				$com = nl2br($com);
-			} else {
-				//<br>に
-				$com = nl2br($com, false);
-			}	
 
 			//age_sageカウント 兼 レス数カウント
 			$sql = "SELECT COUNT(*) as cnt FROM tabletree WHERE invz=0";
@@ -486,7 +506,7 @@ function regist() {
 				$db = $db->exec($sqldel);
 			} elseif(empty($_POST["modid"])!=true && strpos($mail,'sage')!==false ) {
 				//レスの場合でメール欄にsageが含まれる
-				$tid = newstring(filter_input(INPUT_POST, 'modid'));
+				$tid = filter_input(INPUT_POST, 'modid');
 				//id生成
 				$id = substr(crypt(md5($host.ID_SEED.date("Ymd", $utime)),'id'),-8);
 				if ($age <= LOG_MAX_R) {
@@ -530,7 +550,7 @@ function regist() {
 				}
 			} else {
 				//レスの場合でメール欄にsageが含まれない
-				$tid = newstring(filter_input(INPUT_POST, 'modid'));
+				$tid = filter_input(INPUT_POST, 'modid');
 				//id生成
 				$id = substr(crypt(md5($host.ID_SEED.date("Ymd", $utime)),'id'),-8);
 				//age処理するかどうか
@@ -734,6 +754,7 @@ function def() {
 				if(!filter_var($res['url'], FILTER_VALIDATE_URL) || !preg_match('|^https?://.*$|', $res['url'])) {
 					$res['url'] = "";
 				}
+				$res['com'] = nl2br(htmlentities($res['com'],ENT_QUOTES | ENT_HTML5), false);
 				$ko[] = $res;
 				$j++;
 			}
@@ -741,6 +762,7 @@ function def() {
 			if(!filter_var($bbsline['url'], FILTER_VALIDATE_URL) || !preg_match('|^https?://.*$|', $bbsline['url'])) {
 				$bbsline['url'] = "";
 			}
+			$bbsline['com'] = nl2br(htmlentities($bbsline['com'],ENT_QUOTES | ENT_HTML5), false);
 			$oya[] = $bbsline;
 			$i++;
 		}
@@ -821,6 +843,7 @@ function catalog() {
 		while ( $i < CATALOG_N) {
 			$bbsline = $posts->fetch();
 			if(empty($bbsline)){break;} //スレがなくなったら抜ける
+			$bbsline['com'] = nl2br(htmlentities($bbsline['com'],ENT_QUOTES | ENT_HTML5), false);
 			$oya[] = $bbsline;
 			$i++;
 		}
@@ -875,6 +898,7 @@ function search() {
 
 		$i = 0;
 		while ($bbsline = $posts->fetch()) {
+			$bbsline['com'] = nl2br(htmlentities($bbsline['com'],ENT_QUOTES | ENT_HTML5), false);
 			$oya[] = $bbsline;
 			$i++;
 		}
@@ -903,7 +927,7 @@ function search() {
 
 //そうだね
 function sodane(){
-	$resto = newstring(filter_input(INPUT_GET, 'resto'));
+	$resto = filter_input(INPUT_GET, 'resto');
 	try {
 		$db = new PDO("sqlite:rois.db");
 		$sql = "UPDATE tablelog set exid = exid+1 where tid = '$resto'";
@@ -918,7 +942,7 @@ function sodane(){
 
 //レスそうだね
 function rsodane(){
-	$resto = newstring(filter_input(INPUT_GET, 'resto'));
+	$resto = filter_input(INPUT_GET, 'resto');
 	try {
 		$db = new PDO("sqlite:rois.db");
 		$sql = "UPDATE tabletree set exid = exid+1 where iid = '$resto'";
@@ -935,8 +959,16 @@ function rsodane(){
 
 function res(){
 	global $blade,$var_b;
-	$resno = newstring(filter_input(INPUT_GET, 'res'));
+	$resno = filter_input(INPUT_GET, 'res');
 	$var_b += array('resno'=>$resno);
+
+	//csrfトークンをセット
+	$dat['token']='';
+	if(CHECK_CSRF_TOKEN){
+		$token = get_csrf_token();
+		$_SESSION['token'] = $token;
+		$var_b += array('token'=>$token);
+	}
 
 	//古いスレのレスフォームを表示しない
 	$elapsed_time = ELAPSED_DAYS * 86400; //デフォルトの1年だと31536000
@@ -959,6 +991,7 @@ function res(){
 			$postsi = $db->query($sqli);
 			$rresname = array();
 			while ($res = $postsi->fetch()){
+				$res['com'] = nl2br(htmlentities($res['com'],ENT_QUOTES | ENT_HTML5), false);
 				$ko[] = $res;
 				//投稿者名取得
 				if (!in_array($res['name'], $rresname)) {//重複除外
@@ -969,6 +1002,7 @@ function res(){
 					$res['url'] = "";
 				}
 			}
+			$bbsline['com'] = nl2br(htmlentities($bbsline['com'],ENT_QUOTES | ENT_HTML5), false);
 			$oya[] = $bbsline;
 			if (!in_array($bbsline['name'], $rresname)) {
 				$rresname[] = $bbsline['name'];
@@ -1132,7 +1166,7 @@ function paintform(){
 	foreach ( $lines as $i => $line ) {
 		$line=charconvert(str_replace(["\r","\n","\t"],"",$line));
 		list($pid,$pname,$pal[0],$pal[2],$pal[4],$pal[6],$pal[8],$pal[10],$pal[1],$pal[3],$pal[5],$pal[7],$pal[9],$pal[11],$pal[12],$pal[13]) = explode(",", $line);
-		$DynP[]=newstring($pname);
+		$DynP[]=$pname;
 		$p_cnt=$i+1;
 		$palettes = 'Palettes['.$p_cnt.'] = "#';
 		ksort($pal);
@@ -1187,7 +1221,7 @@ function openpch($pch,$sp="") {
 	global $blade,$var_b;
 	$message = "";
 
-	$pch = newstring(filter_input(INPUT_GET, 'pch'));
+	$pch = filter_input(INPUT_GET, 'pch');
 	$pchh = str_replace( strrchr($pch,"."), "", $pch); //拡張子除去
 	$extn = substr($pch, strrpos($pch, '.') + 1); //拡張子取得
 
@@ -1247,6 +1281,14 @@ function paintcom(){
 	$var_b += array('usercode'=>$usercode);
 
 	//----------
+
+	//csrfトークンをセット
+	$dat['token']='';
+	if(CHECK_CSRF_TOKEN){
+		$token = get_csrf_token();
+		$_SESSION['token'] = $token;
+		$var_b += array('token'=>$token);
+	}
 
 	//描画時間
 	$ptime='';
@@ -1338,6 +1380,7 @@ function incontinue($no) {
 		$oya = array();
 		while ($bbsline = $posts->fetch() ) {
 			$bbsline['time']=is_numeric($bbsline['time']) ? calcPtime($bbsline['time']) : $bbsline['time'];
+			$bbsline['com'] = nl2br(htmlentities($bbsline['com'],ENT_QUOTES | ENT_HTML5), false);
 			$oya[] = $bbsline;
 			$var_b += array('oya'=>$oya); //配列に格納
 		}
@@ -1374,10 +1417,10 @@ function incontinue($no) {
 function delmode(){
 	global $admin_pass;
 	global $blade,$var_b;
-	$delno = newstring(filter_input(INPUT_POST, 'delno'));
-	$delt = newstring(filter_input(INPUT_POST, 'delt')); //0親1レス削除
+	$delno = filter_input(INPUT_POST, 'delno');
+	$delt = filter_input(INPUT_POST, 'delt'); //0親1レス削除
 
-	$ppwd = newstring(filter_input(INPUT_POST, 'pwd'));
+	$ppwd = filter_input(INPUT_POST, 'pwd');
 
 	if ($delt == 0) {
 		$deltable = 'tablelog';
@@ -1612,11 +1655,19 @@ function editform() {
 	global $admin_pass;
 	global $blade,$var_b;
 
-	$editno = newstring(filter_input(INPUT_POST, 'delno'));
+	//csrfトークンをセット
+	$dat['token']='';
+	if(CHECK_CSRF_TOKEN){
+		$token = get_csrf_token();
+		$_SESSION['token'] = $token;
+		$var_b += array('token'=>$token);
+	}
+
+	$editno = filter_input(INPUT_POST, 'delno');
 	if ($editno == "") {
 		error('記事番号を入力してください');
 	}
-	$editt = newstring(filter_input(INPUT_POST, 'delt')); //0親1レス
+	$editt = filter_input(INPUT_POST, 'delt'); //0親1レス
 	if ($editt == 0) {
 		$edittable = 'tablelog';
 		$idk = "tid";
@@ -1637,13 +1688,14 @@ function editform() {
 		if (empty($msg)) {
 			error('そんな記事ないです。');
 		}
-		$postpwd = newstring(filter_input(INPUT_POST, 'pwd'));
+		$postpwd = filter_input(INPUT_POST, 'pwd');
 		if (password_verify($postpwd,$msg['pwd']) === true) {
 			//パスワードがあってたら
 			$sqli ="SELECT * FROM $edittable WHERE $idk = $editno";
 			$posts = $db->query($sqli);
 			$oya = array();
 			while ($bbsline = $posts->fetch() ) {
+				$bbsline['com'] = nl2br(htmlentities($bbsline['com'],ENT_QUOTES | ENT_HTML5), false);
 				$oya[] = $bbsline;
 				$var_b += array('oya'=>$oya);
 			}
@@ -1654,6 +1706,7 @@ function editform() {
 			$posts = $db->query($sqli);
 			$oya = array();
 			while ($bbsline = $posts->fetch() ) {
+				$bbsline['com'] = nl2br(htmlentities($bbsline['com'],ENT_QUOTES | ENT_HTML5), false);
 				$oya[] = $bbsline;
 				$var_b += array('oya'=>$oya);
 			}
@@ -1684,8 +1737,13 @@ function editexec(){
 	global $blade,$var_b;
 	$userip = get_uip();
 
-	$resedit = newstring(trim(filter_input(INPUT_POST, 'resedit')));
-	$e_no = newstring(trim(filter_input(INPUT_POST, 'e_no')));
+	//CSRFトークンをチェック
+	if(CHECK_CSRF_TOKEN){
+		check_csrf_token();
+	}
+
+	$resedit = trim(filter_input(INPUT_POST, 'resedit'));
+	$e_no = trim(filter_input(INPUT_POST, 'e_no'));
 
 	if($req_method !== "POST") {error(MSG006);}
 
@@ -1719,7 +1777,7 @@ function editexec(){
 	$com = preg_replace("/(^|>)((&gt;|＞)[^<]*)/i", "\\1".RE_START."\\2".RE_END, $com);
 
 	// 連続する空行を一行
-	$com = preg_replace("/\n((　| )*\n){3,}/","\n",$com);
+	$com = preg_replace("/\n((　| )*\n){3,}/","\n\n",$com);
 	//改行をタグに
 	if(TH_XHTML == 1){
 		//<br />に
@@ -1772,7 +1830,7 @@ function admin() {
 	try {
 		$db = new PDO("sqlite:rois.db");
 		//読み込み
-		$adminpass = newstring(filter_input(INPUT_POST, 'adminpass'));
+		$adminpass = filter_input(INPUT_POST, 'adminpass');
 		if ($adminpass == $admin_pass) {
 			$sql = "SELECT * FROM tablelog ORDER BY age DESC,tree DESC";
 			$oya = array();
@@ -1780,6 +1838,7 @@ function admin() {
 			while ($bbsline = $posts->fetch() ) {
 				if(empty($bbsline)){break;} //スレがなくなったら抜ける
 				$oid = $bbsline["tid"]; //スレのtid(親番号)を取得
+				$bbsline['com'] = htmlentities($bbsline['com'],ENT_QUOTES | ENT_HTML5);
 				$oya[] = $bbsline;
 			} 
 			$var_b += array('oya'=>$oya);
@@ -1789,6 +1848,7 @@ function admin() {
 			$ko = array();
 			$postsi = $db->query($sqli);
 			while ($res = $postsi->fetch()){
+				$res['com'] = htmlentities($res['com'],ENT_QUOTES | ENT_HTML5);
 				$ko[] = $res;
 			}
 			$var_b += array('ko'=>$ko);

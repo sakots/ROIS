@@ -1,6 +1,6 @@
 <?php
 /*
-  * ROIS v0.2.0～
+  * ROIS v0.3.0～
   * by sakots >> https://dev.oekakibbs.net/
   *
   * ROISの設定ファイルです。
@@ -23,7 +23,7 @@ define('THEMEDIR', 'monored');
 
 //設置URL phpのあるディレクトリの'/'まで
 //シェアボタンなどで使用
-define('BASE', 'https://localhost/dev/rois/');
+define('BASE', 'https://oekaki.xample.com/rois/');
 
 //掲示板のタイトル（<title>とTOP）
 define('TITLE', 'お絵かき掲示板');
@@ -111,7 +111,7 @@ define('ELAPSED_DAYS','365');
 $badfile = array("dummy","dummy2");
 
 //拒絶するホスト
-$badip = array("addr.dummy.com","185.36.102.114");
+$badip = array("dummy.example.com","198.51.100.0");
 
 //ペイント画面のパスワードの暗号鍵
 //あまり頻繁に変えないように
@@ -314,11 +314,14 @@ define('PERMISSION_FOR_LOG', 0600);//初期値 0600
 //画像や動画ファイルを保存するディレクトリのパーミッション
 define('PERMISSION_FOR_DIR', 0707);//初期値 0707
 
+//csrfトークンを使って不正な投稿を拒絶する する:1 しない:0
+//する:1 にすると外部サイトからの不正な投稿を拒絶することができます
+define('CHECK_CSRF_TOKEN', '1');
+
 /* ------------- できれば変更してほしくないところ ------------- */
 //スクリプト名
 define('PHP_SELF', 'index.php');
 
-/* ------------- 以下絶対変更しないでください ------------- */
-//絶対パス取得
-$path = realpath("./").'/'.IMG_DIR;
-$temppath = realpath("./").'/'.TEMP_DIR;
+/* ------------- コンフィグ互換性管理 ------------- */
+
+define('CONF_VER', 30);
