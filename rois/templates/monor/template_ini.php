@@ -1,6 +1,6 @@
 <?php
 //--------------------------------------------------
-//　「ROIS」v0.2.0～用テーマ「MONOR」設定ファイル
+//　「ROIS」v0.3.0～用テーマ「MONOR」設定ファイル
 //　by sakots https://dev.oekakibbs.net/
 //--------------------------------------------------
 
@@ -8,12 +8,9 @@
 define('THEME_NAME', "MONOR");
 
 //テーマのバージョン
-define('THEME_VER', "v0.2.2 lot.210614.0");
+define('THEME_VER', "v0.3.0 lot.210802.0");
 
 /* -------------------- */
-
-//テーマがXHTMLか　0=HTML 1=XHTML
-define('TH_XHTML', 0);
 
 /* テンプレートファイル名に".blade.php"は不要 */
 

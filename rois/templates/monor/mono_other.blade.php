@@ -35,7 +35,7 @@
 				<div class="thread">
 					<h1 class="oekaki">投稿フォーム</h1>
                     @foreach ($oya as $bbsline)
-					<form class="ppost postform" action="{{$self}}?mode=editexec" method="post">
+					<form class="ppost postform" action="{{$self}}?mode=editexec" method="post" enctype="multipart/form-data">
 						<table>
 							<tr>
 								<td>name</td>
@@ -61,6 +61,11 @@
 									<input type="hidden" name="e_no" value="{{$bbsline['iid']}}">
 									@else
 									<input type="hidden" name="e_no" value="{{$bbsline['tid']}}">
+									@endif
+									@if ($token != null)
+										<input type="hidden" name="token" value="{{$token}}">
+									@else
+										<input type="hidden" name="token" value="">
 									@endif
 								</td>
 							</tr>
