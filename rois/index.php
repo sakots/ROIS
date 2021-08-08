@@ -5,7 +5,7 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.3.0'); //lot.210802.0
+define('ROIS_VER','v0.4.0'); //lot.210809.0
 
 //設定の読み込み
 require(__DIR__.'/config.php');
@@ -16,8 +16,13 @@ if (($phpver = phpversion()) < "5.5.0") {
 	die("PHP version 5.5.0 or higher is required for this program to work. <br>\n(Current PHP version:{$phpver})");
 }
 //コンフィグのバージョンが古くて互換性がない場合動かさせない
-if (CONF_VER < 30 || !defined('CONF_VER')) {
+if (CONF_VER < 40 || !defined('CONF_VER')) {
 	die("コンフィグファイルに互換性がないようです。再設定をお願いします。<br>\n The configuration file is incompatible. Please reconfigure it.");
+}
+
+//管理パスが初期値(kanripass)の場合は動作させない
+if ($admin_pass === 'kanripass') {
+	die("管理パスが初期設定値のままです！危険なので動かしません。<br>\n The admin pass is still at its default value! This program can't run it until you fix it.");
 }
 
 //BladeOne v3.52
@@ -54,6 +59,9 @@ $var_b += array('themedir'=>THEMEDIR);
 $var_b += array('tname'=>THEME_NAME);
 $var_b += array('tver'=>THEME_VER);
 
+$var_b += array('use_shi_p'=>USE_SHI_PAINTER);
+$var_b += array('use_chicken'=>USE_CHICKENPAINT);
+
 $var_b += array('dispid'=>DISP_ID);
 $var_b += array('updatemark'=>UPDATE_MARK);
 $var_b += array('use_resub'=>USE_RESUB);
@@ -80,18 +88,6 @@ if(!defined('ELAPSED_DAYS')){//config.phpで未定義なら0
 	define('ELAPSED_DAYS','0');
 }
 
-//描画時間表示するときに「秘密」にできる設定を　使う:1 使わない:0
-if(!defined('SEC_PAINTTIME')){
-	define('SEC_PAINTTIME', '1'); //configで未定義なら1
-}
-if(!defined('PTIME_SEC')){
-	define('PTIME_SEC', '秘密'); //configで未定義なら「秘密」
-}
-if(!defined('USE_HASHTAG')){
-	define('USE_HASHTAG', '1'); //configで未定義なら使う
-}
-
-$var_b += array('sptime'=>SEC_PAINTTIME);
 $var_b += array('use_hashtag'=>USE_HASHTAG);
 
 //ペイント画面の$pwdの暗号化
@@ -214,6 +210,10 @@ function get_uip(){
 		return $userip;
 	} elseif ($userip = getenv("HTTP_X_FORWARDED_FOR")) {
 		return $userip;
+	} elseif ($userip = getenv("REMOTE_ADDR")) {
+		return $userip;
+	} else {
+		return $userip;
 	}
 }
 //csrfトークンを作成
@@ -307,9 +307,6 @@ function regist() {
 	global $badip;
 	global $req_method;
 	global $var_b,$blade;
-	$userip = get_uip();
-
-	$secptime = filter_input(INPUT_POST, 'secptime' ,FILTER_VALIDATE_BOOLEAN);
 
 	//CSRFトークンをチェック
 	if(CHECK_CSRF_TOKEN){
@@ -332,31 +329,30 @@ function regist() {
 	if(strlen($sub) > MAX_SUB) {error(MSG014);}
 
 	//ホスト取得
-	$host = gethostbyaddr($userip);
+	$host = gethostbyaddr(get_uip());
 
 	foreach($badip as $value){ //拒絶host
 		if(preg_match("/$value$/i",$host)) {error(MSG016);}
 	}
-	//↑セキュリティ関連ここまで
-	$ptime='';
-	if($picfile){
-		$path_filename=pathinfo($picfile, PATHINFO_FILENAME );//拡張子除去
-		$fp = fopen(TEMP_DIR.$path_filename.".dat", "r");
-		$userdata = fread($fp, 1024);
-		fclose($fp);
-		list($uip,$uhost,,,$ucode,,$starttime,$postedtime) = explode("\t", rtrim($userdata));
-		//描画時間を$userdataをもとに計算
-		if($starttime && DSP_PAINTTIME){
-			$ptime = $postedtime-$starttime;
-		}
-	}
+	//セキュリティ関連ここまで
 
-	//投稿時間を隠す設定
-	if($secptime == true) {
-		$time = PTIME_SEC;
-	} else {
-		$time = $ptime;
-	}
+	//$ptime='';
+	//if($picfile){
+	//	$path_filename=pathinfo($picfile, PATHINFO_FILENAME );//拡張子除去
+	//	$fp = fopen(TEMP_DIR.$path_filename.".dat", "r");
+	//	$userdata = fread($fp, 1024);
+	//	fclose($fp);
+	//	list($uip,$uhost,,,$ucode,,$starttime,$postedtime) = explode("\t", rtrim($userdata));
+	//	//描画時間を$userdataをもとに計算
+	//	if($starttime && DSP_PAINTTIME){
+	//		$ptime = (int)$postedtime - (int)$starttime;
+	//	}
+	//	$time = (int)$ptime;
+	//}
+
+	//描画時間
+	$pptime = (filter_input(INPUT_POST, 'pptime'));
+	$time = (int)$pptime;
 	
 	try {
 		$db = new PDO("sqlite:rois.db");
@@ -1049,18 +1045,16 @@ function res(){
 function paintform(){
 	global $message,$usercode,$quality,$qualitys,$pwd,$no;
 	global $mode,$ctype,$pch,$type;
-	global $useneo; //NEOを使う
 	global $blade,$var_b;
 	global $pallets_dat;
 
-	//NEOを使う or しぃペインター
-	if (filter_input(INPUT_POST, 'useneo')){
-		$useneo = true;
-		$var_b += array('useneo'=>true);
+	//ツール
+	if (isset($_POST["tools"])) {
+		$tool = filter_input(INPUT_POST, 'tools');
 	} else {
-		$useneo = false;
-		$var_b += array('useneo'=>false);
+		$tool = "neo";
 	}
+	$var_b += array('tool'=>$tool);
 
 	$var_b += array('mode'=>'piccom');
 	$var_b += array('btitle'=>TITLE);
@@ -1083,7 +1077,7 @@ function paintform(){
 	$var_b += array('picw'=>$picw);
 	$var_b += array('pich'=>$pich);
 
-	if(!$useneo) { //しぃペインターの時の幅と高さ
+	if($tool == "shi") { //しぃペインターの時の幅と高さ
 		$ww = $picw + 510;
 		$hh = $pich + 172;
 	} else { //NEOのときの幅と高さ
@@ -1290,13 +1284,16 @@ function paintcom(){
 		$var_b += array('token'=>$token);
 	}
 
-	//描画時間
-	$ptime='';
+	//描画時間(表示用)
 	if($stime){
 		$ptime = calcPtime(time()-$stime);
 	}
-
 	$var_b += array('ptime'=>$ptime);
+	//描画時間(内部用)
+	if($stime){
+		$pptime = time()-$stime;
+	}
+	$var_b += array('pptime'=>$pptime);
 
 	//----------
 
@@ -1356,12 +1353,19 @@ function paintcom(){
 	echo $blade->run(PICFILE,$var_b);
 }
 
-//コンティニュー画面in 今のところレス画像には非対応
+//コンティニュー画面in レス画像には非対応
 function incontinue($no) {
 	global $blade,$var_b;
 	$var_b += array('othermode'=>'incontinue');
 	$var_b += array('continue_mode'=>true);
 	$var_b += array('path'=>IMG_DIR);
+
+	if (isset($_POST["tools"])) {
+		$tool = filter_input(INPUT_POST, 'tools');
+	} else {
+		$tool = "neo";
+	}
+	$var_b += array('tool'=>$tool);
 
 	//コンティニュー時は削除キーを常に表示
 	$var_b += array('passflag'=>true);
@@ -1388,11 +1392,13 @@ function incontinue($no) {
 		$pchfilename = IMG_DIR.$pchh;
 		if(is_file($pchfilename.'.spch')){
 			//$pchfile = IMG_DIR.$pch;
+			$var_b += array('tool'=>$shi);
 			$var_b += array('useshi'=>true);
 			$var_b += array('useneo'=>false); //拡張子がspchのときはしぃぺ
 			$var_b += array('ctype_pch'=>true);
 		}elseif(is_file($pchfilename.'.pch')){
 			//$pchfile = IMG_DIR.$pch;
+			$var_b += array('tool'=>$neo);
 			$var_b += array('useshi'=>false);
 			$var_b += array('useneo'=>true); //拡張子がpchのときはNEO
 			$var_b += array('ctype_pch'=>true);
@@ -1539,10 +1545,9 @@ function picreplace($no,$pwdf){
 	$pwdf = filter_input(INPUT_GET, 'pwd');
 	$pwdf = hex2bin($pwdf);//バイナリに
 	$pwdf = openssl_decrypt($pwdf,CRYPT_METHOD, CRYPT_PASS, true, CRYPT_IV);//復号化
-	$userip = get_uip();
 	
 	//ホスト取得
-	$host = gethostbyaddr($userip);
+	$host = gethostbyaddr(get_uip());
 
 	foreach($badip as $value){ //拒絶host
 		if(preg_match("/$value$/i",$host)) error(MSG016);
@@ -1627,10 +1632,7 @@ function picreplace($no,$pwdf){
 			$msgedat = $msgedat.'.dat';
 			if(is_file($path.$msgedat)) unlink($path.$msgedat);
 			//描画時間追加
-			//秘密の時は秘密
-			if($msg_d["time"] == PTIME_SEC) {
-				$time = PTIME_SEC;
-			} elseif($msg_d["time"] && $_ptime) {
+			if($msg_d["time"] && $_ptime) {
 				$time = is_numeric($msg_d["time"]) ? ($msg_d["time"]+$psec) : $msg_d["time"].'+'.$_ptime;
 			}
 			//id生成
@@ -1735,7 +1737,6 @@ function editexec(){
 	global $badip;
 	global $req_method;
 	global $blade,$var_b;
-	$userip = get_uip();
 
 	//CSRFトークンをチェック
 	if(CHECK_CSRF_TOKEN){
@@ -1762,7 +1763,7 @@ function editexec(){
 	if(strlen($sub) > MAX_SUB) {error(MSG014);}
 
 	//ホスト取得
-	$host = gethostbyaddr($userip);
+	$host = gethostbyaddr(get_uip());
 
 	foreach($badip as $value){ //拒絶host
 		if(preg_match("/$value$/i",$host)) {error(MSG016);}

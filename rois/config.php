@@ -1,6 +1,6 @@
 <?php
 /*
-  * ROIS v0.3.0～
+  * ROIS v0.4.0～
   * by sakots >> https://dev.oekakibbs.net/
   *
   * ROISの設定ファイルです。
@@ -9,7 +9,7 @@
 
 /* ---------- 最初に設定する項目 ---------- */
 //管理者パスワード
-//必ず変更してください
+//必ず変更してください ! 'kanripass'のままではプログラムは動作しません !
 $admin_pass = 'kanripass';
 
 //最大スレッド数
@@ -23,7 +23,7 @@ define('THEMEDIR', 'monored');
 
 //設置URL phpのあるディレクトリの'/'まで
 //シェアボタンなどで使用
-define('BASE', 'https://oekaki.xample.com/rois/');
+define('BASE', 'https://oekaki.example.com/rois/');
 
 //掲示板のタイトル（<title>とTOP）
 define('TITLE', 'お絵かき掲示板');
@@ -32,6 +32,12 @@ define('TITLE', 'お絵かき掲示板');
 // 自分のサイトにお絵かき掲示板がある、という慣習からのものです。
 // 自分のサイトのURL（絶対パスも可）をどうぞ。
 define('HOME', '../');
+
+// しぃペインターを使う 使う:1 使わない:0 
+define('USE_SHI_PAINTER', '1');
+// ChickenPaintを使う 使う:1 使わない:0 
+define('USE_CHICKENPAINT', '1');
+// PaintBBS NEOはどの設定でも起動します。
 
 /*----------絶対に設定が必要な項目はここまでです。ここから下は必要に応じて。----------*/
 
@@ -123,7 +129,6 @@ define('CRYPT_PASS','qRyFfhV6nyUggSb');
 //適当な英数字を入れてください。
 
 // 言語設定
-//未実装…要らないような？
 define('LANG', 'Japanese');
 
 //ユーザー削除権限 (0:不可 1:許可)
@@ -230,11 +235,10 @@ define('USE_RESUB', '1');
 //ハッシュタグリンク機能を使う 使う:1 使わない:0
 define('USE_HASHTAG', '1');
 
-//フォーム下の追加お知らせ <li></li>で囲んでください
-//(例)'<li>お知らせデース</li>
-//     <li>サーバの規約でアダルト禁止</li>'
-//要対応テンプレート
-$addinfo='';
+//フォーム下の追加お知らせ <li></li>で囲まれます。
+//(例) $addinfo = array('まだまだ開発中…','バグがあったら教えてね');
+//設定しないなら $addinfo = array(''); で
+$addinfo = array('');
 
 /* ---------- お絵かき設定 ---------- */
 
@@ -259,12 +263,6 @@ define('PDEF_H', '300');	//高さ
 
 //描画時間の表示 する:1 しない:0
 define('DSP_PAINTTIME', '1');
-
-//描画時間表示するときに「秘密」にできる設定を　使う:1 使わない:0
-define('SEC_PAINTTIME', '1');
-
-//描画時間「秘密」の書式
-define('PTIME_SEC', '秘密');
 
 //パレットデータファイル名
 define('PALETTEFILE', 'palette.txt');
@@ -324,4 +322,4 @@ define('PHP_SELF', 'index.php');
 
 /* ------------- コンフィグ互換性管理 ------------- */
 
-define('CONF_VER', 30);
+define('CONF_VER', 40);
