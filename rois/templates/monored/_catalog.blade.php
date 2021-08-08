@@ -42,17 +42,25 @@
 							<label>高さ：<input class="form" type="number" min="{{$pdefh}}" name="pich" value="{{$pdefh}}"></label>
 							<input type="hidden" name="mode" value="paint">
 							<input class="button" type="submit" value="お絵かき">
-							@if ($useanime == 1)
-							<label><input type="checkbox" value="true" name="anime" title="動画記録" @if ($defanime == 1) checked @endif>アニメーション記録</label>
+							@if ($useanime)<label><input type="checkbox" value="true" name="anime" title="動画記録"@if ($defanime) checked @endif>アニメーション記録</label>@endif
+							@if ($use_shi_p || $use_use_chicken)
+								<label for="tools">ツール</label>
+								<select name="tools">
+								<option value="neo">PaintBBS NEO</option>
+								@if ($use_shi_p)<option value="shi" class="for_pc">しぃペインター</option> @endif
+								@if ($use_chicken)<option value="chicken">ChickenPaint</option> @endif
+								</select>
+							@else
+								<input type="hidden" value="neo">
 							@endif
-							<label><input type="checkbox" value="true" name="useneo" title="NEOを使う" checked>NEOを使う</label>
 						</p>
 					</form>
 					<ul>
 						<li>iPadやスマートフォンでも描けるお絵かき掲示板です。</li>
 						<li>お絵かきできるサイズは幅300～{{$pmaxw}}px、高さ300～{{$pmaxh}}pxです。</li>
-						<li>NEOを使うのチェックを外すとしぃペインターが起動します。</li>
-						{!!$addinfo!!}
+						@foreach ($addinfo as $info) @if (!empty($info[$loop->index]))
+							<li>{!! $info[$loop->index] !!}</li>
+						@endif @endforeach
 					</ul>
                 </section>
 				<hr>
@@ -69,7 +77,7 @@
 				<hr>
 				<section class="paging">
 					<p>
-						@if ($back == 0)
+						@if ($back === 0)
 							<span class="se">[START]</span>
 						@else
 							<span class="se">&lt;&lt;<a href="{{$self}}?page={{$back}}">[BACK]</a></span> 
@@ -141,7 +149,7 @@
 					@if ($catalogmode == 'catalog')
 					<section class="paging">
 						<p>
-							@if ($back == 0)
+							@if ($back === 0)
 								<span class="se">[START]</span>
 							@else
 								<span class="se">&lt;&lt;<a href="{{$self}}?page={{$back}}">[BACK]</a></span> 
@@ -198,6 +206,10 @@
 								</select>
 							</span>
 						</p>
+						<script>
+							colorIdx = GetCookie('colorIdx');
+							document.getElementById("mystyle").selectedIndex = colorIdx;
+						</script>
 					</form>
 				</section>
 			</div>
@@ -211,20 +223,18 @@
 				</p>
 				<p>
 					OekakiApplet - 
-					<a href="https://github.com/funige/neo/" target="_top" rel="noopener noreferrer" title="by funige">PaintBBS NEO</a>,
-					<a href="http://hp.vector.co.jp/authors/VA016309/" target="_top" rel="noopener noreferrer" title="by しぃちゃん">Shi-Painter</a>
+					<a href="https://github.com/funige/neo/" target="_top" rel="noopener noreferrer" title="by funige">PaintBBS NEO</a>
+					@if ($use_shi_p) ,<a href="http://hp.vector.co.jp/authors/VA016309/" target="_top" rel="noopener noreferrer" title="by しぃちゃん">Shi-Painter</a> @endif
+					@if ($use_chicken) ,<a href="https://github.com/thenickdude/chickenpaint" target="_blank" rel="nofollow noopener noreferrer" title="by Nicholas Sherlock">ChickenPaint</a> @endif
 				</p>
 				<p>
 					UseFunction -
 					<!-- http://wondercatstudio.com/ -->DynamicPalette,
 					<a href="https://huruihone.tumblr.com/" target="_top" rel="noopener noreferrer" title="by Soto">AppletFit</a>,
+					<a href="https://github.com/imgix/luminous" target="_top" rel="noopener noreferrer" title="by imgix">Luminous</a>,
 					<a href="https://github.com/EFTEC/BladeOne" target="_top" rel="noopener noreferrer" title="by EFTEC">BladeOne</a>
 				</p>
 			</div>
 		</footer>
-		<script>
-			colorIdx = GetCookie('colorIdx');
-			document.getElementById("mystyle").selectedIndex = colorIdx;
-		</script>
 	</body>
 </html>

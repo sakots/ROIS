@@ -11,10 +11,11 @@
 		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_mayo.min.css" id="css4" disabled>
 		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_dev.min.css" id="css5" disabled>
 		<script src="templates/{{$themedir}}/switchcss.js"></script>
-		@if ($useneo == true)
+		@if ($tool == 'neo')
 		<link rel="stylesheet" href="neo.css?{{$stime}}" type="text/css">
 		<script src="neo.js?{{$stime}}" charset="utf-8"></script>
-		@else
+		@endif
+		@if ($tool == 'shi')
 		<!-- Javaが使えるかどうか判定 使えなければcheerpJをロード -->
 		<script>
 			function cheerpJLoad() {
@@ -30,6 +31,7 @@
 			window.addEventListener("load", function() { cheerpJLoad(); }, false);
 		</script>
 		@endif
+		@if ($tool != 'chicken')
 		<!-- アプレットフィット -->
 		<script>
 			function appfit(f) {
@@ -74,6 +76,13 @@
 				} //NEO
 			}
 		</script>
+		@endif
+		@if ($tool == 'chicken')
+		<script src="chickenpaint/js/chickenpaint.min.js?{{$stime}}"></script>
+		<script src="templates/{{$themedir}}/fix_chiken/fix.js?{{$stime}}" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="chickenpaint/css/chickenpaint.css?{{$stime}}">
+		<link rel="stylesheet" href="templates/{{$themedir}}/fix_chiken/fix.css?{{$stime}}" type="text/css">
+		@endif
 	</head>
 	<body id="paintmode">
 		<header>
@@ -93,6 +102,7 @@
 			<hr>
 		</header>
 		<main>
+			@if ($tool != 'chicken')
 			<!-- 動的パレットスクリプト -->
 			<script>
 				var DynamicColor = 1;	// パレットリストに色表示
@@ -401,7 +411,7 @@
 			</script>
 			<section id="appstage">
 				<div class="app" id="apps">
-					@if ($useneo == true)
+					@if ($tool == 'neo')
 					<applet-dummy code="pbbs.PaintBBS.class" archive="./PaintBBS.jar" name="paintbbs" width="{{$w}}" height="{{$h}}" mayscript>
 					@else
 					<applet code="c.ShiPainter.class" archive="spainter_all.jar" name="paintbbs" width="{{$w}}" height="{{$h}}" mayscript>
@@ -411,7 +421,7 @@
 						<param name="res.zip" value="res.zip">
 						<param name=tools value="normal">
 						<param name=layer_count value="{{$layer_count}}">
-						@if ($quality == true)<param name=quality value="{{$quality}}">@endif
+						@if ($quality)<param name=quality value="{{$quality}}">@endif
 					@endif
 						<param name="image_width" value="{{$picw}}">
 						<param name="image_height" value="{{$pich}}">
@@ -427,14 +437,14 @@
 						<param name="thumbnail_width" value="100%">
 						<param name="thumbnail_height" value="100%">
 						<param name="tool_advance" value="true">
-						@if ($anime == true)<param name="thumbnail_type" value="animation">@endif
+						@if ($anime)<param name="thumbnail_type" value="animation">@endif
 						@if (isset($security))
 							@if (isset($security_click))<param name="security_click" value="{{$security_click}}">@endif
 							@if (isset($security_timer))<param name="security_timer" value="{{$security_timer}}">@endif
 							<param name="security_url" value="{{$security_url}}">
 							<param name="security_post" value="false">
 						@endif
-					@if ($useneo == true)
+					@if ($tool == 'neo')
 						<param name="neo_confirm_unload" value="true">
 					</applet-dummy>
 					@else
@@ -451,7 +461,7 @@
 							<legend>FIT!</legend>
 							<input class="button" type="button" value="→ FIT ←" onclick="appfit(1)">
 						</fieldset>
-						@if ($useneo == true)
+						@if ($tool == 'neo')
 						<fieldset>
 							<legend>TOOL</legend>
 							<input class="button" type="button" value="左" onclick="Neo.setToolSide(true)">
@@ -699,6 +709,31 @@
 					</section>
 				</div>
 			</section>
+			@else
+			<div id="chickenpaint-parent"></div>
+			<p></p>
+			<script>
+				document.addEventListener("DOMContentLoaded", function() {
+					new ChickenPaint({
+						uiElem: document.getElementById("chickenpaint-parent"),
+						canvasWidth: {{$picw}},
+						canvasHeight: {{$pich}},
+				
+					@if (isset($imgfile)) loadImageUrl: "{{$imgfile}}", @endif
+					@if (isset($img_chi)) loadChibiFileUrl: "{{$img_chi}}", @endif
+					saveUrl: "save.php?usercode={{$usercode}}",
+					postUrl: "{{$self}}?mode={{$mode}}&amp;stime={{$stime}}",
+					exitUrl: "{{$self}}?mode={{$mode}}&amp;stime={{$stime}}",
+				
+						allowDownload: true,
+						resourcesRoot: "chickenpaint/",
+						disableBootstrapAPI: true,
+						fullScreenMode: "auto"
+
+					});
+				})
+			</script>
+			@endif
 		</main>
 		<footer id="footer">
 			<div class="copy">
@@ -709,20 +744,18 @@
 				</p>
 				<p>
 					OekakiApplet - 
-					<a href="https://github.com/funige/neo/" target="_top" rel="noopener noreferrer" title="by funige">PaintBBS NEO</a>,
-					<a href="http://hp.vector.co.jp/authors/VA016309/" target="_top" rel="noopener noreferrer" title="by しぃちゃん">Shi-Painter</a>
+					<a href="https://github.com/funige/neo/" target="_top" rel="noopener noreferrer" title="by funige">PaintBBS NEO</a>
+					@if ($use_shi_p) ,<a href="http://hp.vector.co.jp/authors/VA016309/" target="_top" rel="noopener noreferrer" title="by しぃちゃん">Shi-Painter</a> @endif
+					@if ($use_chicken) ,<a href="https://github.com/thenickdude/chickenpaint" target="_blank" rel="nofollow noopener noreferrer" title="by Nicholas Sherlock">ChickenPaint</a> @endif
 				</p>
 				<p>
 					UseFunction -
 					<!-- http://wondercatstudio.com/ -->DynamicPalette,
 					<a href="https://huruihone.tumblr.com/" target="_top" rel="noopener noreferrer" title="by Soto">AppletFit</a>,
+					<a href="https://github.com/imgix/luminous" target="_top" rel="noopener noreferrer" title="by imgix">Luminous</a>,
 					<a href="https://github.com/EFTEC/BladeOne" target="_top" rel="noopener noreferrer" title="by EFTEC">BladeOne</a>
 				</p>
 			</div>
 		</footer>
-		<script>
-			colorIdx = GetCookie('colorIdx');
-			document.getElementById("mystyle").selectedIndex = colorIdx;
-		</script>
 	</body>
 </html>

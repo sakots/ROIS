@@ -5,7 +5,7 @@
 		<title>{{$btitle}}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="stylesheet" href="./templates/{{$themedir}}/css/mono_main.css" type="text/css">
-		@if ($useneo == true)
+		@if ($tool == 'neo')
 		<link rel="stylesheet" href="neo.css?{{$a_stime}}" type="text/css">
 		<script src="neo.js?{{$a_stime}}" charset="utf-8"></script>
 		@else
@@ -46,7 +46,7 @@
 		<main>
 			<section id="appstage">
 				<div class="app">
-					@if ($useneo == true)
+					@if ($tool == 'neo')
 					<applet-dummy name="pch" code="pch.PCHViewer.class" archive="PCHViewer.jar,PaintBBS.jar" width="{{$w}}" height="{{$h}}" mayscript>
 					@else
 					<applet name="pch" code="pch2.PCHViewer.class" archive="PCHViewer.jar,spainter_all.jar" codebase="./"  width="{{$w}}" height="{{$h}}">
@@ -61,7 +61,7 @@
 						<param name="speed" value="{{$speed}}">
 						<param name="buffer_progress" value="false">
 						<param name="buffer_canvas" value="false">
-					@if ($useneo == true)
+					@if ($tool == 'neo')
 					</applet-dummy>
 					@else
 					</applet>
@@ -88,8 +88,9 @@
 				</p>
 				<p>
 					OekakiApplet - 
-					<a href="https://github.com/funige/neo/" target="_top" rel="noopener noreferrer" title="by funige">PaintBBS NEO</a>,
-					<a href="http://hp.vector.co.jp/authors/VA016309/" target="_top" rel="noopener noreferrer" title="by しぃちゃん">Shi-Painter</a>
+					<a href="https://github.com/funige/neo/" target="_top" rel="noopener noreferrer" title="by funige">PaintBBS NEO</a>
+					@if ($use_shi_p) ,<a href="http://hp.vector.co.jp/authors/VA016309/" target="_top" rel="noopener noreferrer" title="by しぃちゃん">Shi-Painter</a> @endif
+					@if ($use_chicken) ,<a href="https://github.com/thenickdude/chickenpaint" target="_blank" rel="nofollow noopener noreferrer" title="by Nicholas Sherlock">ChickenPaint</a> @endif
 				</p>
 				<p>
 					UseFunction -

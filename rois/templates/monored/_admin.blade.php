@@ -85,11 +85,7 @@
 									</td>
 									<td>{!! mb_substr($bbsline['com'], 0, 10)!!}</td>
 									<td>{{$bbsline['host']}}</td>
-									<td>
-										@if ($bbsline['invz'] == 1)
-											invz
-										@endif
-									</td>
+									<td>@if ($bbsline['invz']) invz @endif</td>
 								</tr>
 								@if (!empty($ko))
 									@foreach ($ko as $res)
@@ -102,11 +98,7 @@
 												<td>{{$res['picfile']}}</td>
 												<td>{!! mb_substr($res['com'], 0, 10)!!}</td>
 												<td>{{$res['host']}}</td>
-												<td>
-													@if ($res['invz'] == 1)
-														invz
-													@endif
-												</td>
+												<td>@if ($res['invz']) invz @endif</td>
 											</tr>
 										@endif
 									@endforeach
@@ -146,20 +138,18 @@
 				</p>
 				<p>
 					OekakiApplet - 
-					<a href="https://github.com/funige/neo/" target="_top" rel="noopener noreferrer" title="by funige">PaintBBS NEO</a>,
-					<a href="http://hp.vector.co.jp/authors/VA016309/" target="_top" rel="noopener noreferrer" title="by しぃちゃん">Shi-Painter</a>
+					<a href="https://github.com/funige/neo/" target="_top" rel="noopener noreferrer" title="by funige">PaintBBS NEO</a>
+					@if ($use_shi_p) ,<a href="http://hp.vector.co.jp/authors/VA016309/" target="_top" rel="noopener noreferrer" title="by しぃちゃん">Shi-Painter</a> @endif
+					@if ($use_chicken) ,<a href="https://github.com/thenickdude/chickenpaint" target="_blank" rel="nofollow noopener noreferrer" title="by Nicholas Sherlock">ChickenPaint</a> @endif
 				</p>
 				<p>
 					UseFunction -
 					<!-- http://wondercatstudio.com/ -->DynamicPalette,
 					<a href="https://huruihone.tumblr.com/" target="_top" rel="noopener noreferrer" title="by Soto">AppletFit</a>,
+					<a href="https://github.com/imgix/luminous" target="_top" rel="noopener noreferrer" title="by imgix">Luminous</a>,
 					<a href="https://github.com/EFTEC/BladeOne" target="_top" rel="noopener noreferrer" title="by EFTEC">BladeOne</a>
 				</p>
 			</div>
 		</footer>
-		<script>
-			colorIdx = GetCookie('colorIdx');
-			document.getElementById("mystyle").selectedIndex = colorIdx;
-		</script>
 	</body>
 </html>

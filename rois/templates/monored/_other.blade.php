@@ -99,7 +99,7 @@
 					<figure>
 						<img src="{{$path}}{{$bbsline['picfile']}}">
 						<figcaption>{{$bbsline['picfile']}}
-							@if ($dptime == 1)
+							@if ($dptime)
 								@if ($bbsline['time'] != null)
 									描画時間：{{$bbsline['time']}}
 								@endif
@@ -116,10 +116,10 @@
 						<input type="hidden" name="pch" value="{{$bbsline['pchfile']}}">
 						<input type="hidden" name="img" value="{{$bbsline['picfile']}}">
 						<select class="form" name="ctype">
-							@if ($ctype_pch == true)
+							@if ($ctype_pch)
 							<option value="pch">動画から</option>
 							@endif
-							@if ($ctype_img == true)
+							@if ($ctype_img)
 							<option value="img">画像から</option>
 							@endif
 						</select>
@@ -127,23 +127,36 @@
 							<option value="rep" selected>差し替え</option>
 							<option value="new">新規投稿</option>
 						</select>
-						@if ($passflag == true)
+						@if ($passflag)
 						Pass<input class="form" type="password" name="pwd" size="8" value="">
 						@endif
-						<input class="button" type="submit" value="続きを描く">
-						<!-- NEOを使う -->
+						<!-- 画像からの場合のツール選択 -->
 						@if ($ctype_pch == false)
-						<label><input type="checkbox" name="useneo" checked="checked"><span class="use_neo">USE NEO</span></label>
-						@endif
-						@if ($useneo == false)
-						<input type="hidden" name="shi" value="1">
+						@if ($use_shi_p || $use_chicken)
+							<label for="tools">ツール選択</label>
+							<select name="tools">
+							<option value="neo">PaintBBS NEO</option>
+							@if ($use_shi_p)<option value="shi">しぃペインター</option> @endif
+							@if ($use_chicken)<option value="chicken">ChickenPaint</option> @endif
+							</select>
 						@else
-						<input type="hidden" name="useneo" value="1">
+							<input type="hidden" value="neo">
+						@endif
+						<input class="button" type="submit" value="続きを描く">
+						@endif
+						@if ($tool == 'neo')
+						<input type="hidden" name="tool" value="neo">
+						@endif
+						@if ($tool == 'shi')
+						<input type="hidden" name="tool" value="shi">
+						@endif
+						@if ($tool == 'chicken')
+						<input type="hidden" name="tool" value="chicken">
 						@endif
 					</form>
-					@if ($passflag == true)
+					@if ($passflag)
 					<ul>
-						@if ($newpost_nopassword == true)
+						@if ($newpost_nopassword)
 						<li>新規投稿なら削除キーがなくても続きを描く事ができます。</li>
 						@else
 						<li>続きを描くには描いたときの削除キーが必要です。</li>
@@ -226,20 +239,18 @@
 				</p>
 				<p>
 					OekakiApplet - 
-					<a href="https://github.com/funige/neo/" target="_top" rel="noopener noreferrer" title="by funige">PaintBBS NEO</a>,
-					<a href="http://hp.vector.co.jp/authors/VA016309/" target="_top" rel="noopener noreferrer" title="by しぃちゃん">Shi-Painter</a>
+					<a href="https://github.com/funige/neo/" target="_top" rel="noopener noreferrer" title="by funige">PaintBBS NEO</a>
+					@if ($use_shi_p) ,<a href="http://hp.vector.co.jp/authors/VA016309/" target="_top" rel="noopener noreferrer" title="by しぃちゃん">Shi-Painter</a> @endif
+					@if ($use_chicken) ,<a href="https://github.com/thenickdude/chickenpaint" target="_blank" rel="nofollow noopener noreferrer" title="by Nicholas Sherlock">ChickenPaint</a> @endif
 				</p>
 				<p>
 					UseFunction -
 					<!-- http://wondercatstudio.com/ -->DynamicPalette,
 					<a href="https://huruihone.tumblr.com/" target="_top" rel="noopener noreferrer" title="by Soto">AppletFit</a>,
+					<a href="https://github.com/imgix/luminous" target="_top" rel="noopener noreferrer" title="by imgix">Luminous</a>,
 					<a href="https://github.com/EFTEC/BladeOne" target="_top" rel="noopener noreferrer" title="by EFTEC">BladeOne</a>
 				</p>
 			</div>
 		</footer>
-		<script>
-			colorIdx = GetCookie('colorIdx');
-			document.getElementById("mystyle").selectedIndex = colorIdx;
-		</script>
 	</body>
 </html>

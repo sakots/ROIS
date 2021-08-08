@@ -29,27 +29,37 @@
 			<hr>
 			<div>
 				<section class="epost">
-					<form action="{{$self}}" method="post" enctype="multipart/form-data">
+				<form action="{{$self}}" method="post" enctype="multipart/form-data">
 						<p>
 							<label>幅：<input class="form" type="number" min="{{$pdefw}}" name="picw" value="{{$pdefw}}"></label>
 							<label>高さ：<input class="form" type="number" min="{{$pdefh}}" name="pich" value="{{$pdefh}}"></label>
 							<input type="hidden" name="mode" value="paint">
 							<input class="button" type="submit" value="お絵かき">
-							@if ($useanime == 1)<label><input type="checkbox" value="true" name="anime" title="動画記録"@if ($defanime == 1) checked @endif>アニメーション記録</label>@endif
-							<label><input type="checkbox" value="true" name="useneo" title="NEOを使う" checked>NEOを使う</label>
+							@if ($useanime)<label><input type="checkbox" value="true" name="anime" title="動画記録"@if ($defanime) checked @endif>アニメーション記録</label>@endif
+							@if ($use_shi_p || $use_chicken)
+								<label for="tools">ツール</label>
+								<select name="tools">
+								<option value="neo">PaintBBS NEO</option>
+								@if ($use_shi_p)<option value="shi">しぃペインター</option> @endif
+								@if ($use_chicken)<option value="chicken">ChickenPaint</option> @endif
+								</select>
+							@else
+								<input type="hidden" value="neo">
+							@endif
 						</p>
 					</form>
 					<ul>
 						<li>iPadやスマートフォンでも描けるお絵かき掲示板です。</li>
 						<li>お絵かきできるサイズは幅300～{{$pmaxw}}px、高さ300～{{$pmaxh}}pxです。</li>
-						<li>NEOを使うのチェックを外すとしぃペインターが起動します。</li>
-						{!!$addinfo!!}
+						@foreach ($addinfo as $info) @if (!empty($info[$loop->index]))
+							<li>{!! $info[$loop->index] !!}</li>
+						@endif @endforeach
 					</ul>
 				</section>
 				<hr>
 				<section class="paging">
 					<p>
-						@if ($back == 0)
+						@if ($back === 0)
 							<span class="se">[START]</span>
 						@else
 							<span class="se">&lt;&lt;<a href="{{$self}}?page={{$back}}">[BACK]</a></span> 
@@ -84,35 +94,35 @@
 									@else
 										{{$bbsline['created']}} {{$updatemark}} {{$bbsline['modified']}}
 									@endif
-									@if ($bbsline['mail'] == true)
+									@if ($bbsline['mail'])
 										<span class="mail"><a href="mailto:{{$bbsline['mail']}}">[mail]</a></span>
 									@endif
-									@if ($bbsline['url'] == true)
+									@if ($bbsline['url'])
 										<span class="url"><a href="{{$bbsline['url']}}" target="_blank" rel="nofollow noopener noreferrer">[URL]</a></span>
 									@endif
-									@if ($dispid == 1)
+									@if ($dispid)
 										<span class="id">ID：{{$bbsline['id']}}</span>
 									@endif
 									<span class="sodane"><a href="{{$self}}?mode=sodane&amp;resto={{$bbsline['tid']}}">そうだね
-									@if ($bbsline['exid'] == 0)
-										+
-									@else
+									@if ($bbsline['exid'] != 0)
 										x{{$bbsline['exid']}}
+									@else
+										+
 									@endif
 									</a></span>
 								</h4>
-								@if ($bbsline['picfile'] == true)
-									@if ($dptime == 1)
+								@if ($bbsline['picfile'])
+									@if ($dptime)
 										@if ($bbsline['time'] != null)
 											<h5>描画時間：{{$bbsline['time']}}</h5>
 										@endif
 									@endif
 									<figure>
-										<figcaption><a href="{{$path}}{$bbsline['picfile']}" target="_blank" data-title="{{$bbsline['picfile']}}">{{$bbsline['picfile']}}</a>
+										<figcaption><a href="{{$path}}{$bbsline['picfile']}" target="_blank">{{$bbsline['picfile']}}</a>
 										@if ($bbsline['pchfile'] != null)
 											<a href="{{$self}}?mode=anime&amp;pch={{$bbsline['pchfile']}}" target="_blank">●動画</a>
 										@endif
-										@if ($use_continue == 1)
+										@if ($use_continue)
 											<a href="{{$self}}?mode=continue&amp;no={{$bbsline['picfile']}}">●続きを描く</a>
 										@endif
 										</figcaption>
@@ -125,7 +135,7 @@
 									<p class="limit">このスレは古いのでもうすぐ消えます。</p>
 								</div>
 								@endif
-								@if ($bbsline['rflag'] == true)
+								@if ($bbsline['rflag'])
 								<div class="res">
 									<p class="limit">レス{{$bbsline['res_d_su']}}件省略。すべて見るには返信ボタンを押してください。</p>
 								</div>
@@ -145,20 +155,20 @@
 															@else
 																{{$res['created']}} {{$updatemark}} {{$res['modified']}}
 															@endif
-															@if ($res['mail'] == true)
+															@if ($res['mail'])
 																<span class="mail"><a href="mailto:{{$res['mail']}}">[mail]</a></span> 
 															@endif
-															@if ($res['url'] == true)
+															@if ($res['url'])
 																<span class="url"><a href="{{$res['url']}}" target="_blank" rel="nofollow noopener noreferrer">[URL]</a></span>
 															@endif
-															@if ($dispid == 1)
+															@if ($dispid)
 																<span class="id">ID：{{$res['id']}}</span>
 															@endif
 															<span class="sodane"><a href="{{$self}}?mode=rsodane&amp;resto={{$res['iid']}}">そうだね
-															@if ($res['exid'] == 0)
-																+
-															@else
+															@if ($res['exid'] != 0)
 																x{{$res['exid']}}
+															@else
+																+
 															@endif
 															</a></span>
 														</h4>
@@ -170,11 +180,11 @@
 									@endforeach
 								@endif
 								<div class="thfoot">
-									@if ($share_button == 1)
+									@if ($share_button)
 									<span class="button"><a href="https://twitter.com/intent/tweet?&amp;text=[{{$bbsline['tid']}}] {{$bbsline['sub']}} by {{$bbsline['name']}} - {{$btitle}}&amp;url={{$base}}{{$self}}?mode=res&amp;res={{$bbsline['tid']}}" target="_blank"><img src="./templates/{{$themedir}}/icons/twitter.svg"> tweet</a></span>
 									<span class="button"><a href="http://www.facebook.com/share.php?u={{$base}}{{$self}}?mode=res&amp;res={{$bbsline['tid']}}" class="fb btn" target="_blank"><img src="./templates/{{$themedir}}/icons/facebook.svg"> share</a></span>
 									@endif
-									@if ($elapsed_time == 0 || $nowtime - $bbsline['utime'] < $elapsed_time)
+									@if ($elapsed_time === 0 || $nowtime - $bbsline['utime'] < $elapsed_time)
 										<span class="button"><a href="{{$self}}?mode=res&amp;res={{$bbsline['tid']}}"><img src="./templates/{{$themedir}}/icons/rep.svg"> 返信</a></span>
 									@else
 										このスレは古いので返信できません…
@@ -191,7 +201,7 @@
 				<section class="thread">
 					<section class="paging">
 						<p>
-							@if ($back == 0)
+							@if ($back === 0)
 								<span class="se">[START]</span>
 							@else
 								<span class="se">&lt;&lt;<a href="{{$self}}?page={{$back}}">[BACK]</a></span> 
@@ -252,8 +262,9 @@
 				</p>
 				<p>
 					OekakiApplet - 
-					<a href="https://github.com/funige/neo/" target="_top" rel="noopener noreferrer" title="by funige">PaintBBS NEO</a>,
-					<a href="http://hp.vector.co.jp/authors/VA016309/" target="_top" rel="noopener noreferrer" title="by しぃちゃん">Shi-Painter</a>
+					<a href="https://github.com/funige/neo/" target="_top" rel="noopener noreferrer" title="by funige">PaintBBS NEO</a>
+					@if ($use_shi_p) ,<a href="http://hp.vector.co.jp/authors/VA016309/" target="_top" rel="noopener noreferrer" title="by しぃちゃん">Shi-Painter</a> @endif
+					@if ($use_chicken) ,<a href="https://github.com/thenickdude/chickenpaint" target="_blank" rel="nofollow noopener noreferrer" title="by Nicholas Sherlock">ChickenPaint</a> @endif
 				</p>
 				<p>
 					UseFunction -
