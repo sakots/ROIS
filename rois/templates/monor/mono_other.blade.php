@@ -121,43 +121,25 @@
 							<option value="rep" selected>差し替え</option>
 							<option value="new">新規投稿</option>
 						</select>
-						@if ($passflag)
-						Pass<input class="form" type="password" name="pwd" size="8" value="">
-						@endif
-						<!-- 画像からの場合のツール選択 -->
-						@if ($ctype_pch == false)
-						@if ($use_shi_p || $use_chicken)
-							<label for="tools">ツール選択</label>
-							<select name="tools">
+						@if ($passflag) Pass<input class="form" type="password" name="pwd" size="8" value=""> @endif
+						<!-- ツール選択 -->
+						<label for="tools">ツール</label>
+						<select name="tools">
 							<option value="neo">PaintBBS NEO</option>
 							@if ($use_shi_p)<option value="shi">しぃペインター</option> @endif
 							@if ($use_chicken)<option value="chicken">ChickenPaint</option> @endif
-							</select>
-						@else
-							<input type="hidden" value="neo">
-						@endif
+						</select>
 						<input class="button" type="submit" value="続きを描く">
-						@endif
-						<!-- NEOを使う -->
-						@if ($tool == 'neo')
-						<input type="hidden" name="tool" value="neo">
-						@endif
-						@if ($tool == 'shi')
-						<input type="hidden" name="tool" value="shi">
-						@endif
-						@if ($tool == 'chicken')
-						<input type="hidden" name="tool" value="chicken">
-						@endif
 					</form>
-					@if ($passflag)
 					<ul>
+					@if ($passflag)
 						@if ($newpost_nopassword)
 						<li>新規投稿なら削除キーがなくても続きを描く事ができます。</li>
 						@else
 						<li>続きを描くには描いたときの削除キーが必要です。</li>
 						@endif
-						</ul>
 					@endif
+					</ul>
 					@endforeach
 				</div>
 			</section>

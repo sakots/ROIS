@@ -720,7 +720,7 @@
 						canvasHeight: {{$pich}},
 				
 					@if (isset($imgfile)) loadImageUrl: "{{$imgfile}}", @endif
-					@if (isset($img_chi)) loadChibiFileUrl: "{{$img_chi}}", @endif
+					@if (isset($pchfile)) loadChibiFileUrl: "{{$pchfile}}", @endif
 					saveUrl: "save.php?usercode={{$usercode}}",
 					postUrl: "{{$self}}?mode={{$mode}}&stime={{$stime}}",
 					exitUrl: "{{$self}}?mode={{$mode}}&stime={{$stime}}",

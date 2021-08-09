@@ -40,18 +40,16 @@
 							<label>幅：<input class="form" type="number" min="{{$pdefw}}" name="picw" value="{{$pdefw}}"></label>
 							<label>高さ：<input class="form" type="number" min="{{$pdefh}}" name="pich" value="{{$pdefh}}"></label>
 							<input type="hidden" name="mode" value="paint">
-							<input class="button" type="submit" value="お絵かき">
-							@if ($useanime)<label><input type="checkbox" value="true" name="anime" title="動画記録"@if ($defanime) checked @endif>アニメーション記録</label>@endif
-							@if ($use_shi_p || $use_chicken)
-								<label for="tools">ツール</label>
+							<label for="tools">ツール</label>
 								<select name="tools">
-								<option value="neo">PaintBBS NEO</option>
-								@if ($use_shi_p)<option value="shi">しぃペインター</option> @endif
-								@if ($use_chicken)<option value="chicken">ChickenPaint</option> @endif
+									<option value="neo">PaintBBS NEO</option>
+									@if ($use_shi_p)<option value="shi">しぃペインター</option> @endif
+									@if ($use_chicken)<option value="chicken">ChickenPaint</option> @endif
 								</select>
-							@else
-								<input type="hidden" value="neo">
+							@if ($useanime)
+							<label><input type="checkbox" value="true" name="anime" title="動画記録"@if ($defanime) checked @endif>アニメーション記録</label>
 							@endif
+							<input class="button" type="submit" value="お絵かき">
 						</p>
 					</form>
 					<ul>
