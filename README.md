@@ -37,6 +37,13 @@ BladeのほうがTwigより速いらしい！？
 
 ## 履歴
 
+### [2021/08/09] v0.4.1
+
+- 各テーマ
+  - 追加お知らせの表示がおかしいの修正
+  - chickenpaintで描画時間が記録されないバグ修正
+  - シェアボタンのリンクがうまく作成されないの修正
+
 ### [2021/08/09] v0.4.0
 
 - [chickenpaint](https://github.com/thenickdude/chickenpaint)でのお絵描きに対応
