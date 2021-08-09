@@ -715,8 +715,8 @@
 					@if (isset($imgfile)) loadImageUrl: "{{$imgfile}}", @endif
 					@if (isset($img_chi)) loadChibiFileUrl: "{{$img_chi}}", @endif
 					saveUrl: "save.php?usercode={{$usercode}}",
-					postUrl: "{{$self}}?mode={{$mode}}&amp;stime={{$stime}}",
-					exitUrl: "{{$self}}?mode={{$mode}}&amp;stime={{$stime}}",
+					postUrl: "{{$self}}?mode={{$mode}}&stime={{$stime}}",
+					exitUrl: "{{$self}}?mode={{$mode}}&stime={{$stime}}",
 				
 						allowDownload: true,
 						resourcesRoot: "chickenpaint/",
