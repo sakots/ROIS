@@ -5,7 +5,7 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.4.0'); //lot.210809.0
+define('ROIS_VER','v0.4.1'); //lot.210809.1
 
 //設定の読み込み
 require(__DIR__.'/config.php');
@@ -16,7 +16,7 @@ if (($phpver = phpversion()) < "5.5.0") {
 	die("PHP version 5.5.0 or higher is required for this program to work. <br>\n(Current PHP version:{$phpver})");
 }
 //コンフィグのバージョンが古くて互換性がない場合動かさせない
-if (CONF_VER < 40 || !defined('CONF_VER')) {
+if (CONF_VER < 31 || !defined('CONF_VER')) {
 	die("コンフィグファイルに互換性がないようです。再設定をお願いします。<br>\n The configuration file is incompatible. Please reconfigure it.");
 }
 
@@ -74,9 +74,9 @@ $var_b += array('use_name'=>USE_NAME);
 $var_b += array('use_com'=>USE_COM);
 $var_b += array('use_sub'=>USE_SUB);
 
-$var_b += array('dptime'=>DSP_PAINTTIME);
-
 $var_b += array('addinfo'=>$addinfo);
+
+$var_b += array('dptime'=>DSP_PAINTTIME);
 
 $var_b += array('share_button'=>SHARE_BUTTON);
 
