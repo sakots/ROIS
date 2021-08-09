@@ -5,7 +5,7 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.4.1'); //lot.210809.1
+define('ROIS_VER','v0.4.2b1'); //lot.210810.0
 
 //設定の読み込み
 require(__DIR__.'/config.php');
@@ -69,6 +69,8 @@ $var_b += array('use_resub'=>USE_RESUB);
 $var_b += array('useanime'=>USE_ANIME);
 $var_b += array('defanime'=>DEF_ANIME);
 $var_b += array('use_continue'=>USE_CONTINUE);
+$var_b += array('newpost_nopassword'=>!CONTINUE_PASS);
+
 
 $var_b += array('use_name'=>USE_NAME);
 $var_b += array('use_com'=>USE_COM);
@@ -112,69 +114,6 @@ function hashtag_link($hashtag) {
 	$self = PHP_SELF;
 	$hashtag = preg_replace("/(?:^|[^ｦ-ﾟー゛゜々ヾヽぁ-ヶ一-龠ａ-ｚＡ-Ｚ０-９a-zA-Z0-9&_\/]+)[#＃]([ｦ-ﾟー゛゜々ヾヽぁ-ヶ一-龠ａ-ｚＡ-Ｚ０-９a-zA-Z0-9_]*[ｦ-ﾟー゛゜々ヾヽぁ-ヶ一-龠ａ-ｚＡ-Ｚ０-９a-zA-Z]+[ｦ-ﾟー゛゜々ヾヽぁ-ヶ一-龠ａ-ｚＡ-Ｚ０-９a-zA-Z0-9_]*)/u", " <a href=\"{$self}?mode=search&amp;tag=tag&amp;search=\\1\">#\\1</a>", $hashtag);
 	return $hashtag;
-}
-
-$mode = filter_input(INPUT_POST, 'mode');
-
-//var_dump($_GET);
-if(filter_input(INPUT_GET, 'mode')==="anime"){
-	$pch = filter_input(INPUT_GET, 'pch');
-	$mode = "anime";
-}
-if(filter_input(INPUT_GET, 'mode')==="continue"){
-	$no = filter_input(INPUT_GET, 'no',FILTER_VALIDATE_INT);
-	$mode = "continue";
-}
-if(filter_input(INPUT_GET, 'mode')==="admin"){
-	$mode = "admin";
-}
-if(filter_input(INPUT_GET, 'mode')==="admin_in"){
-	$mode = "admin_in";
-}
-if(filter_input(INPUT_GET, 'mode')==="piccom"){
-	$stime = filter_input(INPUT_GET, 'stime',FILTER_VALIDATE_INT);
-	$resto = filter_input(INPUT_GET, 'resto',FILTER_VALIDATE_INT);
-	$mode = "piccom";
-}
-if(filter_input(INPUT_GET, 'mode')==="picrep"){
-	$no = filter_input(INPUT_GET, 'no');
-	$pwd = filter_input(INPUT_GET, 'pwd');
-	$repcode = filter_input(INPUT_GET, 'repcode');
-	$stime = filter_input(INPUT_GET, 'stime',FILTER_VALIDATE_INT);
-	$mode = "picrep";
-}
-if(filter_input(INPUT_GET, 'mode')==="regist"){
-	$mode = "regist";
-}
-if(filter_input(INPUT_GET, 'mode')==="res"){
-	$mode = "res";
-}
-if(filter_input(INPUT_GET, 'mode')==="sodane"){
-	$mode = "sodane";
-	$resto = filter_input(INPUT_GET, 'resto',FILTER_VALIDATE_INT);
-}
-if(filter_input(INPUT_GET, 'mode')==="rsodane"){
-	$mode = "rsodane";
-	$resto = filter_input(INPUT_GET, 'resto',FILTER_VALIDATE_INT);
-}
-if(filter_input(INPUT_GET, 'mode')==="continue"){
-	$no = filter_input(INPUT_GET, 'no');
-	$mode = "continue";
-}
-if(filter_input(INPUT_GET, 'mode')==="del"){
-	$mode = "del";
-}
-if(filter_input(INPUT_GET, 'mode')==="edit"){
-	$mode = "edit";
-}
-if(filter_input(INPUT_GET, 'mode')==="editexec"){
-	$mode = "editexec";
-}
-if(filter_input(INPUT_GET, 'mode')==="catalog"){
-	$mode = "catalog";
-}
-if(filter_input(INPUT_GET, 'mode')==="search"){
-	$mode = "search";
 }
 
 $message ="";
@@ -247,6 +186,70 @@ setcookie("usercode", $usercode, time()+(86400*365));//1年間
 
 $var_b += array('usercode'=>$usercode);
 
+//var_dump($_GET);
+
+$mode = filter_input(INPUT_POST, 'mode');
+
+if(filter_input(INPUT_GET, 'mode')==="anime"){
+	$pch = filter_input(INPUT_GET, 'pch');
+	$mode = "anime";
+}
+if(filter_input(INPUT_GET, 'mode')==="continue"){
+	$no = filter_input(INPUT_GET, 'no',FILTER_VALIDATE_INT);
+	$mode = "continue";
+}
+if(filter_input(INPUT_GET, 'mode')==="admin"){
+	$mode = "admin";
+}
+if(filter_input(INPUT_GET, 'mode')==="admin_in"){
+	$mode = "admin_in";
+}
+if(filter_input(INPUT_GET, 'mode')==="piccom"){
+	$stime = filter_input(INPUT_GET, 'stime',FILTER_VALIDATE_INT);
+	$resto = filter_input(INPUT_GET, 'resto',FILTER_VALIDATE_INT);
+	$mode = "piccom";
+}
+if(filter_input(INPUT_GET, 'mode')==="picrep"){
+	$no = filter_input(INPUT_GET, 'no');
+	$pwd = filter_input(INPUT_GET, 'pwd');
+	$repcode = filter_input(INPUT_GET, 'repcode');
+	$stime = filter_input(INPUT_GET, 'stime',FILTER_VALIDATE_INT);
+	$mode = "picrep";
+}
+if(filter_input(INPUT_GET, 'mode')==="regist"){
+	$mode = "regist";
+}
+if(filter_input(INPUT_GET, 'mode')==="res"){
+	$mode = "res";
+}
+if(filter_input(INPUT_GET, 'mode')==="sodane"){
+	$mode = "sodane";
+	$resto = filter_input(INPUT_GET, 'resto',FILTER_VALIDATE_INT);
+}
+if(filter_input(INPUT_GET, 'mode')==="rsodane"){
+	$mode = "rsodane";
+	$resto = filter_input(INPUT_GET, 'resto',FILTER_VALIDATE_INT);
+}
+if(filter_input(INPUT_GET, 'mode')==="continue"){
+	$no = filter_input(INPUT_GET, 'no');
+	$mode = "continue";
+}
+if(filter_input(INPUT_GET, 'mode')==="del"){
+	$mode = "del";
+}
+if(filter_input(INPUT_GET, 'mode')==="edit"){
+	$mode = "edit";
+}
+if(filter_input(INPUT_GET, 'mode')==="editexec"){
+	$mode = "editexec";
+}
+if(filter_input(INPUT_GET, 'mode')==="catalog"){
+	$mode = "catalog";
+}
+if(filter_input(INPUT_GET, 'mode')==="search"){
+	$mode = "search";
+}
+
 /*-----------Main-------------*/
 
 init();		//←初期設定後は不要なので削除可
@@ -277,7 +280,6 @@ switch($mode){
 		//パスワードが必要なのは差し換えの時だけ
 		if(CONTINUE_PASS||$type==='rep') usrchk();
 		// if(ADMIN_NEWPOST) $admin=$pwd;
-		$palette="";
 		return paintform($palette);
 	case 'picrep':
 		return picreplace($no,$pwd);
@@ -1223,13 +1225,16 @@ function openpch($pch,$sp="") {
 
 	if($extn=='spch'){
 		$pchfile = IMG_DIR.$pch;
-		$var_b += array('useneo'=>false); //拡張子がspchのときはしぃぺ
+		$var_b += array('tool'=>'shi'); //拡張子がspchのときはしぃぺ
 	}elseif($extn=='pch'){
 		$pchfile = IMG_DIR.$pch;
-		$var_b += array('useneo'=>true); //拡張子がpchのときはNEO
-	}else { //動画が無い時は処理しない
-		$w=$h=$picw=$pich=$datasize="";
-		$var_b += array('useneo'=>true);
+		$var_b += array('tool'=>'neo'); //拡張子がpchのときはNEO
+	//}elseif($extn=='chi'){
+	//	$pchfile = IMG_DIR.$pch;
+	//	$var_b += array('tool'=>'chicken'); //拡張子がchiのときはChickenPaint 対応してくれるといいな
+	}else {
+		$w=$h=$picw=$pich=$datasize=""; //動画が無い時は処理しない
+		$var_b += array('tool'=>'neo');
 	}
 	$datasize = filesize($pchfile);
 	$size = getimagesize($picfile);
@@ -1370,11 +1375,7 @@ function incontinue($no) {
 	//コンティニュー時は削除キーを常に表示
 	$var_b += array('passflag'=>true);
 	//新規投稿で削除キー不要の時 true
-	if(! CONTINUE_PASS) {
-		$var_b += array('newpost_nopassword'=>true);
-	} else {
-		$var_b += array('newpost_nopassword'=>false);
-	}
+	if(!CONTINUE_PASS) $var_b += array('newpost_nopassword'=>true);
 
 	try{
 		$db = new PDO("sqlite:rois.db");
@@ -1388,26 +1389,32 @@ function incontinue($no) {
 			$oya[] = $bbsline;
 			$var_b += array('oya'=>$oya); //配列に格納
 		}
-		$pchh = str_replace( strrchr($no,"."), "", $no); //拡張子除去
-		$pchfilename = IMG_DIR.$pchh;
-		if(is_file($pchfilename.'.spch')){
+		$hist_ope = str_replace( strrchr($no,"."), "", $no); //拡張子除去
+		$histfilename = IMG_DIR.$hist_ope;
+		if(is_file($histfilename.'.spch')){
 			//$pchfile = IMG_DIR.$pch;
-			$var_b += array('tool'=>$shi);
+			$var_b += array('tool'=>'shi'); //拡張子がspchのときはしぃぺ
 			$var_b += array('useshi'=>true);
-			$var_b += array('useneo'=>false); //拡張子がspchのときはしぃぺ
+			$var_b += array('useneo'=>false);
 			$var_b += array('ctype_pch'=>true);
-		}elseif(is_file($pchfilename.'.pch')){
+		}elseif(is_file($histfilename.'.pch')){
 			//$pchfile = IMG_DIR.$pch;
-			$var_b += array('tool'=>$neo);
+			$var_b += array('tool'=>'neo'); //拡張子がpchのときはNEO
 			$var_b += array('useshi'=>false);
-			$var_b += array('useneo'=>true); //拡張子がpchのときはNEO
+			$var_b += array('useneo'=>true);
 			$var_b += array('ctype_pch'=>true);
-		}else { //どっちもない＝動画が無い時
+		}elseif(is_file($histfilename.'.chi')){
+			$var_b += array('tool'=>'chicken'); //拡張子がchiのときはChickenPaint
+			$var_b += array('useshi'=>false);
+			$var_b += array('useneo'=>false);
+			$var_b += array('ctype_pch'=>true);
+		}else { // どれでもない＝動画が無い時
 			//$w=$h=$picw=$pich=$datasize="";
 			$var_b += array('useneo'=>true);
 			$var_b += array('useshi'=>true);
 			$var_b += array('ctype_pch'=>false);
 		}
+		// useshi, useneoは互換のためにいちおう残してある
 		$var_b += array('ctype_img'=>true);
 
 		$db = null; //db切断
