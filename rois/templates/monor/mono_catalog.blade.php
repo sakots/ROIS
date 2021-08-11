@@ -19,7 +19,7 @@
 					<p class="top menu">
 						<a href="{{$home}}">[ホーム]</a>
 						<a href="{{$self}}">[通常モード]</a>
-						<a href="{{$self}}?mode=piccom">[投稿途中の絵]</a>
+						<a href="{{$self}}?mode=pictmp">[投稿途中の絵]</a>
 						<a href="#footer">[↓]</a>
 					</p>
 				</section>

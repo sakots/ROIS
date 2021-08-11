@@ -118,17 +118,28 @@
 							@endif
 						</select>
 						<select class="form" name="type">
-							<option value="rep" selected>差し替え</option>
+							<option value="rep">差し替え</option>
 							<option value="new">新規投稿</option>
 						</select>
 						@if ($passflag) Pass<input class="form" type="password" name="pwd" size="8" value=""> @endif
-						<!-- ツール選択 -->
 						<label for="tools">ツール</label>
 						<select name="tools">
 							<option value="neo">PaintBBS NEO</option>
 							@if ($use_shi_p)<option value="shi">しぃペインター</option> @endif
 							@if ($use_chicken)<option value="chicken">ChickenPaint</option> @endif
 						</select>
+						<label for="palettes">パレット</label>
+						@if ($select_palettes)
+						<select name="palettes" id="palettes">
+							@foreach ($pallets_dat as $palette)
+							<option value="{{$pallets_dat[$loop->index][1]}}">{{$pallets_dat[$loop->index][0]}}</option>
+							@endforeach
+						</select>
+						@else
+						<select name="palettes" id="palettes">
+							<option value="neo">標準</option>
+						</select>
+						@endif
 						<input class="button" type="submit" value="続きを描く">
 					</form>
 					<ul>
@@ -138,6 +149,12 @@
 						@else
 						<li>続きを描くには描いたときの削除キーが必要です。</li>
 						@endif
+					@endif
+					<li>動画から続きを描く場合、最初に使ったツールと同じものを選択しなければうまく行かない可能性があります。</li>
+					@if ($ctype_pch)
+					<li>この画像の動画データは、<strong> @if($tool == 'neo') PaintBBS NEO @endif @if($tool == 'shi') しぃペインター @endif @if($tool == 'chicken') ChickenPaint @endif </strong>で作られているようです。</li>
+					@else
+					<li>この画像に動画データはないようです。</li>
 					@endif
 					</ul>
 					@endforeach
@@ -196,7 +213,7 @@
 					<hr>
 					<p class="err">画像が見当たりません。</p>
 					<p>
-						投稿に失敗している可能性があります。<a href="{{$self}}?mode=piccom">アップロード途中の画像</a>に残っているかもしれません。
+						投稿に失敗している可能性があります。<a href="{{$self}}?mode=pictmp">アップロード途中の画像</a>に残っているかもしれません。
 					</p>
 				</div>
 			</section>

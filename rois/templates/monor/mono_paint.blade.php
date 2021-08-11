@@ -262,12 +262,12 @@
 					PaletteListSetColor()
 				}
 				function PaletteListSetColor(){
-					var s = document.Palette.select;
-					for(i = 1; s.options.length > i; i ++) {
-						var c = Palettes[i].split("\n");
-						s.options[i].style.background = c[4];
-						s.options[i].style.color = GetBright(c[4]);
-				}
+					var sp = document.getElementById("palnames");
+					for(i = 1; sp.options.length > i; i ++) {
+						var fc = Palettes[i].split("\n");
+						sp.options[i].style.background = fc[4];
+						sp.options[i].style.color = GetBright(fc[4]);
+					}
 				}
 				function GetBright(c){
 					r=parseInt("0x"+c.substr(1,2)),
@@ -465,9 +465,9 @@
 						@endif
 						<fieldset>
 							<legend>PALETTE</legend>
-							<select class="form" name="select" size="13" onChange="setPalette()">
+							<select class="form palette_set" name="select" size="13" onChange="setPalette()" id="palnames">
 								<option>一時パレット</option>
-								@if (isset($dynp))
+								@if ($dynp)
 									{!!$dynp!!}
 								@endif
 							</select><br>
@@ -574,6 +574,7 @@
 									timerID = setTimeout('SetTimeCount()',250);
 								}
 								SetTimeCount();
+								if (DynamicColor) PaletteListSetColor();
 							</script>
 						</form>
 					<hr>
@@ -712,8 +713,8 @@
 						canvasWidth: {{$picw}},
 						canvasHeight: {{$pich}},
 				
-					@if (isset($imgfile)) loadImageUrl: "{{$imgfile}}", @endif
-					@if (isset($pchfile)) loadChibiFileUrl: "{{$pchfile}}", @endif
+					@if (isset($imgfile)) loadImageUrl: "{{$path}}{{$imgfile}}", @endif
+					@if (isset($pchfile)) loadChibiFileUrl: "{{$path}}{{$pchfile}}", @endif
 					saveUrl: "save.php?usercode={{$usercode}}",
 					postUrl: "{{$self}}?mode={{$mode}}&stime={{$stime}}",
 					exitUrl: "{{$self}}?mode={{$mode}}&stime={{$stime}}",

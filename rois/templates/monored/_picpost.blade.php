@@ -33,18 +33,16 @@
 		<main>
 			<section>
 				<div class="thread">
-					<h1 class="oekaki">投稿フォーム</h1>
+					<h2 class="oekaki">投稿フォーム</h2>
 					<div class="tmpimg">
 						@if (isset($temp))
 						<div>
 							@foreach ($temp as $tmp)
-								@if (isset($tmp['src']))
-									@if (isset($tmp['srcname']))
+								@if (isset($tmp['src']) && isset($tmp['srcname']))
 									<figure>
 										<img src="{{$tmp['src']}}">
 										<figcaption>{{$tmp['srcname']}}[{{$tmp['date']}}]</figcaption>
 									</figure>
-									@endif
 								@endif
 							@endforeach
 						</div>

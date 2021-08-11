@@ -24,7 +24,7 @@
 				<section>
 					<p class="top menu">
 						<a href="{{$self}}?mode=catalog">[カタログ]</a>
-						<a href="{{$self}}?mode=piccom">[投稿途中の絵]</a>
+						<a href="{{$self}}?mode=pictmp">[投稿途中の絵]</a>
 						<a href="#footer">[↓]</a>
 					</p>
 				</section>
@@ -41,11 +41,23 @@
 							<label>高さ：<input class="form" type="number" min="{{$pdefh}}" name="pich" value="{{$pdefh}}"></label>
 							<input type="hidden" name="mode" value="paint">
 							<label for="tools">ツール</label>
-								<select name="tools">
-									<option value="neo">PaintBBS NEO</option>
-									@if ($use_shi_p)<option value="shi">しぃペインター</option> @endif
-									@if ($use_chicken)<option value="chicken">ChickenPaint</option> @endif
-								</select>
+							<select name="tools" id="tools">
+								<option value="neo">PaintBBS NEO</option>
+								@if ($use_shi_p)<option value="shi">しぃペインター</option> @endif
+								@if ($use_chicken)<option value="chicken">ChickenPaint</option> @endif
+							</select>
+							<label for="palettes">パレット</label>
+							@if ($select_palettes)
+							<select name="palettes" id="palettes">
+								@foreach ($pallets_dat as $palette)
+								<option value="{{$pallets_dat[$loop->index][1]}}">{{$pallets_dat[$loop->index][0]}}</option>
+								@endforeach
+							</select>
+							@else
+							<select name="palettes" id="palettes">
+								<option value="neo">標準</option>
+							</select>
+							@endif
 							@if ($useanime)
 							<label><input type="checkbox" value="true" name="anime" title="動画記録"@if ($defanime) checked @endif>アニメーション記録</label>
 							@endif

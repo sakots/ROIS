@@ -6,6 +6,7 @@
 		<link rel="stylesheet" href="./templates/{{$themedir}}/css/mono_main.css" type="text/css">
 		<title>{{$btitle}}</title>
 	</head>
+	{{-- 投稿画面 / 画像差し替え / テンポラリモード兼用 --}}
 	<body>
 		<header>
 			<h1><a href="{{$self}}">{{$btitle}}</a></h1>
@@ -27,18 +28,16 @@
 		<main>
 			<section>
 				<div class="thread">
-					<h1 class="oekaki">投稿フォーム</h1>
+					<h2 class="oekaki">投稿フォーム</h2>
 					<div class="tmpimg">
 						@if (isset($temp))
 						<div>
 							@foreach ($temp as $tmp)
-								@if (isset($tmp['src']))
-									@if (isset($tmp['srcname']))
+								@if (isset($tmp['src']) && isset($tmp['srcname']))
 									<figure>
 										<img src="{{$tmp['src']}}">
 										<figcaption>{{$tmp['srcname']}}[{{$tmp['date']}}]</figcaption>
 									</figure>
-									@endif
 								@endif
 							@endforeach
 						</div>

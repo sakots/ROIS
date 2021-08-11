@@ -107,7 +107,7 @@
 			<script>
 				var DynamicColor = 1;	// パレットリストに色表示
 				var Palettes = new Array();
-				@if (isset($palettes))
+				@if ($palettes)
 					{!!$palettes!!}
 				@endif
 				function setPalette(){
@@ -120,17 +120,14 @@
 					Palettes[0] = String(document.paintbbs.getColors())
 				}
 				var cutomP = 0;
-				function PaletteNew(){
-					d = document
-					p = String(d.paintbbs.getColors())
-					s = d.Palette.select
-					Palettes[s.length] = p
-					cutomP++
-					str = prompt("パレット名","パレット " + cutomP)
-					if(str == null || str == ""){ cutomP--;return }
-					s.options[s.length] = new Option(str)
-					if(30 > s.length) s.size = s.length
-					PaletteListSetColor()
+				function PaletteNew() {
+					d = document;
+					p = String(d.paintbbs.getColors());
+					s = d.Palette.select;
+					Palettes[s.length] = p;
+					cutomP++;
+					str = prompt("パレット名", "パレット " + cutomP);
+					null == str || "" == str ? cutomP-- : (s.options[s.length] = new Option(str), 30 > s.length && (s.size = s.length), PaletteListSetColor())
 				}
 				function PaletteRenew(){
 					d = document
@@ -195,21 +192,19 @@
 					}
 						t.value = t.value.trim() + "\n!Matrix"
 				}
-				function PalleteMatrixSet(){
-					m = document.Palette.m_m.selectedIndex
-					str = "パレットマトリクスをセットします。"
-				switch(m){
-					case 0:default:
-						flag = confirm(str+"\n現在の全パレット情報は失われますがよろしいですか？");break
-					case 1:
-						flag = confirm(str+"\n現在使用しているパレットと置き換えますがよろしいですか？");break;
-					case 2:
-						flag = confirm(str+"\n現在のパレット情報に追加しますがよろしいですか？");break
+				function PalleteMatrixSet() {
+					m = document.Palette.m_m.selectedIndex;
+					str = "パレットマトリクスをセットします。";
+					switch (m) {
+						default: flag = confirm(str + "\n現在の全パレット情報は失われますがよろしいですか？");
+						break;
+						case 1:
+								flag = confirm(str + "\n現在使用しているパレットと置き換えますがよろしいですか？");
+							break;
+						case 2:
+								flag = confirm(str + "\n現在のパレット情報に追加しますがよろしいですか？")
 					}
-						if (!flag) return
-					PaletteSet()
-					if(s.length < 30){ s.size = s.length }else{ s.size=30 }
-					if(DynamicColor) PaletteListSetColor()
+					flag && (PaletteSet(), s.size = 30 > s.length ? s.length : 30, DynamicColor && PaletteListSetColor())
 				}
 				function PalleteMatrixHelp(){
 					alert("★PALETTE MATRIX\nパレットマトリクスとはパレット情報を列挙したテキストを用いる事により\n自由なパレット設定を使用する事が出来ます。\n\n□マトリクスの取得\n1)「取得」ボタンよりパレットマトリクスを取得します。\n2)取得された情報が下のテキストエリアに出ます、これを全てコピーします。\n3)このマトリクス情報をテキストとしてファイルに保存しておくなりしましょう。\n\n□マトリクスのセット\n1）コピーしたマトリクスを下のテキストエリアに貼り付け(ペースト)します。\n2)ファイルに保存してある場合は、それをコピーし貼り付けます。\n3)「セット」ボタンを押せば保存されたパレットが使用できます。\n\n余分な情報があるとパレットが正しくセットされませんのでご注意下さい。");
@@ -268,12 +263,12 @@
 					PaletteListSetColor()
 				}
 				function PaletteListSetColor(){
-					var s = document.Palette.select;
-					for(i = 1; s.options.length > i; i ++) {
-						var c = Palettes[i].split("\n");
-						s.options[i].style.background = c[4];
-						s.options[i].style.color = GetBright(c[4]);
-				}
+					var sp = document.getElementById("palnames");
+					for(i = 1; sp.options.length > i; i ++) {
+						var fc = Palettes[i].split("\n");
+						sp.options[i].style.background = fc[4];
+						sp.options[i].style.color = GetBright(fc[4]);
+					}
 				}
 				function GetBright(c){
 					r=parseInt("0x"+c.substr(1,2)),
@@ -343,18 +338,10 @@
 					}else{ n="" }
 					return n
 				}
-				function GetPalette(){
+				function GetPalette() {
 					d = document;
 					p = String(d.paintbbs.getColors());
-					if(p == "null" || p == ""){ return };
-					ps = p.split("\n");
-					st = d.grad.p_st.selectedIndex
-					ed = d.grad.p_ed.selectedIndex
-					d.grad.pst.value = ps[st].substr(1.6)
-					d.grad.ped.value = ps[ed].substr(1.6)
-					GradSelC()
-					GradView(ps[st],ps[ed])
-					PaletteListSetColor()
+					"null" != p && "" != p && (ps = p.split("\n"), st = d.grad.p_st.selectedIndex, ed = d.grad.p_ed.selectedIndex, d.grad.pst.value = ps[st].substr(1.6), d.grad.ped.value = ps[ed].substr(1.6), GradSelC(), GradView(ps[st], ps[ed]), PaletteListSetColor())
 				}
 				function GradSelC(){
 					if(! d.grad.view.checked)return
@@ -470,9 +457,9 @@
 						@endif
 						<fieldset>
 							<legend>PALETTE</legend>
-							<select class="form" name="select" size="13" onChange="setPalette()">
+							<select class="form palette_set" name="select" size="13" onChange="setPalette()" id="palnames">
 								<option>一時パレット</option>
-								@if (isset($dynp))
+								@if ($dynp)
 									{!!$dynp!!}
 								@endif
 							</select><br>
@@ -581,6 +568,7 @@
 									timerID = setTimeout('SetTimeCount()',250);
 								}
 								SetTimeCount();
+								if (DynamicColor) PaletteListSetColor();
 							</script>
 						</form>
 					<hr>
@@ -719,8 +707,8 @@
 						canvasWidth: {{$picw}},
 						canvasHeight: {{$pich}},
 				
-					@if (isset($imgfile)) loadImageUrl: "{{$imgfile}}", @endif
-					@if (isset($pchfile)) loadChibiFileUrl: "{{$pchfile}}", @endif
+					@if (isset($imgfile)) loadImageUrl: "{{$path}}{{$imgfile}}", @endif
+					@if (isset($pchfile)) loadChibiFileUrl: "{{$path}}{{$pchfile}}", @endif
 					saveUrl: "save.php?usercode={{$usercode}}",
 					postUrl: "{{$self}}?mode={{$mode}}&stime={{$stime}}",
 					exitUrl: "{{$self}}?mode={{$mode}}&stime={{$stime}}",

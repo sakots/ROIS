@@ -11,7 +11,6 @@ label {
 
 body {
   background-attachment: fixed;
-  background: -webkit-gradient(linear, left top, left bottom, from(#CC9999), to(#eedddd)) fixed;
   background: linear-gradient(#CC9999, #eedddd) fixed;
   color: #000000;
   font-family: sans-serif;
@@ -22,19 +21,15 @@ body {
 a {
   color: #000000;
 }
-
 a:link {
   color: #000000;
 }
-
 a:visited {
   color: #666666;
 }
-
 a:active {
   color: #FF3322;
 }
-
 a:hover {
   color: #FF3322;
 }
@@ -47,7 +42,7 @@ hr {
   clear: left;
 }
 
-header, .thread, footer, footer {
+header, .thread, footer {
   background-color: #FEDEDE;
   padding: 8px;
   margin-left: auto;
@@ -66,15 +61,12 @@ header {
 h1 a {
   text-decoration: none;
 }
-
 h1 a:visited {
   color: #666666;
 }
-
 h1 a:hover {
   color: #FF3322;
 }
-
 h1 + div {
   text-align: right;
 }
@@ -100,54 +92,66 @@ footer {
   text-align: right;
 }
 
-input, select, textarea {
+input, textarea {
   border-style: solid;
-  border-color: #336600 #99CC66 #99CC66 #336600;
   border-width: 1px;
   padding: 2px;
+  border-color: #336600 #99CC66 #99CC66 #336600;
   color: #000;
   background-color: #EEDDDD;
 }
 
 select {
+  border-style: solid;
+  border-width: 1px;
   padding: 2px;
+  border-color: #336600 #99CC66 #99CC66 #336600;
+  color: #000;
+  background-color: #EEDDDD;
   vertical-align: middle;
 }
 
-input[name="picw"], select[name="picw"], input[name="pich"], select[name="pich"], input[name="delno"], select[name="delno"] {
+input[name=picw], input[name=pich], input[name=delno] {
   width: 3em;
 }
 
-input[name="pwd"], select[name="pwd"] {
+input[name=pwd] {
   width: 6em;
 }
 
-input[type="submit"], select[type="submit"], button, .button {
-  background-color: #669933;
+input[type=submit] {
+  border-style: solid;
+  border-width: 1px;
+  padding: 2px;
   border-color: #99CC66 #336600 #336600 #99CC66;
   color: #FFF;
+  background-color: #669933;
   padding-left: 4px;
   padding-right: 4px;
 }
 
-input[name="upfile"], select[name="upfile"] {
+input[name=upfile] {
+  border-style: solid;
+  border-width: 1px;
+  padding: 2px;
+  border-color: #99CC66 #336600 #336600 #99CC66;
+  color: #FFF;
+  background-color: #669933;
   width: 10em;
 }
 
-input[type="color"], select[type="color"] {
+input[type=color] {
   height: 1em;
 }
 
-input[type="number"], select[type="number"] {
+input[type=number] {
   -moz-appearance: textfield;
 }
-
-input[type="number"]::-webkit-outer-spin-button, select[type="number"]::-webkit-outer-spin-button {
+input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
-input[type="number"]::-webkit-inner-spin-button, select[type="number"]::-webkit-inner-spin-button {
+input[type=number]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
@@ -163,7 +167,6 @@ figure {
   background-color: #FEDEDE;
   margin-bottom: 1ex;
 }
-
 figure img {
   max-width: 100%;
 }
@@ -192,7 +195,6 @@ p.oya {
   border-radius: 5px;
   display: inline-block;
 }
-
 .oyaname a {
   text-decoration: none;
   display: block;
@@ -212,23 +214,19 @@ h4#oya {
   border-top: dashed 1px #FF3333;
   margin-top: 1em;
 }
-
 .res section {
   margin-top: 1em;
   display: inline-block;
   max-width: 100%;
 }
-
 .res h3 {
   font-size: 100%;
   margin-bottom: 0ex;
 }
-
 .res h4 {
   font-size: 100%;
   margin-bottom: 1ex;
 }
-
 .res figure {
   float: none;
 }
@@ -253,9 +251,13 @@ h5 {
   text-align: right;
 }
 
-button, .button {
+button {
   border-style: solid;
   border-width: 1px;
+  padding: 2px;
+  border-color: #99CC66 #336600 #336600 #99CC66;
+  color: #FFF;
+  background-color: #669933;
   padding-left: 4px;
   padding-right: 4px;
   background-color: #669933;
@@ -263,12 +265,15 @@ button, .button {
 }
 
 .button {
-  border-width: 1px;
   border-style: solid;
+  border-width: 1px;
+  padding: 2px;
+  border-color: #99CC66 #336600 #336600 #99CC66;
+  color: #FFF;
+  background-color: #669933;
   padding: 2px 6px;
   display: inline-block;
 }
-
 .button a {
   text-decoration: none;
   color: #FFF;
@@ -276,8 +281,7 @@ button, .button {
 
 .oyat, .siihelp h2 {
   border-left: solid 1ex #FF3333;
-  background: -webkit-gradient(linear, left top, right top, from(#ffaaaa), color-stop(#ff5e5e), to(#ddaa99)) fixed;
-  background: linear-gradient(to right, #ffaaaa, #ff5e5e, #ddaa99) fixed;
+  background: linear-gradient(to right, #ffaaaa, #ff5e5e, #ff77a4) fixed;
   padding: 0.2em;
 }
 
@@ -289,56 +293,52 @@ button, .button {
   display: block;
   text-align: center;
 }
-
 #appstage > * {
   display: inline-block;
   vertical-align: middle;
+}
+#appstage .palette .palette_set {
+  border-style: solid;
+  border-width: 1px;
+  padding: 2px;
+  border-color: #336600 #99CC66 #99CC66 #336600;
+  color: #000;
+  background-color: #EEDDDD;
 }
 
 .NEO .color_bk {
   color: #F96;
 }
-
 .NEO .color_bk2 {
   color: #963;
 }
-
 .NEO .color_tool_icon {
   color: #693;
 }
-
 .NEO .color_icon {
   color: #360;
 }
-
 .NEO .color_iconselect {
   color: #360;
 }
-
 .NEO .color_text {
   color: #FEE;
 }
-
 .NEO .color_bar {
   color: #963;
 }
-
 .NEO .tool_color_button {
   color: #966;
 }
-
 .NEO .tool_color_button2 {
   color: #633;
 }
-
 .NEO .tool_color_text {
   color: #FFF;
 }
-
 .NEO .tool_color_bar {
   color: #F96;
 }
-
 .NEO .tool_color_frame {
   color: #963;
 }
@@ -346,7 +346,6 @@ button, .button {
 .palette {
   width: 180px;
 }
-
 .palette fieldset {
   text-align: center;
 }
@@ -360,27 +359,18 @@ button, .button {
 }
 
 #catalog {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
-
 #catalog div {
   width: 166px;
   text-align: center;
   overflow: hidden;
 }
-
 #catalog p {
   margin: 0.5ex auto;
 }
-
 #catalog img {
   width: 150px;
 }
@@ -388,7 +378,6 @@ button, .button {
 .delfo {
   font-size: smaller;
 }
-
 .delfo th, .delfo td {
   border: 1px solid #CC9999;
 }
@@ -402,14 +391,15 @@ button, .button {
     clear: left;
   }
 }
-
 @media screen and (max-width: 768px) {
-  header, .thread, footer, footer {
+  header, .thread, footer {
     width: 90%;
   }
+
   main {
     display: block;
   }
+
   #paintmode main {
     display: block;
   }
@@ -417,16 +407,16 @@ button, .button {
     text-align: right;
   }
 }
-
 @media screen and (max-width: 450px) {
   footer {
     text-align: right;
   }
+
   figure {
     float: none;
   }
+
   #appstage {
     display: block;
   }
-}
-/*# sourceMappingURL=mono_red.css.map */
+}/*# sourceMappingURL=mono_red.css.map */
