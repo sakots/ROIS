@@ -3,6 +3,13 @@
 //設定
 include(__DIR__.'/config.php');
 
+defined('PERMISSION_FOR_LOG') or define('PERMISSION_FOR_LOG', 0600); //config.phpで未定義なら0600
+defined('PERMISSION_FOR_DEST') or define('PERMISSION_FOR_DEST', 0606); //config.phpで未定義なら0606
+
+//タイムゾーン config.phpで未定義ならAsia/Tokyo
+defined('DEFAULT_TIMEZONE') or define('DEFAULT_TIMEZONE','Asia/Tokyo');
+date_default_timezone_set(DEFAULT_TIMEZONE);
+
 $time = time();
 $imgfile = $time.substr(microtime(),2,3);	//画像ファイル名
 
