@@ -281,7 +281,7 @@ button {
 
 .oyat, .siihelp h2 {
   border-left: solid 1ex #396;
-  background: linear-gradient(to right, #111111, #444444, #2b2b2b) fixed;
+  background: linear-gradient(to right, #221111, #663333, #442d22) fixed;
   padding: 0.2em;
 }
 
