@@ -1,6 +1,6 @@
 <?php
 /*
-  * ROIS v0.4.0～
+  * ROIS v0.99.0～
   * by sakots >> https://dev.oekakibbs.net/
   *
   * ROISの設定ファイルです。
@@ -9,7 +9,7 @@
 
 /* ---------- 最初に設定する項目 ---------- */
 //管理者パスワード
-//必ず変更してください ! kanripass のままではプログラムは動作しません!
+//必ず変更してください ! kanripass のままではプログラムは動作しません !
 $admin_pass = 'kanripass';
 
 //最大スレッド数
@@ -44,7 +44,6 @@ define('USE_CHICKENPAINT', '1');
 /* ---------- SNS連携 ---------- */
 
 //シェアボタンを表示する する:1 しない:0
-//対応テンプレートが必要
 //設置場所のURL BASE で設定したurlをもとにリンクを作成
 define('SHARE_BUTTON', '0');
 
@@ -62,7 +61,6 @@ $badstring = array("irc.s16.xrea.com","著作権の侵害","未承諾広告");
 //使用できない名前
 $badname = array("ブランド","通販","販売","口コミ");
 
-//正規表現を使うことができます
 //全角半角スペース改行を考慮する必要はありません
 //スペースと改行を除去した文字列をチェックします
 
@@ -119,14 +117,11 @@ $badfile = array("dummy","dummy2");
 //拒絶するホスト
 $badip = array("dummy.example.com","198.51.100.0");
 
-//ペイント画面のパスワードの暗号鍵
-//あまり頻繁に変えないように
-define('CRYPT_PASS','qRyFfhV6nyUggSb');
-
-//↑ 暗号化と解読のためのパスワード。
+//ペイント画面の暗号化キー
 //phpの内部で処理するので覚えておく必要はありません。
-//管理パスとは別なものです。
-//適当な英数字を入れてください。
+//管理パスとは別なものです。無作為な英数字を入れてください。
+//あまり頻繁に変えないように
+define('CRYPT_PASS','qRyFf1V6nyU4gSi');
 
 // 言語設定
 define('LANG', 'Japanese');
@@ -164,7 +159,7 @@ define('LOG_LIMIT', '92');
 
 /* ---------- メイン設定 ---------- */
 
-//画像保存ディレクトリ。index.phpから見て
+//画像と動画データ保存ディレクトリ。index.phpから見て
 define('IMG_DIR', 'src/');
 
 //最大レス数
@@ -246,10 +241,10 @@ $addinfo = array('<a href="https://github.com/sakots/ROIS">ソースはこちら
 //2以外実装予定なし
 //define('USE_PAINT', '2');
 
-//テンポラリディレクトリ
+//一時ファイルディレクトリ
 define('TEMP_DIR', 'tmp/');
 
-//テンポラリ内のファイル有効期限(日数)
+//一時ファイルディレクトリ内のファイル有効期限(日数)
 define('TEMP_LIMIT', '14');
 
 //お絵描き最大サイズ（これ以上は強制でこの値
@@ -268,19 +263,17 @@ define('DSP_PAINTTIME', '1');
 define('PALETTEFILE', 'palette.txt');
 
 //パレットデータファイル切り替え機能を使用する する:1 しない:0
-define('USE_SELECT_PALETTES', '0');
+//切り替えるパレットデータファイルが用意できない場合は しない:0。
+define('USE_SELECT_PALETTES', '1');
 
 //パレットデータファイル切り替え機能を使用する する:1 の時のパレットデーターファイル名
-$pallets_dat=array(['標準','palette.txt'],['プロ','palette.dat']);
+$pallets_dat = array(['標準','palette.txt'],['PCCS_HSL','p_PCCS.txt'],['マンセルHV/C','p_munsellHVC.txt']);
 
 //動画機能を使用する する:1 しない:0
 define('USE_ANIME', '1');
 
 //動画記録デフォルトスイッチ ON:1 OFF:0
 define('DEF_ANIME', '1');
-
-//動画(PCH)保存ディレクトリは画像保存ディレクトリと同じ
-//define('PCH_DIR', 'src/');
 
 //動画再生スピード 超高速:-1 高速:0 中速:10 低速:100 超低速:1000
 define('PCH_SPEED', '10');
@@ -309,7 +302,7 @@ $qualitys = array('1','2','3','4');
 
 //画像やHTMLファイルのパーミッション。
 define('PERMISSION_FOR_DEST', 0606);//初期値 0606
-//ブラウザから直接呼び出さないログファイルのパーミッション
+//ブラウザから直接呼び出さないログファイルのパーミッション(たぶん使ってない)
 define('PERMISSION_FOR_LOG', 0600);//初期値 0600
 //画像や動画ファイルを保存するディレクトリのパーミッション
 define('PERMISSION_FOR_DIR', 0707);//初期値 0707
@@ -324,4 +317,4 @@ define('PHP_SELF', 'index.php');
 
 /* ------------- コンフィグ互換性管理 ------------- */
 
-define('CONF_VER', 40);
+define('CONF_VER', 9900);
