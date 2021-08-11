@@ -35,7 +35,20 @@ BladeのほうがTwigより速いらしい！？
 
 [このお絵かき掲示板はSQLiteとさらにBladeを（以下略](https://dev.oekakibbs.net/bbs/rois/)
 
+## 同梱のパレットについて
+
+`p_PCCS.txt`(PCCS:日本色研配色体系パレット)は、[色彩とイメージの情報サイト IROUE](https://tee-room.info/color/database.html) を参考に、`p_munsellHVC.txt`(マンセルHV/Cパレット)は、[マンセル表色系とRGB値](http://k-ichikawa.blog.enjoy.jp/etc/HP/js/Munsell/MSL2RGB0.html) を参照して作成いたしました。
+
 ## 履歴
+
+### [2021/08/11] v0.99.0
+
+- 続きから描くの画像差し替えが機能していなかったの修正
+- パレット選択機能実装
+- そのついでにパレットデータ`p_PCCS.txt`,`p_munsellHVC.txt`を作ったので同梱
+- configに設定はあったトラブルシューティングを実装
+- 各テーマ更新
+- あとなんかたくさん更新した気がするけど忘れた
 
 ### [2021/08/10] v0.4.2b1
 
