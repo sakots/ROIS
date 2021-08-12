@@ -5,7 +5,7 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.99.0'); //lot.210811.0
+define('ROIS_VER','v0.99.1'); //lot.210812.0
 
 //設定の読み込み
 require(__DIR__.'/config.php');
@@ -48,52 +48,56 @@ define('TMP_PATH', $temppath);
 $message = "";
 $self = PHP_SELF;
 
-$var_b ['path'] = IMG_DIR;
+$var_b['path'] = IMG_DIR;
 
-$var_b ['ver'] = ROIS_VER;
-$var_b ['base'] = BASE;
-$var_b ['btitle'] = TITLE;
-$var_b ['home'] = HOME;
-$var_b ['self'] = PHP_SELF;
-$var_b ['message'] = $message;
-$var_b ['pdefw'] = PDEF_W;
-$var_b ['pdefh'] = PDEF_H;
-$var_b ['pmaxw'] = PMAX_W;
-$var_b ['pmaxh'] = PMAX_H;
-$var_b ['themedir'] = THEMEDIR;
-$var_b ['tname'] = THEME_NAME;
-$var_b ['tver'] = THEME_VER;
+$var_b['ver'] = ROIS_VER;
+$var_b['base'] = BASE;
+$var_b['btitle'] = TITLE;
+$var_b['home'] = HOME;
+$var_b['self'] = PHP_SELF;
+$var_b['message'] = $message;
+$var_b['pdefw'] = PDEF_W;
+$var_b['pdefh'] = PDEF_H;
+$var_b['pmaxw'] = PMAX_W;
+$var_b['pmaxh'] = PMAX_H;
+$var_b['themedir'] = THEMEDIR;
+$var_b['tname'] = THEME_NAME;
+$var_b['tver'] = THEME_VER;
 
-$var_b ['use_shi_p'] = USE_SHI_PAINTER;
-$var_b ['use_chicken'] = USE_CHICKENPAINT;
+$var_b['use_shi_p'] = USE_SHI_PAINTER;
+$var_b['use_chicken'] = USE_CHICKENPAINT;
 
-$var_b ['select_palettes'] = USE_SELECT_PALETTES;
-$var_b ['pallets_dat'] = $pallets_dat;
+$var_b['select_palettes'] = USE_SELECT_PALETTES;
+$var_b['pallets_dat'] = $pallets_dat;
 
-$var_b ['dispid'] = DISP_ID;
-$var_b ['updatemark'] = UPDATE_MARK;
-$var_b ['use_resub'] = USE_RESUB;
+$var_b['dispid'] = DISP_ID;
+$var_b['updatemark'] = UPDATE_MARK;
+$var_b['use_resub'] = USE_RESUB;
 
-$var_b ['useanime'] = USE_ANIME;
-$var_b ['defanime'] = DEF_ANIME;
-$var_b ['use_continue'] = USE_CONTINUE;
-$var_b ['newpost_nopassword'] = !CONTINUE_PASS;
+$var_b['useanime'] = USE_ANIME;
+$var_b['defanime'] = DEF_ANIME;
+$var_b['use_continue'] = USE_CONTINUE;
+$var_b['newpost_nopassword'] = !CONTINUE_PASS;
 
-$var_b ['use_name'] = USE_NAME;
-$var_b ['use_com'] = USE_COM;
-$var_b ['use_sub'] = USE_SUB;
+$var_b['use_name'] = USE_NAME;
+$var_b['use_com'] = USE_COM;
+$var_b['use_sub'] = USE_SUB;
 
-$var_b ['addinfo'] = $addinfo;
+$var_b['addinfo'] = $addinfo;
 
-$var_b ['dptime'] = DSP_PAINTTIME;
+$var_b['dptime'] = DSP_PAINTTIME;
 
-$var_b ['share_button'] = SHARE_BUTTON;
+$var_b['share_button'] = SHARE_BUTTON;
 
-$var_b ['use_hashtag'] = USE_HASHTAG;
+$var_b['use_hashtag'] = USE_HASHTAG;
+
+if(!defined('A_NAME_SAN')) {
+	define('A_NAME_SAN','さん');
+}
 
 //ペイント画面の$pwdの暗号化
 if(!defined('CRYPT_PASS')){//config.phpで未定義なら初期値が入る
-	define('CRYPT_PASS','qRyFfhV6nyUggSb');//暗号鍵初期値
+	define('CRYPT_PASS','qRyFf1V6nyU4gSi');//暗号鍵初期値
 	}
 define('CRYPT_METHOD','aes-128-cbc');
 define('CRYPT_IV','T3pkYxNyjN7Wz3pu');//半角英数16文字
@@ -187,7 +191,7 @@ if(!$usercode){//falseなら発行
 }
 setcookie("usercode", $usercode, time()+(86400*365));//1年間
 
-$var_b ['usercode'] = $usercode;
+$var_b['usercode'] = $usercode;
 
 //var_dump($_GET);
 
@@ -386,20 +390,6 @@ function regist() {
 	}
 	//セキュリティ関連ここまで
 
-	//$ptime='';
-	//if($picfile){
-	//	$path_filename=pathinfo($picfile, PATHINFO_FILENAME );//拡張子除去
-	//	$fp = fopen(TEMP_DIR.$path_filename.".dat", "r");
-	//	$userdata = fread($fp, 1024);
-	//	fclose($fp);
-	//	list($uip,$uhost,,,$ucode,,$starttime,$postedtime) = explode("\t", rtrim($userdata));
-	//	//描画時間を$userdataをもとに計算
-	//	if($starttime && DSP_PAINTTIME){
-	//		$ptime = (int)$postedtime - (int)$starttime;
-	//	}
-	//	$time = (int)$ptime;
-	//}
-
 	//描画時間
 	$pptime = (filter_input(INPUT_POST, 'pptime'));
 	$time = (int)$pptime;
@@ -461,7 +451,7 @@ function regist() {
 				list($img_w,$img_h) = getimagesize(TEMP_DIR.$picfile);
 				rename( TEMP_DIR.$picfile , IMG_DIR.$picfile );
 				chmod( IMG_DIR.$picfile , PERMISSION_FOR_DEST);
-				$path_filename=pathinfo($picfile, PATHINFO_FILENAME );//拡張子除去
+				$path_filename = pathinfo($picfile, PATHINFO_FILENAME );//拡張子除去
 				$picdat = $path_filename.'.dat';
 				chmod( TEMP_DIR.$picdat, PERMISSION_FOR_DEST );
 				unlink( TEMP_DIR.$picdat );
@@ -474,12 +464,12 @@ function regist() {
 					rename( TEMP_DIR.$pchfile, IMG_DIR.$pchfile );
 					chmod( IMG_DIR.$pchfile , PERMISSION_FOR_DEST);
 				} elseif( is_file(TEMP_DIR.$spchfile) == TRUE ) {
-					rename( TEMP_DIR.$spchfile, IMG_DIR.$chifile );
+					rename( TEMP_DIR.$spchfile, IMG_DIR.$spchfile );
 					chmod( IMG_DIR.$spchfile , PERMISSION_FOR_DEST);
 					$pchfile = $spchfile;
 				} elseif( is_file(TEMP_DIR.$chifile) == TRUE ) {
 					rename( TEMP_DIR.$chifile, IMG_DIR.$chifile );
-					chmod( IMG_DIR.$chifile , PERMISSION_FOR_DEST);
+					chmod( IMG_DIR.$chifile, PERMISSION_FOR_DEST);
 					$pchfile = $chifile;
 				} else {
 					$pchfile = "";
@@ -681,7 +671,7 @@ function regist() {
 				setcookie ($c_name, $c_cookie,time()+(SAVE_COOKIE*24*3600));
 			}
 
-			$var_b ['message'] = '書き込みに成功しました。';
+			$var_b['message'] = '書き込みに成功しました。';
 			$msgs = null;
 			$msgw = null;
 			$count = null;
@@ -706,8 +696,8 @@ function def() {
 	$elapsed_time = ELAPSED_DAYS * 86400; //デフォルトの1年だと31536000
 	$nowtime = time(); //いまのunixタイムスタンプを取得
 	//あとはテーマ側で計算する
-	$var_b ['nowtime'] = $nowtime;
-	$var_b ['elapsed_time'] = $elapsed_time;
+	$var_b['nowtime'] = $nowtime;
+	$var_b['elapsed_time'] = $elapsed_time;
 
 	//ページング
 	try {
@@ -731,10 +721,10 @@ function def() {
 			//ただしそれが1ページ目なら困るから表示
 			$max_page = max($max_page,1);
 		}
-		$var_b ['max_page'] = $max_page;
+		$var_b['max_page'] = $max_page;
 
 		//リンク作成用
-		$var_b ['nowpage'] = $page;
+		$var_b['nowpage'] = $page;
 		$p = 1;
 		$pp = array();
 		$paging = array();
@@ -743,12 +733,12 @@ function def() {
 			$pp[] = $paging;
 			$p++;
 		}
-		$var_b ['paging'] = $paging;
-		$var_b ['pp'] = $pp;
+		$var_b['paging'] = $paging;
+		$var_b['pp'] = $pp;
 
-		$var_b ['back'] = ($page - 1);
+		$var_b['back'] = ($page - 1);
 
-		$var_b ['next'] = ($page + 1);
+		$var_b['next'] = ($page + 1);
 
 		//そろそろ消える用
 		//一番大きい（新しい）スレのIDを取得
@@ -761,11 +751,11 @@ function def() {
 		} else {
 			$m_tid = 0;
 		} //一番大きいスレID または0
-		$var_b ['m_tid'] = $m_tid; //テーマのほうでこれから親idを引く
+		$var_b['m_tid'] = $m_tid; //テーマのほうでこれから親idを引く
 		// →「スレの古さ番号」が出る。大きいほど古い。
 		//閾値を考える
 		$thid = LOG_MAX_T * LOG_LIMIT/100; //閾値
-		$var_b ['thid'] = $thid;
+		$var_b['thid'] = $thid;
 		//テーマのほうでこの数字と「スレの古さ番号」を比べる
 		//thidよりスレの古さ番号が大きいスレは消えるリミットフラグが立つ
 
@@ -827,10 +817,10 @@ function def() {
 			$i++;
 		}
 
-		$var_b ['ko'] = $ko;
-		$var_b ['oya'] = $oya;
-		$var_b ['dsp_res'] = DSP_RES;
-		$var_b ['path'] = IMG_DIR;
+		$var_b['ko'] = $ko;
+		$var_b['oya'] = $oya;
+		$var_b['dsp_res'] = DSP_RES;
+		$var_b['path'] = IMG_DIR;
 
 		echo $blade->run(MAINFILE,$var_b);
 		$db = null; //db切断
@@ -866,10 +856,10 @@ function catalog() {
 			//ただしそれが1ページ目なら困るから表示
 			$max_page = max($max_page,1);
 		}
-		$var_b ['max_page'] = $max_page;
+		$var_b['max_page'] = $max_page;
 
 		//リンク作成用
-		$var_b ['nowpage'] = $page;
+		$var_b['nowpage'] = $page;
 		$p = 1;
 		$pp = array();
 		$paging = array();
@@ -878,12 +868,12 @@ function catalog() {
 			$pp[] = $paging;
 			$p++;
 		}
-		$var_b ['paging'] = $paging;
-		$var_b ['pp'] = $pp;
+		$var_b['paging'] = $paging;
+		$var_b['pp'] = $pp;
 
-		$var_b ['back'] = ($page - 1);
+		$var_b['back'] = ($page - 1);
 
-		$var_b ['next'] = ($page + 1);
+		$var_b['next'] = ($page + 1);
 
 		$db = null; //db切断
 	} catch (PDOException $e) {
@@ -908,11 +898,11 @@ function catalog() {
 			$i++;
 		}
 
-		$var_b ['oya'] = $oya;
-		$var_b ['path'] = IMG_DIR;
+		$var_b['oya'] = $oya;
+		$var_b['path'] = IMG_DIR;
 
 		//$smarty->debugging = true;
-		$var_b ['catalogmode'] = 'catalog';
+		$var_b['catalogmode'] = 'catalog';
 		echo $blade->run(CATALOGFILE,$var_b);
 		$db = null; //db切断
 	} catch (PDOException $e) {
@@ -939,8 +929,8 @@ function search() {
 			$sql = "SELECT tid, created, modified, name, mail, sub, com, url, host, exid, id, pwd, utime, picfile, pchfile, img_w, img_h, time, tree, parent, age, utime FROM tablelog WHERE com LIKE '%$search%' AND invz=0 ORDER BY age DESC, tree DESC";
 			//レスも
 			$sqli = "SELECT iid, tid, created, modified, name, mail, sub, com, url, host, exid, id, pwd, utime, picfile, pchfile, img_w, img_h, time, tree, parent FROM tabletree WHERE com LIKE '%$search%' and invz=0 ORDER BY tree DESC";
-			$var_b ['catalogmode'] = 'hashsearch';
-			$var_b ['tag'] = $search;
+			$var_b['catalogmode'] = 'hashsearch';
+			$var_b['tag'] = $search;
 		} else {
 			//tagがなければ作者名検索
 			if($bubun === "bubun"){
@@ -948,8 +938,8 @@ function search() {
 			} else {
 				$sql = "SELECT tid, created, modified, name, mail, sub, com, url, host, exid, id, pwd, utime, picfile, pchfile, img_w, img_h, time, tree, parent, age, utime FROM tablelog WHERE name LIKE '$search' AND invz=0 ORDER BY age DESC, tree DESC"; 
 			}
-			$var_b ['catalogmode'] = 'search';
-			$var_b ['author'] = $search;
+			$var_b['catalogmode'] = 'search';
+			$var_b['author'] = $search;
 		}
 		
 		$posts = $db->query($sql);
@@ -970,14 +960,14 @@ function search() {
 				$ko[] = $res;
 				$i++;
 			}
-			$var_b ['ko'] = $ko;
+			$var_b['ko'] = $ko;
 		}
 
-		$var_b ['oya'] = $oya;
-		$var_b ['path'] = IMG_DIR;
+		$var_b['oya'] = $oya;
+		$var_b['path'] = IMG_DIR;
 
 		//$smarty->debugging = true;
-		$var_b ['s_result'] = $i;
+		$var_b['s_result'] = $i;
 		echo $blade->run(CATALOGFILE,$var_b);
 		$db = null; //db切断
 	} catch (PDOException $e) {
@@ -1020,22 +1010,22 @@ function rsodane(){
 function res(){
 	global $blade,$var_b;
 	$resno = filter_input(INPUT_GET, 'res');
-	$var_b ['resno'] = $resno;
+	$var_b['resno'] = $resno;
 
 	//csrfトークンをセット
 	$dat['token']='';
 	if(CHECK_CSRF_TOKEN){
 		$token = get_csrf_token();
 		$_SESSION['token'] = $token;
-		$var_b ['token'] = $token;
+		$var_b['token'] = $token;
 	}
 
 	//古いスレのレスフォームを表示しない
 	$elapsed_time = ELAPSED_DAYS * 86400; //デフォルトの1年だと31536000
 	$nowtime = time(); //いまのunixタイムスタンプを取得
 	//あとはテーマ側で計算する
-	$var_b ['elapsed_time'] = $elapsed_time;
-	$var_b ['nowtime'] = $nowtime;
+	$var_b['elapsed_time'] = $elapsed_time;
+	$var_b['nowtime'] = $nowtime;
 
 	try {
 		$db = new PDO("sqlite:rois.db");
@@ -1071,11 +1061,12 @@ function res(){
 			if(!filter_var($bbsline['url'], FILTER_VALIDATE_URL) || !preg_match('|^https?://.*$|', $bbsline['url'])) {
 				$bbsline['url'] = "";
 			}
-			$resname = implode('さん ',$rresname);
-			$var_b ['resname'] = $resname;
+			//名前付きレス用
+			$resname = implode(A_NAME_SAN.' ',$rresname);
+			$var_b['resname'] = $resname;
 
-			$var_b ['oya'] = $oya;
-			$var_b ['ko'] = $ko;
+			$var_b['oya'] = $oya;
+			$var_b['ko'] = $ko;
 		}
 		//そろそろ消える用
 		//一番大きい（新しい）スレのIDを取得
@@ -1088,11 +1079,11 @@ function res(){
 		} else {
 			$m_tid = 0;
 		} //一番大きいスレID または0
-		$var_b ['m_tid'] = $m_tid; //テーマのほうでこれから親idを引く
+		$var_b['m_tid'] = $m_tid; //テーマのほうでこれから親idを引く
 		// →「スレの古さ番号」が出る。大きいほど古い。
 		//閾値を考える
 		$thid = LOG_MAX_T * LOG_LIMIT/100; //閾値
-		$var_b ['thid'] = $thid;
+		$var_b['thid'] = $thid;
 		//テーマのほうでこの数字と「スレの古さ番号」を比べる
 		//thidよりスレの古さ番号が大きいスレは消えるリミットフラグが立つ
 		$db = null;
@@ -1100,7 +1091,7 @@ function res(){
 		echo "DB接続エラー:" .$e->getMessage();
 	}
 	
-	$var_b ['path'] = IMG_DIR;
+	$var_b['path'] = IMG_DIR;
 
 	echo $blade->run(RESFILE,$var_b);
 }
@@ -1118,24 +1109,22 @@ function paintform($rep){
 	} else {
 		$tool = "neo";
 	}
-	$var_b ['tool'] = $tool;
+	$var_b['tool'] = $tool;
 
-	$var_b ['message'] = $message;
-	//$var_b ['pdefw'] = PDEF_W;
-	//$var_b ['pdefh'] = PDEF_H;
+	$var_b['message'] = $message;
 
 	$picw = filter_input(INPUT_POST, 'picw',FILTER_VALIDATE_INT);
 	$pich = filter_input(INPUT_POST, 'pich',FILTER_VALIDATE_INT);
 	$anime = isset($_POST["anime"]) ? true : false;
-	$var_b ['anime'] = $anime;
+	$var_b['anime'] = $anime;
 	
 	if($picw < 300) $picw = 300;
 	if($pich < 300) $pich = 300;
 	if($picw > PMAX_W) $picw = PMAX_W;
 	if($pich > PMAX_H) $pich = PMAX_H;
 
-	$var_b ['picw'] = $picw;
-	$var_b ['pich'] = $pich;
+	$var_b['picw'] = $picw;
+	$var_b['pich'] = $pich;
 
 	if($tool == "shi") { //しぃペインターの時の幅と高さ
 		$ww = $picw + 510;
@@ -1145,24 +1134,24 @@ function paintform($rep){
 		$hh = $pich + 172;
 	}
 	if($hh < 560){$hh = 560;}//共通の最低高
-	$var_b ['w'] = $ww;
-	$var_b ['h'] = $hh;
+	$var_b['w'] = $ww;
+	$var_b['h'] = $hh;
 	
-	$var_b ['undo'] = UNDO;
-	$var_b ['undo_in_mg'] = UNDO_IN_MG;
+	$var_b['undo'] = UNDO;
+	$var_b['undo_in_mg'] = UNDO_IN_MG;
 
-	$var_b ['useanime'] = USE_ANIME;
+	$var_b['useanime'] = USE_ANIME;
 
-	$var_b ['path'] = IMG_DIR;
+	$var_b['path'] = IMG_DIR;
 
-	$var_b ['stime'] = time();
+	$var_b['stime'] = time();
 	
 	$userip = get_uip();
 
 	//しぃペインター
-	$var_b ['layer_count'] = LAYER_COUNT;
+	$var_b['layer_count'] = LAYER_COUNT;
 	$qq = $quality ? $quality : $qualitys[0];
-	$var_b ['quality'] = $qq;
+	$var_b['quality'] = $qq;
 
 	//続きから
 	if($rep !== ""){
@@ -1170,30 +1159,30 @@ function paintform($rep){
 		$type = $rep;
 		$pwdf = filter_input(INPUT_POST, 'pwd');
 
-		$var_b ['no'] = $no;
-		$var_b ['pwd'] = $pwdf;
-		$var_b += array('ctype',$ctype);
+		$var_b['no'] = $no;
+		$var_b['pwd'] = $pwdf;
+		$var_b['ctype'] = $ctype;
 		if(is_file(IMG_DIR.$pch.'.pch')){
 			$useneo = true;
-			$var_b ['useneo'] = true;
+			$var_b['useneo'] = true;
 		}elseif(is_file(IMG_DIR.$pch.'.spch')){
 			$useneo = false;
-			$var_b ['useneo'] = false;
+			$var_b['useneo'] = false;
 		}
 		if((C_SECURITY_CLICK || C_SECURITY_TIMER) && SECURITY_URL){
-			$var_b ['security'] = true;
-			$var_b ['security_click'] = C_SECURITY_CLICK;
-			$var_b ['security_timer'] = C_SECURITY_TIMER;
+			$var_b['security'] = true;
+			$var_b['security_click'] = C_SECURITY_CLICK;
+			$var_b['security_timer'] = C_SECURITY_TIMER;
 		}
 	}else{
 		if((SECURITY_CLICK || SECURITY_TIMER) && SECURITY_URL){
-			$var_b ['security'] = true;
-			$var_b ['security_click'] = SECURITY_CLICK;
-			$var_b ['security_timer'] = SECURITY_TIMER;
+			$var_b['security'] = true;
+			$var_b['security_click'] = SECURITY_CLICK;
+			$var_b['security_timer'] = SECURITY_TIMER;
 		}
-		$var_b ['newpaint'] = true;
+		$var_b['newpaint'] = true;
 	}
-	$var_b ['security_url'] = SECURITY_URL;
+	$var_b['security_url'] = SECURITY_URL;
 
 	//パレット設定
 	//初期パレット
@@ -1228,11 +1217,11 @@ function paintform($rep){
 		$arr_pal[$i] = $palettes;
 	}
 	$user_pallete_i = $initial_palette.implode('',$arr_pal);
-	$var_b ['palettes'] = $user_pallete_i;
+	$var_b['palettes'] = $user_pallete_i;
 
 	$count_dynp = count($DynP) + 1;
 
-	$var_b ['palsize'] = $count_dynp;
+	$var_b['palsize'] = $count_dynp;
 
 	//パスワード暗号化
 	$pwdf = openssl_encrypt ($pwd,CRYPT_METHOD, CRYPT_PASS, true, CRYPT_IV);//暗号化
@@ -1241,17 +1230,17 @@ function paintform($rep){
 	foreach ($DynP as $p){
 		$arr_dynp[] = '<option>'.$p.'</option>';
 	}
-	$var_b ['dynp'] = implode('',$arr_dynp);
+	$var_b['dynp'] = implode('',$arr_dynp);
 
 	if($ctype=='pch'){
 		$pchfile = filter_input(INPUT_POST, 'pch');
-		$var_b ['pchfile'] = IMG_DIR.$pchfile;
+		$var_b['pchfile'] = IMG_DIR.$pchfile;
 	}
 	if($ctype=='img'){
-		$var_b ['animeform'] = false;
-		$var_b ['anime'] = false;
+		$var_b['animeform'] = false;
+		$var_b['anime'] = false;
 		$imgfile = filter_input(INPUT_POST, 'img');
-		$var_b ['imgfile'] = IMG_DIR.$imgfile;
+		$var_b['imgfile'] = IMG_DIR.$imgfile;
 	}
 	$usercode.='&amp;stime='.time();//拡張ヘッダに描画開始時間をセット
 
@@ -1266,15 +1255,15 @@ function paintform($rep){
 		$datmode = 'picrep&amp;no='.$no.'&amp;pwd='.$pwdf.'&amp;repcode='.$repcode;
 		$usercode.='&amp;repcode='.$repcode;
 	}
-	$var_b ['usercode'] = $usercode; //usercodeにいろいろくっついたものをまとめて出力
+	$var_b['usercode'] = $usercode; //usercodeにいろいろくっついたものをまとめて出力
 
 	//出口
 	if($type === 'rep') {
 		//差し替え
-		$var_b ['mode'] = $datmode;
+		$var_b['mode'] = $datmode;
 	} else {
 		//新規投稿
-		$var_b ['mode'] = 'piccom';
+		$var_b['mode'] = 'piccom';
 	}
 	//出力
 	echo $blade->run(PAINTFILE,$var_b);
@@ -1292,18 +1281,18 @@ function openpch($pch,$sp="") {
 
 	$picfile = IMG_DIR.$pchh.".png";
 
-	if($extn=='spch'){
+	if($extn == 'spch') {
 		$pchfile = IMG_DIR.$pch;
-		$var_b ['tool'] = 'shi'; //拡張子がspchのときはしぃぺ
-	}elseif($extn=='pch'){
+		$var_b['tool'] = 'shi'; //拡張子がspchのときはしぃぺ
+	} elseif($extn == 'pch') {
 		$pchfile = IMG_DIR.$pch;
-		$var_b ['tool'] = 'neo'; //拡張子がpchのときはNEO
+		$var_b['tool'] = 'neo'; //拡張子がpchのときはNEO
 	//}elseif($extn=='chi'){
 	//	$pchfile = IMG_DIR.$pch;
-	//	$var_b ['tool'] = 'chicken'; //拡張子がchiのときはChickenPaint 対応してくれるといいな
-	}else {
+	//	$var_b['tool'] = 'chicken'; //拡張子がchiのときはChickenPaint 対応してくれるといいな
+	} else {
 		$w=$h=$picw=$pich=$datasize=""; //動画が無い時は処理しない
-		$var_b ['tool'] = 'neo';
+		$var_b['tool'] = 'neo';
 	}
 	$datasize = filesize($pchfile);
 	$size = getimagesize($picfile);
@@ -1315,17 +1304,17 @@ function openpch($pch,$sp="") {
 	if($w < 300){$w = 300;}
 	if($h < 326){$h = 326;}
 
-	$var_b ['picw'] = $picw;
-	$var_b ['pich'] = $pich;
-	$var_b ['w'] = $w;
-	$var_b ['h'] = $h;
-	$var_b ['pchfile'] = './'.$pch;
-	$var_b ['datasize'] = $datasize;
+	$var_b['picw'] = $picw;
+	$var_b['pich'] = $pich;
+	$var_b['w'] = $w;
+	$var_b['h'] = $h;
+	$var_b['pchfile'] = './'.$pch;
+	$var_b['datasize'] = $datasize;
 
-	$var_b ['speed'] = PCH_SPEED;
+	$var_b['speed'] = PCH_SPEED;
 
-	$var_b ['path'] = IMG_DIR;
-	$var_b ['a_stime'] = time();
+	$var_b['path'] = IMG_DIR;
+	$var_b['a_stime'] = time();
 
 	echo $blade->run(ANIMEFILE,$var_b);
 }
@@ -1335,9 +1324,9 @@ function paintcom($tmpmode){
 	global $usercode,$stime,$ptime;
 	global $blade,$var_b;
 
-	$var_b ['parent'] = $_SERVER['REQUEST_TIME'];
-	$var_b ['stime'] = $stime;
-	$var_b ['usercode'] = $usercode;
+	$var_b['parent'] = $_SERVER['REQUEST_TIME'];
+	$var_b['stime'] = $stime;
+	$var_b['usercode'] = $usercode;
 
 	//----------
 
@@ -1346,27 +1335,27 @@ function paintcom($tmpmode){
 	if(CHECK_CSRF_TOKEN){
 		$token = get_csrf_token();
 		$_SESSION['token'] = $token;
-		$var_b ['token'] = $token;
+		$var_b['token'] = $token;
 	}
 
 	//投稿途中一覧 or 画像新規投稿 or 画像差し替え
 	if ($tmpmode == "tmp") {
-		$var_b ['picmode'] = 'is_temp';
+		$var_b['picmode'] = 'is_temp';
 	} elseif ($tmpmode == "rep") {
-		$var_b ['picmode'] = 'pict_rep';
+		$var_b['picmode'] = 'pict_rep';
 	} else {
-		$var_b ['picmode'] = 'pict_up';
+		$var_b['picmode'] = 'pict_up';
 	}
 
 	//描画時間(表示用)
 	if($stime){
 		$ptime = calcPtime(time()-$stime);
 	}
-	$var_b ['ptime'] = $ptime;
+	$var_b['ptime'] = $ptime;
 	//描画時間(内部用)
 	if($stime){
 		$pptime = time()-$stime;
-		$var_b ['pptime'] = $pptime;
+		$var_b['pptime'] = $pptime;
 	}
 
 	//----------
@@ -1416,11 +1405,11 @@ function paintcom($tmpmode){
 			$date = gmdate("Y/m/d H:i", filemtime($src)+9*60*60);
 			$temp[] = compact('src','srcname','date');
 		}
-		$var_b ['temp'] = $temp;
+		$var_b['temp'] = $temp;
 	}
 
 	$tmp2 = array();
-	$var_b ['tmp'] = $tmp2;
+	$var_b['tmp'] = $tmp2;
 
 	echo $blade->run(PICFILE,$var_b);
 }
@@ -1428,20 +1417,20 @@ function paintcom($tmpmode){
 //コンティニュー画面in レス画像には非対応
 function incontinue($no) {
 	global $blade,$var_b;
-	$var_b ['othermode'] = 'incontinue';
-	$var_b ['continue_mode'] = true;
+	$var_b['othermode'] = 'incontinue';
+	$var_b['continue_mode'] = true;
 
 	if (isset($_POST["tools"])) {
 		$tool = filter_input(INPUT_POST, 'tools');
 	} else {
 		$tool = "neo";
 	}
-	$var_b ['tool'] = $tool;
+	$var_b['tool'] = $tool;
 
 	//コンティニュー時は削除キーを常に表示
-	$var_b ['passflag'] = true;
+	$var_b['passflag'] = true;
 	//新規投稿で削除キー不要の時 true
-	if(!CONTINUE_PASS) $var_b ['newpost_nopassword'] = true;
+	if(!CONTINUE_PASS) $var_b['newpost_nopassword'] = true;
 
 	try{
 		$db = new PDO("sqlite:rois.db");
@@ -1453,35 +1442,35 @@ function incontinue($no) {
 			$bbsline['time']=is_numeric($bbsline['time']) ? calcPtime($bbsline['time']) : $bbsline['time'];
 			$bbsline['com'] = nl2br(htmlentities($bbsline['com'],ENT_QUOTES | ENT_HTML5), false);
 			$oya[] = $bbsline;
-			$var_b ['oya'] = $oya; //配列に格納
+			$var_b['oya'] = $oya; //配列に格納
 		}
-		$hist_ope = str_replace( strrchr($no,"."), "", $no); //拡張子除去
+		$hist_ope = pathinfo($no, PATHINFO_FILENAME ); //拡張子除去
 		$histfilename = IMG_DIR.$hist_ope;
 		if(is_file($histfilename.'.spch')){
 			//$pchfile = IMG_DIR.$pch;
-			$var_b ['tool'] = 'shi'; //拡張子がspchのときはしぃぺ
-			$var_b ['useshi'] = true;
-			$var_b ['useneo'] = false;
-			$var_b ['ctype_pch'] = true;
+			$var_b['tool'] = 'shi'; //拡張子がspchのときはしぃぺ
+			$var_b['useshi'] = true;
+			$var_b['useneo'] = false;
+			$var_b['ctype_pch'] = true;
 		}elseif(is_file($histfilename.'.pch')){
 			//$pchfile = IMG_DIR.$pch;
-			$var_b ['tool'] = 'neo'; //拡張子がpchのときはNEO
-			$var_b ['useshi'] = false;
-			$var_b ['useneo'] = true;
-			$var_b ['ctype_pch'] = true;
+			$var_b['tool'] = 'neo'; //拡張子がpchのときはNEO
+			$var_b['useshi'] = false;
+			$var_b['useneo'] = true;
+			$var_b['ctype_pch'] = true;
 		}elseif(is_file($histfilename.'.chi')){
-			$var_b ['tool'] = 'chicken'; //拡張子がchiのときはChickenPaint
-			$var_b ['useshi'] = false;
-			$var_b ['useneo'] = false;
-			$var_b ['ctype_pch'] = true;
+			$var_b['tool'] = 'chicken'; //拡張子がchiのときはChickenPaint
+			$var_b['useshi'] = false;
+			$var_b['useneo'] = false;
+			$var_b['ctype_pch'] = true;
 		}else { // どれでもない＝動画が無い時
 			//$w=$h=$picw=$pich=$datasize="";
-			$var_b ['useneo'] = true;
-			$var_b ['useshi'] = true;
-			$var_b ['ctype_pch'] = false;
+			$var_b['useneo'] = true;
+			$var_b['useshi'] = true;
+			$var_b['ctype_pch'] = false;
 		}
 		// useshi, useneoは互換のためにいちおう残してある
-		$var_b ['ctype_img'] = true;
+		$var_b['ctype_img'] = true;
 
 		$db = null; //db切断
 	} catch (PDOException $e) {
@@ -1567,7 +1556,7 @@ function delmode(){
 			//データベースから削除
 			$sql = "DELETE FROM $deltable WHERE $idk=$delno";
 			$db = $db->exec($sql);
-			$var_b ['message'] = '削除しました。';
+			$var_b['message'] = '削除しました。';
 		} elseif ($admin_pass == $ppwd && $admindelmode == 1) {
 			//画像とかファイル削除
 			if (is_file(IMG_DIR.$msgpic)) {
@@ -1595,13 +1584,13 @@ function delmode(){
 			//データベースから削除
 			$sql = "DELETE FROM $deltable WHERE $idk=$delno";
 			$db = $db->exec($sql);
-			$var_b ['message'] = '削除しました。';
+			$var_b['message'] = '削除しました。';
 		} elseif ($admin_pass == $ppwd && $admindelmode != 1) {
 			//管理モード以外での管理者削除は
 			//データベースから削除はせずに非表示
 			$sql = "UPDATE $deltable SET invz=1 WHERE $idk=$delno";
 			$db = $db->exec($sql);
-			$var_b ['message'] = '削除しました。';
+			$var_b['message'] = '削除しました。';
 		} else {
 			error('パスワードまたは記事番号が違います。');
 		}
@@ -1644,17 +1633,8 @@ function picreplace(){
 			$fp = fopen(TEMP_DIR.$file, "r");
 			$userdata = fread($fp, 1024);
 			fclose($fp);
-			//なぜかうごかないので
-			//list($uip,$uhost,$uagent,$imgext,$ucode,$urepcode,$starttime,$postedtime) = explode("\t", rtrim($userdata)."\t");//区切りの"\t"を行末に
-			$file_name = pathinfo($file, PATHINFO_FILENAME ); //拡張子除去
-			////画像名トリム
-			//$rest = substr($file_name,0,-3);
-			////画像名と投稿時(秒以下切り捨て)が同じで、認識コードがhitすればOK
-			//if($rest == $postedtime && $urepcode == $repcode) {
-			//	$find = true;
-			//	break;
-			//}
 			$uds = (list($uip,$uhost,$uagent,$imgext,$ucode,$urepcode,$starttime,$postedtime) = explode("\t", rtrim($userdata)."\t"));//区切りの"\t"を行末にして配列へ格納
+			$file_name = pathinfo($file, PATHINFO_FILENAME ); //拡張子除去
 			//画像名と投稿時の上の桁の方の数字が一致したらOK
 			if(substr_compare($file,$uds[7],0,10) == 0) {
 				$find = true;
@@ -1756,7 +1736,7 @@ function editform() {
 	if(CHECK_CSRF_TOKEN){
 		$token = get_csrf_token();
 		$_SESSION['token'] = $token;
-		$var_b ['token'] = $token;
+		$var_b['token'] = $token;
 	}
 
 	$editno = filter_input(INPUT_POST, 'delno');
@@ -1770,7 +1750,7 @@ function editform() {
 	} else {
 		$edittable = 'tabletree';
 		$idk = "iid";
-		$var_b ['resedit'] = 'resedit';
+		$var_b['resedit'] = 'resedit';
 	}
 	//記事呼び出し
 	try {
@@ -1793,7 +1773,7 @@ function editform() {
 			while ($bbsline = $posts->fetch() ) {
 				$bbsline['com'] = nl2br(htmlentities($bbsline['com'],ENT_QUOTES | ENT_HTML5), false);
 				$oya[] = $bbsline;
-				$var_b ['oya'] = $oya;
+				$var_b['oya'] = $oya;
 			}
 			$var_b ['message'] = '編集モード...';
 		} elseif ($admin_pass == $postpwd ) {
@@ -1804,9 +1784,9 @@ function editform() {
 			while ($bbsline = $posts->fetch() ) {
 				$bbsline['com'] = nl2br(htmlentities($bbsline['com'],ENT_QUOTES | ENT_HTML5), false);
 				$oya[] = $bbsline;
-				$var_b ['oya'] = $oya;
+				$var_b['oya'] = $oya;
 			}
-			$var_b ['message'] = '管理者編集モード...';
+			$var_b['message'] = '管理者編集モード...';
 		} else {
 			$db = null; 
 			$msgs = null;
@@ -1818,7 +1798,7 @@ function editform() {
 		$posts = null;
 		$msg = null;//db切断 
 
-		$var_b ['othermode'] = 'edit'; //編集モード
+		$var_b['othermode'] = 'edit'; //編集モード
 		echo $blade->run(OTHERFILE,$var_b);
 	} catch (PDOException $e) {
 		echo "DB接続エラー:" .$e->getMessage();
@@ -1895,7 +1875,7 @@ function editexec(){
 		$sql = "UPDATE $edittable set modified = datetime('now', 'localtime'), name = '$name', mail = '$mail', sub = '$sub', com = '$com', url = '$url', host = '$host', exid = '$exid', pwd = '$pwdh' where $eid = $e_no";
 		$db = $db->exec($sql);
 		$db = null;
-		$var_b ['message'] = '編集完了しました。';
+		$var_b['message'] = '編集完了しました。';
 	} catch (PDOException $e) {
 		echo "DB接続エラー:" .$e->getMessage();
 	}
@@ -1907,8 +1887,7 @@ function editexec(){
 //管理モードin
 function admin_in() {
 	global $blade,$var_b;
-	//$var_b ['self'] = PHP_SELF;
-	$var_b ['othermode'] = 'admin_in';
+	$var_b['othermode'] = 'admin_in';
 
 	echo $blade->run(OTHERFILE,$var_b);
 }
@@ -1918,7 +1897,7 @@ function admin() {
 	global $admin_pass;
 	global $blade,$var_b;
 
-	$var_b ['path'] = IMG_DIR;
+	$var_b['path'] = IMG_DIR;
 
 	//最大何ページあるのか
 	//記事呼び出しから
@@ -1936,7 +1915,7 @@ function admin() {
 				$bbsline['com'] = htmlentities($bbsline['com'],ENT_QUOTES | ENT_HTML5);
 				$oya[] = $bbsline;
 			} 
-			$var_b ['oya'] = $oya;
+			$var_b['oya'] = $oya;
 
 			//スレッドの記事を取得
 			$sqli = "SELECT * FROM tabletree ORDER BY tree DESC";
@@ -1946,7 +1925,7 @@ function admin() {
 				$res['com'] = htmlentities($res['com'],ENT_QUOTES | ENT_HTML5);
 				$ko[] = $res;
 			}
-			$var_b ['ko'] = $ko;
+			$var_b['ko'] = $ko;
 			echo $blade->run(ADMINFILE,$var_b);
 		} else {
 			$db = null; //db切断
@@ -1987,8 +1966,8 @@ function usrchk(){
 //OK画面
 function ok($mes) {
 	global $blade,$var_b;
-	$var_b ['okmes'] = $mes;
-	$var_b ['othermode'] = 'ok';
+	$var_b['okmes'] = $mes;
+	$var_b['othermode'] = 'ok';
 	echo $blade->run(OTHERFILE,$var_b);
 }
 
@@ -1997,8 +1976,8 @@ function error($mes) {
 	global $db;
 	global $blade,$var_b;
 	$db = null; //db切断
-	$var_b ['errmes'] = $mes;
-	$var_b ['othermode'] = 'err';
+	$var_b['errmes'] = $mes;
+	$var_b['othermode'] = 'err';
 	echo $blade->run(OTHERFILE,$var_b);
 	exit;
 }
@@ -2008,7 +1987,7 @@ function error2() {
 	global $db;
 	global $blade,$var_b;
 	$db = null; //db切断
-	$var_b ['othermode'] = 'err2';
+	$var_b['othermode'] = 'err2';
 	echo $blade->run(OTHERFILE,$var_b);
 	exit;
 }
