@@ -1,6 +1,6 @@
 <?php
 //--------------------------------------------------
-//　「ROIS」v0.5.0～用テーマ「MONORED」設定ファイル
+//　「ROIS」v0.99.1～用テーマ「MONORED」設定ファイル
 //　by sakots https://dev.oekakibbs.net/
 //--------------------------------------------------
 
@@ -8,7 +8,7 @@
 define('THEME_NAME', "MONORED");
 
 //テーマのバージョン
-define('THEME_VER', "v0.99.0 lot.210811.0");
+define('THEME_VER', "v0.99.1 lot.210812.0");
 
 /* -------------------- */
 
@@ -55,6 +55,9 @@ define('RE_END', '</span>');
 //編集したときの目印
 //※記事を編集したら日付の後ろに付きます
 define('UPDATE_MARK', ' *');
+
+//名前引用時の「さん」
+define('A_NAME_SAN', 'さん');
 
 //エラーメッセージ
 define('MSG001', "該当記事がみつかりません[Log is not found.]");
