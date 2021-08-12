@@ -242,6 +242,11 @@ button {
 	a {
 		text-decoration: none;
 		color: $button_moji;
+		svg {
+			fill: $button_moji;
+			width: 12px;
+			height: 12px;
+		}
 	}
 }
 .oyat {

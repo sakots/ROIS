@@ -278,6 +278,11 @@ button {
   text-decoration: none;
   color: #000;
 }
+.button a svg {
+  fill: #000;
+  width: 12px;
+  height: 12px;
+}
 
 .oyat, .siihelp h2 {
   border-left: solid 1ex #79160A;
@@ -337,7 +342,7 @@ button {
   color: #59587E;
 }
 .NEO .tool_color_bar {
-  color: #7376A7;
+  color: #D2D8EE;
 }
 .NEO .tool_color_frame {
   color: #AEB3D2;

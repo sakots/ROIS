@@ -278,6 +278,11 @@ button {
   text-decoration: none;
   color: #FFF;
 }
+.button a svg {
+  fill: #FFF;
+  width: 12px;
+  height: 12px;
+}
 
 .oyat, .siihelp h2 {
   border-left: solid 1ex #036;
