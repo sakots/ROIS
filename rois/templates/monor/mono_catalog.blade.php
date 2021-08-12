@@ -51,7 +51,7 @@
 						<li>iPadやスマートフォンでも描けるお絵かき掲示板です。</li>
 						<li>お絵かきできるサイズは幅300～{{$pmaxw}}px、高さ300～{{$pmaxh}}pxです。</li>
 						@foreach ($addinfo as $info) @if (!empty($info[$loop->index]))
-							<li>{!! $info[$loop->index] !!}</li>
+							<li>{!! $addinfo[$loop->index] !!}</li>
 						@endif @endforeach
 					</ul>
                 </section>

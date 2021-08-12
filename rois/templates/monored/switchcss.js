@@ -15,6 +15,9 @@ switch (Number(colorIdx)) {
     case 5:
         document.getElementById("css5").removeAttribute("disabled");
         break;
+    case 6:
+        document.getElementById("css6").removeAttribute("disabled");
+        break;
 } 
 function SetCss(obj){
     var idx = obj.selectedIndex;

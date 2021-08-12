@@ -10,6 +10,7 @@
 		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_deep.min.css" id="css3" disabled>
 		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_mayo.min.css" id="css4" disabled>
 		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_dev.min.css" id="css5" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_sql.min.css" id="css6" disabled>
 		<script src="templates/{{$themedir}}/switchcss.js"></script>
 	</head>
 	<body>
@@ -268,6 +269,7 @@
 									<option value="mono_deep.min.css">deep</option>
 									<option value="mono_mayo.min.css">MAYO</option>
 									<option value="mono_dev.min.css"> DEV</option>
+									<option value="mono_sql.min.css"> SQL</option>
 								</select>
 							</span>
 						</p>

@@ -10,6 +10,7 @@
 		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_deep.min.css" id="css3" disabled>
 		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_mayo.min.css" id="css4" disabled>
 		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_dev.min.css" id="css5" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_sql.min.css" id="css6" disabled>
 		<script src="templates/{{$themedir}}/switchcss.js"></script>
 		@if ($tool == 'neo')
 		<link rel="stylesheet" href="neo.css?{{$stime}}" type="text/css">
