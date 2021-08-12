@@ -1242,7 +1242,7 @@ function paintform($rep){
 		$imgfile = filter_input(INPUT_POST, 'img');
 		$var_b['imgfile'] = IMG_DIR.$imgfile;
 	}
-	$usercode.='&amp;stime='.time();//拡張ヘッダに描画開始時間をセット
+	$usercode.='&stime='.time();//拡張ヘッダに描画開始時間をセット
 
 	//差し換え時の認識コード追加
 	if($type === 'rep'){
@@ -1252,8 +1252,8 @@ function paintform($rep){
 		$repcode = substr(crypt(md5($no.$userip.$pwdf.date("Ymd", $time)),$time),-8);
 		//念の為にエスケープ文字があればアルファベットに変換
 		$repcode = strtr($repcode,"!\"#$%&'()+,/:;<=>?@[\\]^`/{|}~","ABCDEFGHIJKLMNOabcdefghijklmn");
-		$datmode = 'picrep&amp;no='.$no.'&amp;pwd='.$pwdf.'&amp;repcode='.$repcode;
-		$usercode.='&amp;repcode='.$repcode;
+		$datmode = 'picrep&no='.$no.'&pwd='.$pwdf.'&repcode='.$repcode;
+		$usercode.='&repcode='.$repcode;
 	}
 	$var_b['usercode'] = $usercode; //usercodeにいろいろくっついたものをまとめて出力
 
