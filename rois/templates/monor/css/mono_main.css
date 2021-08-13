@@ -281,6 +281,7 @@ button {
 .oyat, .siihelp h2 {
   border-left: solid 1ex #036;
   background-color: #9CF;
+  color: #006;
   padding: 0.2em;
 }
 

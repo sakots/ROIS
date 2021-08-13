@@ -286,8 +286,9 @@ button {
 
 .oyat, .siihelp h2 {
   border-left: solid 1ex #FF3333;
-  background: linear-gradient(to right, #ffaaaa, #ff5e5e, #ff77a4) fixed;
+  background: linear-gradient(to right, #ffaaaa, #ff5e5e, #ffa477) fixed;
   padding: 0.2em;
+  color: #130;
 }
 
 .oekaki {

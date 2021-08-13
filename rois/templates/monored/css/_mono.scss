@@ -266,13 +266,14 @@ button {
 .oyat {
 	border-left: solid 1ex $border;
 	@if $dev == 1 {
-		background: linear-gradient(to right, $th_bg, lighten($th_bg,20%), adjust-hue(lighten($th_bg, 10%),20deg)) fixed;
+		background: linear-gradient(to right, $th_bg, lighten($th_bg,20%), adjust-hue(lighten($th_bg, 10%),-20deg)) fixed;
 	} @else if $dev == -1 {
-		background: linear-gradient(to right, $th_bg, darken($th_bg,15%), adjust-hue(darken($th_bg, 10%),-20deg)) fixed;
+		background: linear-gradient(to right, $th_bg, darken($th_bg,15%), adjust-hue(darken($th_bg, 10%),20deg)) fixed;
 	} @else {
 		background: $th_bg;
 	}
 	padding: 0.2em;
+	color: $th_title;
 }
 .oekaki {
 	font-size: smaller;
