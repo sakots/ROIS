@@ -5,7 +5,7 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.99.1'); //lot.210812.0
+define('ROIS_VER','v0.99.2'); //lot.210813.0
 
 //設定の読み込み
 require(__DIR__.'/config.php');
@@ -1671,8 +1671,11 @@ function picreplace(){
 			$img_type = mime_content_type($dest);
 			$imgext = getImgType($img_type, $dest);
 
+			//新しい画像の名前(DB保存用)
+			$new_picfile = $file_name.$imgext;
+
 			chmod($dest,PERMISSION_FOR_DEST);
-			rename($dest, IMG_DIR.$msg_d["picfile"]);
+			rename($dest, IMG_DIR.$new_picfile);
 
 			//ワークファイル削除
 			if (is_file($up_picfile)) unlink($up_picfile);
@@ -1691,10 +1694,13 @@ function picreplace(){
 			//元ファイル削除
 			safe_unlink(IMG_DIR.$msg_d["pchfile"]);
 
+			//新しい動画ファイルの名前(DB保存用)
+			$new_pchfile = $file_name.$pchext;
+
 			//動画ファイルアップロード本編
 			if(is_file(TEMP_DIR.$file_name.$pchext)) {
 				$pchsrc = TEMP_DIR.$file_name.$pchext;
-				$dst = IMG_DIR.$msg_d["pchfile"];
+				$dst = IMG_DIR.$new_pchfile;
 				if(copy($pchsrc, $dst)){
 					chmod($dst,PERMISSION_FOR_DEST);
 					unlink($pchsrc);
@@ -1711,7 +1717,7 @@ function picreplace(){
 			$host = gethostbyaddr(get_uip());
 
 			//db上書き
-			$sqlrep = "UPDATE tablelog set modified = datetime('now', 'localtime'), host = '$host', id = '$id', time = '$ptime' WHERE tid = '$no'";
+			$sqlrep = "UPDATE tablelog set modified = datetime('now', 'localtime'), host = '$host', picfile = '$new_picfile', pchfile = '$new_pchfile', id = '$id', time = '$ptime' WHERE tid = '$no'";
 			$db = $db->exec($sqlrep);
 		} else {
 			error(MSG028);
