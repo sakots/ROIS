@@ -708,11 +708,11 @@
 						canvasWidth: {{$picw}},
 						canvasHeight: {{$pich}},
 				
-					@if (isset($imgfile)) loadImageUrl: "{{$path}}{{$imgfile}}", @endif
-					@if (isset($pchfile)) loadChibiFileUrl: "{{$path}}{{$pchfile}}", @endif
-					saveUrl: "save.php?usercode={{$usercode}}",
-					postUrl: "{{$self}}?mode={{$mode}}&stime={{$stime}}",
-					exitUrl: "{{$self}}?mode={{$mode}}&stime={{$stime}}",
+					@if (isset($imgfile)) loadImageUrl: "{{$imgfile}}", @endif
+					@if (isset($pchfile)) loadChibiFileUrl: "{{$pchfile}}", @endif
+					saveUrl: "save.php?usercode={!!$usercode!!}",
+					postUrl: "{{$self}}?mode={!!$mode!!}&stime={{$stime}}",
+					exitUrl: "{{$self}}",
 				
 						allowDownload: true,
 						resourcesRoot: "chickenpaint/",

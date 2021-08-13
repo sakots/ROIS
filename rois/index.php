@@ -1633,13 +1633,12 @@ function picreplace(){
 			$fp = fopen(TEMP_DIR.$file, "r");
 			$userdata = fread($fp, 1024);
 			fclose($fp);
-			$uds = (list($uip,$uhost,$uagent,$imgext,$ucode,$urepcode,$starttime,$postedtime) = explode("\t", rtrim($userdata)."\t"));//区切りの"\t"を行末にして配列へ格納
+			list($uip,$uhost,$uagent,$imgext,$ucode,$urepcode,$starttime,$postedtime) = explode("\t", rtrim($userdata)."\t");//区切りの"\t"を行末にして配列へ格納
 			$file_name = pathinfo($file, PATHINFO_FILENAME ); //拡張子除去
-			//画像名と投稿時の上の桁の方の数字が一致したらOK
-			if(substr_compare($file,$uds[7],0,10) == 0) {
-				$find = true;
-				break;
+			if($file_name && is_file(TEMP_DIR.$file_name.$imgext) && $urepcode === $repcode){
+				$find=true;break;
 			}
+
 		}
 	}
 	closedir($handle);
@@ -1651,15 +1650,14 @@ function picreplace(){
 	try {
 		$db = new PDO("sqlite:rois.db");
 		//記事を取り出す
-		$sql = "SELECT * FROM tablelog WHERE tid = '$no'";
+		$sql = "SELECT *  FROM tablelog WHERE tid = '$no'";
 		$msgs = $db->prepare($sql);
 		$msgs->execute();
 		$msg_d = $msgs->fetch();
 
 		//パスワード照合
-		$flag = false;
-
-		if(password_verify($pwdf,$msg_d["pwd"])||$msg_d["pwd"]=== substr(md5($pwdf),2,8)){
+		// $flag = false;
+		if(password_verify($pwdf,$msg_d["pwd"])){
 			//パスワードがあってたら画像アップロード処理
 			$up_picfile = TEMP_DIR.$file_name.$imgext;
 			$dest = IMG_DIR.$stime.'.tmp';
@@ -1682,6 +1680,7 @@ function picreplace(){
 
 			//動画ファイルアップロード
 			//拡張子チェック
+			$pchext='';
 			if(is_file(TEMP_DIR.$file_name.'.chi')) {
 				$pchext = '.chi';
 			} elseif (is_file(TEMP_DIR.$file_name.'.spch')) {
@@ -1690,7 +1689,7 @@ function picreplace(){
 				$pchext = '.pch';
 			}
 			//元ファイル削除
-			unlink(IMG_DIR.$msg_d["pchfile"]);
+			safe_unlink(IMG_DIR.$msg_d["pchfile"]);
 
 			//動画ファイルアップロード本編
 			if(is_file(TEMP_DIR.$file_name.$pchext)) {
@@ -1703,11 +1702,10 @@ function picreplace(){
 			}
 
 			//描画時間を$userdataをもとに計算
-			$ptime = (int)$uds[7] - (int)$msg_d["utime"];
+			$ptime = (int)$msg_d['time']+((int)$postedtime-(int)$starttime);
 
 			//id生成
-			$utime = time();
-			$id = substr(crypt(md5($host.ID_SEED.date("Ymd", $utime)),'id'),-8);
+			$id = substr(crypt(md5($host.ID_SEED.date("Ymd", time())),'id'),-8);
 
 			//ホスト名取得
 			$host = gethostbyaddr(get_uip());
@@ -1949,7 +1947,7 @@ function usrchk(){
 		$msgs = $db->prepare($sql);
 		$msgs->execute();
 		$msg = $msgs->fetch();
-		if(password_verify($pwdf,$msg['pwd'])||substr(md5($pwdf),2,8) === $msg['pwd']){
+		if(password_verify($pwdf,$msg['pwd'])){
 			$flag = true;
 		} else {
 			$flag = false;
@@ -2108,4 +2106,15 @@ function calcPtime ($psec) {
 		. ($H ? $H . PTIME_H : '')
 		. ($M ? $M . PTIME_M : '')
 		. ($S ? $S . PTIME_S : '');
+}
+/**
+ * ファイルがあれば削除
+ * @param $path
+ * @return bool
+ */
+function safe_unlink ($path) {
+	if ($path && is_file($path)) {
+		return unlink($path);
+	}
+	return false;
 }
