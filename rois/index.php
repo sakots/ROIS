@@ -786,7 +786,11 @@ function def() {
 			$j = 0;
 			$flag = true;
 			while ( $flag == true) {
-				$bbsline['time']=is_numeric($bbsline['time']) ? calcPtime($bbsline['time']) : $bbsline['time'];
+				$bbsline['time'] = is_numeric($bbsline['time']) ? calcPtime($bbsline['time']) : $bbsline['time'];
+				$_pchext = pathinfo($bbsline['pchfile'],PATHINFO_EXTENSION);
+				if($_pchext === 'chi'){
+					$bbsline['pchfile'] = ''; //ChickenPaintは動画リンクを出さない
+				}
 				$res = $postsi->fetch();
 				if(empty($res)){ //レスがなくなったら
 					$bbsline['ressu'] = $j; //スレのレス数
