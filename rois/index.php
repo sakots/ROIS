@@ -5,7 +5,7 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.99.3'); //lot.210815.0
+define('ROIS_VER','v0.99.4'); //lot.210815.1
 
 //設定の読み込み
 require(__DIR__.'/config.php');
@@ -18,15 +18,14 @@ date_default_timezone_set(DEFAULT_TIMEZONE);
 if (($phpver = phpversion()) < "5.5.0") {
 	die("PHP version 5.5.0 or higher is required for this program to work. <br>\n(Current PHP version:{$phpver})");
 }
+//コンフィグのバージョンが古くて互換性がない場合動かさせない
+if (CONF_VER < 9900 || !defined('CONF_VER')) {
+	die("コンフィグファイルに互換性がないようです。再設定をお願いします。<br>\n The configuration file is incompatible. Please reconfigure it.");
+}
 
 //管理パスが初期値(kanripass)の場合は動作させない
 if ($admin_pass === 'kanripass') {
 	die("管理パスが初期設定値のままです！危険なので動かしません。<br>\n The admin pass is still at its default value! This program can't run it until you fix it.");
-}
-
-//コンフィグのバージョンが古くて互換性がない場合動かさせない
-if (CONF_VER < 9903 || !defined('CONF_VER')) {
-	die("コンフィグファイルに互換性がないようです。再設定をお願いします。<br>\n The configuration file is incompatible. Please reconfigure it.");
 }
 
 //BladeOne v3.52
@@ -949,7 +948,7 @@ function search() {
 			if($bubun === "bubun"){
 				$sql = "SELECT tid, created, modified, name, mail, sub, com, url, host, exid, id, pwd, utime, picfile, pchfile, img_w, img_h, time, tree, parent, age, utime FROM tablelog WHERE name LIKE '%$search%' AND invz=0 ORDER BY age DESC, tree DESC"; 
 			} else {
-				$sql = "SELECT tid, created, modified, name, mail, sub, com, url, host, exid, id, pwd, utime, picfile, pchfile, img_w, img_h, time, tree, parent, age, utime FROM tablelog WHERE name LIKE $search AND invz=0 ORDER BY age DESC, tree DESC"; 
+				$sql = "SELECT tid, created, modified, name, mail, sub, com, url, host, exid, id, pwd, utime, picfile, pchfile, img_w, img_h, time, tree, parent, age, utime FROM tablelog WHERE name LIKE '$search' AND invz=0 ORDER BY age DESC, tree DESC"; 
 			}
 			$var_b['catalogmode'] = 'search';
 			$var_b['author'] = $search;
@@ -993,7 +992,7 @@ function sodane(){
 	$resto = filter_input(INPUT_GET, 'resto');
 	try {
 		$db = new PDO("sqlite:rois.db");
-		$sql = "UPDATE tablelog set exid = exid+1 where tid = $resto";
+		$sql = "UPDATE tablelog set exid = exid+1 where tid = '$resto'";
 		$db = $db->exec($sql);
 		$db = null;
 	} catch (PDOException $e) {
@@ -1008,7 +1007,7 @@ function rsodane(){
 	$resto = filter_input(INPUT_GET, 'resto');
 	try {
 		$db = new PDO("sqlite:rois.db");
-		$sql = "UPDATE tabletree set exid = exid+1 where iid = $resto";
+		$sql = "UPDATE tabletree set exid = exid+1 where iid = '$resto'";
 		$db = $db->exec($sql);
 		$db = null;
 	} catch (PDOException $e) {
