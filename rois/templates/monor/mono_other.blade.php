@@ -122,12 +122,17 @@
 							<option value="new">新規投稿</option>
 						</select>
 						@if ($passflag) Pass<input class="form" type="password" name="pwd" size="8" value=""> @endif
+						@if (!$ctype_pch)
 						<label for="tools">ツール</label>
 						<select name="tools">
 							<option value="neo">PaintBBS NEO</option>
 							@if ($use_shi_p)<option value="shi">しぃペインター</option> @endif
 							@if ($use_chicken)<option value="chicken">ChickenPaint</option> @endif
 						</select>
+						@else
+						<input type="hidden" name="tools" value="{{$tool}}">
+						@endif
+						@if ($tool == ('neo' || 'shi'))
 						<label for="palettes">パレット</label>
 						@if ($select_palettes)
 						<select name="palettes" id="palettes">
@@ -140,6 +145,7 @@
 							<option value="neo">標準</option>
 						</select>
 						@endif
+						@endif
 						<input class="button" type="submit" value="続きを描く">
 					</form>
 					<ul>
@@ -149,12 +155,6 @@
 						@else
 						<li>続きを描くには描いたときの削除キーが必要です。</li>
 						@endif
-					@endif
-					<li>動画から続きを描く場合、最初に使ったツールと同じものを選択しなければうまく行かない可能性があります。</li>
-					@if ($ctype_pch)
-					<li>この画像の動画データは、<strong> @if($tool == 'neo') PaintBBS NEO @endif @if($tool == 'shi') しぃペインター @endif @if($tool == 'chicken') ChickenPaint @endif </strong>で作られているようです。</li>
-					@else
-					<li>この画像に動画データはないようです。</li>
 					@endif
 					</ul>
 					@endforeach
