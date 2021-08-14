@@ -129,7 +129,7 @@
 									@endif
 									<figure>
 										<figcaption><a href="{{$path}}{$bbsline['picfile']}" target="_blank">{{$bbsline['picfile']}}</a>
-										@if (isset($bbsline['pchfile']))
+										@if ($bbsline['pchfile'])
 											<a href="{{$self}}?mode=anime&amp;pch={{$bbsline['pchfile']}}" target="_blank">●動画</a>
 										@endif
 										@if ($use_continue)
