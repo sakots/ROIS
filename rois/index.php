@@ -5,24 +5,28 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.99.2'); //lot.210813.0
+define('ROIS_VER','v0.99.3'); //lot.210815.0
 
 //設定の読み込み
 require(__DIR__.'/config.php');
 require(__DIR__.'/templates/'.THEMEDIR.'/template_ini.php');
 
+//タイムゾーン設定
+date_default_timezone_set(DEFAULT_TIMEZONE);
+
 //phpのバージョンが古い場合動かさせない
 if (($phpver = phpversion()) < "5.5.0") {
 	die("PHP version 5.5.0 or higher is required for this program to work. <br>\n(Current PHP version:{$phpver})");
-}
-//コンフィグのバージョンが古くて互換性がない場合動かさせない
-if (CONF_VER < 9900 || !defined('CONF_VER')) {
-	die("コンフィグファイルに互換性がないようです。再設定をお願いします。<br>\n The configuration file is incompatible. Please reconfigure it.");
 }
 
 //管理パスが初期値(kanripass)の場合は動作させない
 if ($admin_pass === 'kanripass') {
 	die("管理パスが初期設定値のままです！危険なので動かしません。<br>\n The admin pass is still at its default value! This program can't run it until you fix it.");
+}
+
+//コンフィグのバージョンが古くて互換性がない場合動かさせない
+if (CONF_VER < 9903 || !defined('CONF_VER')) {
+	die("コンフィグファイルに互換性がないようです。再設定をお願いします。<br>\n The configuration file is incompatible. Please reconfigure it.");
 }
 
 //BladeOne v3.52
@@ -124,20 +128,6 @@ init();		//←初期設定後は不要なので削除可
 deltemp();
 
 $message ="";
-$sub = filter_input(INPUT_POST, 'sub');
-$name = filter_input(INPUT_POST, 'name');
-$mail = filter_input(INPUT_POST, 'mail');
-$url = filter_input(INPUT_POST, 'url');
-$com = filter_input(INPUT_POST, 'com');
-$parent = trim(filter_input(INPUT_POST, 'parent'));
-$picfile = trim(filter_input(INPUT_POST, 'picfile'));
-$invz = trim(filter_input(INPUT_POST, 'invz'));
-$img_w = trim(filter_input(INPUT_POST, 'img_w'));
-$img_h = trim(filter_input(INPUT_POST, 'img_h'));
-$time = trim(filter_input(INPUT_POST, 'time'));
-$pwd = trim(filter_input(INPUT_POST, 'pwd'));
-$pwdh = password_hash($pwd,PASSWORD_DEFAULT);
-$exid = trim(filter_input(INPUT_POST, 'exid'));
 
 //var_dump($_COOKIE);
 
@@ -147,7 +137,7 @@ $usercode = filter_input(INPUT_COOKIE, 'usercode');//nullならuser-codeを発�
 //$_SERVERから変数を取得
 //var_dump($_SERVER);
 
-$req_method = ( isset($_SERVER["REQUEST_METHOD"]) === true ) ? ($_SERVER["REQUEST_METHOD"]): "";
+$req_method = isset($_SERVER["REQUEST_METHOD"]) ? $_SERVER["REQUEST_METHOD"]: "";
 //INPUT_SERVER が動作しないサーバがあるので$_SERVERを使う。
 
 //ユーザーip
@@ -357,7 +347,6 @@ function init(){
 //投稿があればデータベースへ保存する
 /* 記事書き込み */
 function regist() {
-	global $name,$com,$sub,$parent,$picfile,$img_w,$img_h,$mail,$url,$time,$pwd,$pwdh,$exid,$invz;
 	global $badip;
 	global $req_method;
 	global $var_b,$blade;
@@ -366,6 +355,21 @@ function regist() {
 	if(CHECK_CSRF_TOKEN){
 		check_csrf_token();
 	}
+
+	$sub = filter_input(INPUT_POST, 'sub');
+	$name = filter_input(INPUT_POST, 'name');
+	$mail = filter_input(INPUT_POST, 'mail');
+	$url = filter_input(INPUT_POST, 'url');
+	$com = filter_input(INPUT_POST, 'com');
+	$parent = trim(filter_input(INPUT_POST, 'parent'));
+	$picfile = trim(filter_input(INPUT_POST, 'picfile'));
+	$invz = trim(filter_input(INPUT_POST, 'invz'));
+	$img_w = trim(filter_input(INPUT_POST, 'img_w',FILTER_VALIDATE_INT));
+	$img_h = trim(filter_input(INPUT_POST, 'img_h',FILTER_VALIDATE_INT));
+	$time = trim(filter_input(INPUT_POST, 'time',FILTER_VALIDATE_INT));
+	$pwd = trim(filter_input(INPUT_POST, 'pwd'));
+	$pwdh = password_hash($pwd,PASSWORD_DEFAULT);
+	$exid = trim(filter_input(INPUT_POST, 'exid',FILTER_VALIDATE_INT));
 
 	if($req_method !== "POST") {error(MSG006);}
 
@@ -396,9 +400,9 @@ function regist() {
 	
 	try {
 		$db = new PDO("sqlite:rois.db");
-		if (isset($_POST["send"] ) ===  true) {
+		if (isset($_POST["send"] )) {
 
-			$strlen_com=strlen($com);
+			$strlen_com = strlen($com);
 
 			if ( $name   === "" ) $name = DEF_NAME;
 			if ( $com  === "" ) $com  = DEF_COM;
@@ -447,7 +451,7 @@ function regist() {
 			//↑二重投稿チェックおわり
 
 			//画像ファイルとか処理
-			if ( $picfile == true ) {
+			if ($picfile) {
 				list($img_w,$img_h) = getimagesize(TEMP_DIR.$picfile);
 				rename( TEMP_DIR.$picfile , IMG_DIR.$picfile );
 				chmod( IMG_DIR.$picfile , PERMISSION_FOR_DEST);
@@ -460,14 +464,14 @@ function regist() {
 				$spchfile = $path_filename.'.spch';
 				$pchfile = $path_filename.'.pch';
 				
-				if ( is_file(TEMP_DIR.$pchfile) == TRUE ) {
+				if ( is_file(TEMP_DIR.$pchfile) ) {
 					rename( TEMP_DIR.$pchfile, IMG_DIR.$pchfile );
 					chmod( IMG_DIR.$pchfile , PERMISSION_FOR_DEST);
-				} elseif( is_file(TEMP_DIR.$spchfile) == TRUE ) {
+				} elseif( is_file(TEMP_DIR.$spchfile) ) {
 					rename( TEMP_DIR.$spchfile, IMG_DIR.$spchfile );
 					chmod( IMG_DIR.$spchfile , PERMISSION_FOR_DEST);
 					$pchfile = $spchfile;
-				} elseif( is_file(TEMP_DIR.$chifile) == TRUE ) {
+				} elseif( is_file(TEMP_DIR.$chifile) ) {
 					rename( TEMP_DIR.$chifile, IMG_DIR.$chifile );
 					chmod( IMG_DIR.$chifile, PERMISSION_FOR_DEST);
 					$pchfile = $chifile;
@@ -504,6 +508,15 @@ function regist() {
 			$logt = $counti["cnti"];
 
 			// 値を追加する
+
+			// 'のエスケープ(入りうるところがありそうなとこだけにしといた)
+			$name = str_replace("'","''",$name);
+			$sub = str_replace("'","''",$sub);
+			$com = str_replace("'","''",$com);
+			$mail = str_replace("'","''",$mail);
+			$url = str_replace("'","''",$url);
+			$host = str_replace("'","''",$host);
+
 			// スレ建ての場合
 			if (empty($_POST["modid"])==true && $logt <= LOG_MAX_T) {
 				//id生成
@@ -563,7 +576,7 @@ function regist() {
 					//レス画像貼りは今のところ未対応だけど念のため
 					//最初の行にある画像の名前を取得
 					$sqlimg = "SELECT picfile FROM tabletree ORDER BY iid LIMIT 1";
-					$msgs = $db->prepare($sqlimg);
+					$sqlimg = $db->prepare($sqlimg);
 					$msgs->execute();
 					$msg = $msgs->fetch();
 					$msgpic = $msg["picfile"]; //画像の名前取得できた
@@ -659,15 +672,11 @@ function regist() {
 			$names = $name;
 
 			//-- クッキー保存 --
-			//漢字を含まない項目はこちらの形式で追加
-			setcookie ("pwdc", $c_pass,time()+(SAVE_COOKIE*24*3600));
+			//クッキー項目："クッキー名 クッキー値"
+			$cookies = ["namec\t".$name,"emailc\t".$mail,"urlc\t".$url,"pwdc\t".$c_pass];
 
-			//クッキー項目："クッキー名<>クッキー値"　※漢字を含む項目はこちらに追加
-			$cooks = array("namec<>".$names,"emailc<>".$mail,"urlc<>".$url);
-
-			foreach ( $cooks as $cook ) {
-				list($c_name,$c_cookie) = explode('<>',$cook);
-				// $c_cookie = str_replace("&amp;", "&", $c_cookie);
+			foreach ( $cookies as $cookie ) {
+				list($c_name,$c_cookie) = explode("\t",$cookie);
 				setcookie ($c_name, $c_cookie,time()+(SAVE_COOKIE*24*3600));
 			}
 
@@ -940,7 +949,7 @@ function search() {
 			if($bubun === "bubun"){
 				$sql = "SELECT tid, created, modified, name, mail, sub, com, url, host, exid, id, pwd, utime, picfile, pchfile, img_w, img_h, time, tree, parent, age, utime FROM tablelog WHERE name LIKE '%$search%' AND invz=0 ORDER BY age DESC, tree DESC"; 
 			} else {
-				$sql = "SELECT tid, created, modified, name, mail, sub, com, url, host, exid, id, pwd, utime, picfile, pchfile, img_w, img_h, time, tree, parent, age, utime FROM tablelog WHERE name LIKE '$search' AND invz=0 ORDER BY age DESC, tree DESC"; 
+				$sql = "SELECT tid, created, modified, name, mail, sub, com, url, host, exid, id, pwd, utime, picfile, pchfile, img_w, img_h, time, tree, parent, age, utime FROM tablelog WHERE name LIKE $search AND invz=0 ORDER BY age DESC, tree DESC"; 
 			}
 			$var_b['catalogmode'] = 'search';
 			$var_b['author'] = $search;
@@ -984,7 +993,7 @@ function sodane(){
 	$resto = filter_input(INPUT_GET, 'resto');
 	try {
 		$db = new PDO("sqlite:rois.db");
-		$sql = "UPDATE tablelog set exid = exid+1 where tid = '$resto'";
+		$sql = "UPDATE tablelog set exid = exid+1 where tid = $resto";
 		$db = $db->exec($sql);
 		$db = null;
 	} catch (PDOException $e) {
@@ -999,7 +1008,7 @@ function rsodane(){
 	$resto = filter_input(INPUT_GET, 'resto');
 	try {
 		$db = new PDO("sqlite:rois.db");
-		$sql = "UPDATE tabletree set exid = exid+1 where iid = '$resto'";
+		$sql = "UPDATE tabletree set exid = exid+1 where iid = $resto";
 		$db = $db->exec($sql);
 		$db = null;
 	} catch (PDOException $e) {
@@ -1102,10 +1111,12 @@ function res(){
 
 //お絵描き画面
 function paintform($rep){
-	global $message,$usercode,$quality,$qualitys,$pwd,$no;
+	global $message,$usercode,$quality,$qualitys,$no;
 	global $mode,$ctype,$pch,$type;
 	global $blade,$var_b;
 	global $pallets_dat;
+
+	$pwd = trim(filter_input(INPUT_POST, 'pwd'));
 
 	//ツール
 	if (isset($_POST["tools"])) {
@@ -1197,9 +1208,9 @@ function paintform($rep){
 			$set_palettec = $pallets_dat[$ni][1];
 			setcookie("palettec", $set_palettec, time()+(86400*SAVE_COOKIE)); // Cookie保存
 			if(is_array($p_value)){
-				$lines=file($pallets_dat[$ni][1]);
+				$lines = file($pallets_dat[$ni][1]);
 			}else{
-				$lines=file($value);
+				$lines = file($p_value);
 			}
 			break;
 		}
@@ -1438,7 +1449,7 @@ function incontinue($no) {
 
 	try{
 		$db = new PDO("sqlite:rois.db");
-		$sql = "SELECT * FROM tablelog WHERE picfile='$no' ORDER BY tree DESC";
+		$sql = "SELECT * FROM tablelog WHERE picfile=$no ORDER BY tree DESC";
 		$posts = $db->query($sql);
 
 		$oya = array();
@@ -1527,13 +1538,13 @@ function delmode(){
 		}
 		$msgpic = $msgp['picfile']; //画像の名前取得できた
 
-		if (isset($_POST["admindel"]) == true) {
+		if (isset($_POST["admindel"])) {
 			$admindelmode = 1;
 		} else {
 			$admindelmode = 0;
 		}
 
-		if (password_verify($ppwd,$msg['pwd']) === true) {
+		if (password_verify($ppwd,$msg['pwd'])) {
 			//画像とかファイル削除
 			if (is_file(IMG_DIR.$msgpic)) {
 				$msgdat = str_replace( strrchr($msgpic,"."), "", $msgpic); //拡張子除去
@@ -1586,7 +1597,7 @@ function delmode(){
 			}
 			//↑画像とか削除処理完了
 			//データベースから削除
-			$sql = "DELETE FROM $deltable WHERE $idk=$delno";
+			$sql = "DELETE FROM $deltable WHERE $idk=$delno;";
 			$db = $db->exec($sql);
 			$var_b['message'] = '削除しました。';
 		} elseif ($admin_pass == $ppwd && $admindelmode != 1) {
@@ -1654,7 +1665,7 @@ function picreplace(){
 	try {
 		$db = new PDO("sqlite:rois.db");
 		//記事を取り出す
-		$sql = "SELECT *  FROM tablelog WHERE tid = '$no'";
+		$sql = "SELECT *  FROM tablelog WHERE tid = $no";
 		$msgs = $db->prepare($sql);
 		$msgs->execute();
 		$msg_d = $msgs->fetch();
@@ -1720,6 +1731,9 @@ function picreplace(){
 			//ホスト名取得
 			$host = gethostbyaddr(get_uip());
 
+			// 念のため'のエスケープ
+			$host = str_replace("'","''",$host);
+
 			//db上書き
 			$sqlrep = "UPDATE tablelog set modified = datetime('now', 'localtime'), host = '$host', picfile = '$new_picfile', pchfile = '$new_pchfile', id = '$id', time = '$ptime' WHERE tid = '$no'";
 			$db = $db->exec($sqlrep);
@@ -1773,7 +1787,7 @@ function editform() {
 			error('そんな記事ないです。');
 		}
 		$postpwd = filter_input(INPUT_POST, 'pwd');
-		if (password_verify($postpwd,$msg['pwd']) === true) {
+		if (password_verify($postpwd,$msg['pwd'])) {
 			//パスワードがあってたら
 			$sqli ="SELECT * FROM $edittable WHERE $idk = $editno";
 			$posts = $db->query($sqli);
@@ -1815,7 +1829,6 @@ function editform() {
 
 //編集モードくん本体
 function editexec(){
-	global $name,$com,$sub,$picfile,$mail,$url,$pwd,$pwdh,$exid;
 	global $badip;
 	global $req_method;
 	global $blade,$var_b;
@@ -1829,6 +1842,21 @@ function editexec(){
 	$e_no = trim(filter_input(INPUT_POST, 'e_no'));
 
 	if($req_method !== "POST") {error(MSG006);}
+
+	$sub = filter_input(INPUT_POST, 'sub');
+	$name = filter_input(INPUT_POST, 'name');
+	$mail = filter_input(INPUT_POST, 'mail');
+	$url = filter_input(INPUT_POST, 'url');
+	$com = filter_input(INPUT_POST, 'com');
+	$parent = trim(filter_input(INPUT_POST, 'parent'));
+	$picfile = trim(filter_input(INPUT_POST, 'picfile'));
+	$invz = trim(filter_input(INPUT_POST, 'invz'));
+	$img_w = trim(filter_input(INPUT_POST, 'img_w',FILTER_VALIDATE_INT));
+	$img_h = trim(filter_input(INPUT_POST, 'img_h',FILTER_VALIDATE_INT));
+	$time = trim(filter_input(INPUT_POST, 'time',FILTER_VALIDATE_INT));
+	$pwd = trim(filter_input(INPUT_POST, 'pwd'));
+	$pwdh = password_hash($pwd,PASSWORD_DEFAULT);
+	$exid = trim(filter_input(INPUT_POST, 'exid',FILTER_VALIDATE_INT));
 
 	//NGワードがあれば拒絶
 	Reject_if_NGword_exists_in_the_post($com,$name,$mail,$url,$sub);
@@ -1878,6 +1906,14 @@ function editexec(){
 		$eid = 'tid';
 	}
 
+	// 'のエスケープ(入りうるところがありそうなとこだけにしといた)
+	$name = str_replace("'","''",$name);
+	$sub = str_replace("'","''",$sub);
+	$com = str_replace("'","''",$com);
+	$mail = str_replace("'","''",$mail);
+	$url = str_replace("'","''",$url);
+	$host = str_replace("'","''",$host);
+
 	try {
 		$db = new PDO("sqlite:rois.db");
 		$sql = "UPDATE $edittable set modified = datetime('now', 'localtime'), name = '$name', mail = '$mail', sub = '$sub', com = '$com', url = '$url', host = '$host', exid = '$exid', pwd = '$pwdh' where $eid = $e_no";
@@ -1913,7 +1949,7 @@ function admin() {
 		$db = new PDO("sqlite:rois.db");
 		//読み込み
 		$adminpass = filter_input(INPUT_POST, 'adminpass');
-		if ($adminpass == $admin_pass) {
+		if ($adminpass === $admin_pass) {
 			$sql = "SELECT * FROM tablelog ORDER BY age DESC,tree DESC";
 			$oya = array();
 			$posts = $db->query($sql);

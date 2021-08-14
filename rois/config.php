@@ -1,6 +1,6 @@
 <?php
 /*
-  * ROIS v0.99.0～
+  * ROIS v0.99.3～
   * by sakots >> https://dev.oekakibbs.net/
   *
   * ROISの設定ファイルです。
@@ -125,6 +125,9 @@ define('CRYPT_PASS','qRyFf1V6nyU4gSi');
 
 // 言語設定
 define('LANG', 'Japanese');
+
+// タイムゾーン
+define('DEFAULT_TIMEZONE','Asia/Tokyo');
 
 //ユーザー削除権限 (0:不可 1:許可)
 //※treeのみを消して後に残ったlogは管理者のみ削除可能
@@ -317,4 +320,4 @@ define('PHP_SELF', 'index.php');
 
 /* ------------- コンフィグ互換性管理 ------------- */
 
-define('CONF_VER', 9900);
+define('CONF_VER', 9903);
