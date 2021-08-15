@@ -307,40 +307,40 @@ button {
 }
 
 .NEO .color_bk {
-  color: #69F;
+  color: #999;
 }
 .NEO .color_bk2 {
-  color: #369;
+  color: #567;
 }
 .NEO .color_tool_icon {
-  color: #396;
+  color: #444;
 }
 .NEO .color_icon {
-  color: #063;
+  color: #333;
 }
 .NEO .color_iconselect {
-  color: #063;
+  color: #333;
 }
 .NEO .color_text {
   color: #FFF;
 }
 .NEO .color_bar {
-  color: #369;
+  color: #666;
 }
 .NEO .tool_color_button {
-  color: #669;
+  color: #778;
 }
 .NEO .tool_color_button2 {
-  color: #336;
+  color: #445;
 }
 .NEO .tool_color_text {
   color: #FFF;
 }
 .NEO .tool_color_bar {
-  color: #69F;
+  color: #89A;
 }
 .NEO .tool_color_frame {
-  color: #369;
+  color: #666;
 }
 
 .palette {

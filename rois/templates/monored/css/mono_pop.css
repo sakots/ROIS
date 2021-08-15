@@ -11,39 +11,39 @@ label {
 
 body {
   background-attachment: fixed;
-  background: linear-gradient(#112211, black) fixed;
-  color: #FEFEFE;
+  background: linear-gradient(#263, #3cb359) fixed;
+  color: #000;
   font-family: sans-serif;
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
 
 a {
-  color: #FEFEFE;
+  color: #000;
 }
 a:link {
-  color: #FEFEFE;
+  color: #000;
 }
 a:visited {
-  color: #999;
+  color: #564;
 }
 a:active {
-  color: #FEFEFE;
+  color: #F32;
 }
 a:hover {
-  color: #FEFEFE;
+  color: #F32;
 }
 
 hr {
   border-style: dashed;
   border-width: 1px;
-  border-color: #396;
+  border-color: #C11;
   margin: 1ex auto;
   clear: left;
 }
 
 header, .thread, footer {
-  background-color: #182818;
+  background-color: #FED;
   padding: 8px;
   margin-left: auto;
   margin-right: auto;
@@ -55,17 +55,17 @@ header {
   margin-bottom: 12px;
   border-width: 1px;
   border-style: solid;
-  border-color: #396;
+  border-color: #C11;
 }
 
 h1 a {
   text-decoration: none;
 }
 h1 a:visited {
-  color: #999;
+  color: #564;
 }
 h1 a:hover {
-  color: #FEFEFE;
+  color: #F32;
 }
 h1 + div {
   text-align: right;
@@ -79,7 +79,7 @@ main {
   display: block;
   border-width: 1px;
   border-style: solid;
-  border-color: #396;
+  border-color: #C11;
   margin-top: 12px;
   margin-bottom: 12px;
 }
@@ -96,18 +96,18 @@ input, textarea {
   border-style: solid;
   border-width: 1px;
   padding: 2px;
-  border-color: #063 #6C9 #6C9 #063;
+  border-color: #630 #C96 #C96 #630;
   color: #000;
-  background-color: #EEEEEE;
+  background-color: #EEE;
 }
 
 select {
   border-style: solid;
   border-width: 1px;
   padding: 2px;
-  border-color: #063 #6C9 #6C9 #063;
+  border-color: #630 #C96 #C96 #630;
   color: #000;
-  background-color: #EEEEEE;
+  background-color: #EEE;
   vertical-align: middle;
 }
 
@@ -123,9 +123,9 @@ input[type=submit] {
   border-style: solid;
   border-width: 1px;
   padding: 2px;
-  border-color: #6C9 #063 #063 #6C9;
+  border-color: #C96 #630 #630 #C96;
   color: #FFF;
-  background-color: #396;
+  background-color: #963;
   padding-left: 4px;
   padding-right: 4px;
 }
@@ -134,9 +134,9 @@ input[name=upfile] {
   border-style: solid;
   border-width: 1px;
   padding: 2px;
-  border-color: #6C9 #063 #063 #6C9;
+  border-color: #C96 #630 #630 #C96;
   color: #FFF;
-  background-color: #396;
+  background-color: #963;
   width: 10em;
 }
 
@@ -164,7 +164,7 @@ em.thispage {
 figure {
   float: left;
   padding-right: 8px;
-  background-color: #182818;
+  background-color: #FED;
   margin-bottom: 1ex;
 }
 figure img {
@@ -191,7 +191,7 @@ p.oya {
 
 .oyaname {
   line-height: 1em;
-  border: solid 1px #396;
+  border: solid 1px #963;
   border-radius: 5px;
   display: inline-block;
 }
@@ -203,7 +203,7 @@ p.oya {
 }
 
 .oyaname:hover {
-  background-color: #112211;
+  background-color: #263;
 }
 
 h4#oya {
@@ -211,7 +211,7 @@ h4#oya {
 }
 
 .res {
-  border-top: dashed 1px #396;
+  border-top: dashed 1px #C11;
   margin-top: 1em;
 }
 .res section {
@@ -233,7 +233,7 @@ h4#oya {
 
 .limit {
   margin-top: 1em;
-  background-color: #321;
+  background-color: #DD5;
 }
 
 h5 {
@@ -242,8 +242,8 @@ h5 {
 
 .resma {
   display: block;
-  color: #999;
-  background-color: #112211;
+  color: #141;
+  background-color: #263;
 }
 
 .thfoot {
@@ -255,12 +255,12 @@ button {
   border-style: solid;
   border-width: 1px;
   padding: 2px;
-  border-color: #6C9 #063 #063 #6C9;
+  border-color: #C96 #630 #630 #C96;
   color: #FFF;
-  background-color: #396;
+  background-color: #963;
   padding-left: 4px;
   padding-right: 4px;
-  background-color: #396;
+  background-color: #963;
   color: #FFF;
 }
 
@@ -268,9 +268,9 @@ button {
   border-style: solid;
   border-width: 1px;
   padding: 2px;
-  border-color: #6C9 #063 #063 #6C9;
+  border-color: #C96 #630 #630 #C96;
   color: #FFF;
-  background-color: #396;
+  background-color: #963;
   padding: 2px 6px;
   display: inline-block;
 }
@@ -285,10 +285,10 @@ button {
 }
 
 .oyat, .siihelp h2 {
-  border-left: solid 1ex #396;
-  background: linear-gradient(to right, #181111, #543b3b, #36262b) fixed;
+  border-left: solid 1ex #C11;
+  background: linear-gradient(to right, #66C, #3939ac, #6a40bf) fixed;
   padding: 0.2em;
-  color: #CCE;
+  color: #FCA;
 }
 
 .oekaki {
@@ -307,16 +307,16 @@ button {
   border-style: solid;
   border-width: 1px;
   padding: 2px;
-  border-color: #063 #6C9 #6C9 #063;
+  border-color: #630 #C96 #C96 #630;
   color: #000;
-  background-color: #EEEEEE;
+  background-color: #EEE;
 }
 
 .NEO .color_bk {
-  color: #333;
+  color: #999;
 }
 .NEO .color_bk2 {
-  color: #222;
+  color: #766;
 }
 .NEO .color_tool_icon {
   color: #444;
@@ -328,25 +328,25 @@ button {
   color: #333;
 }
 .NEO .color_text {
-  color: #FFF;
+  color: #FEE;
 }
 .NEO .color_bar {
-  color: #333;
+  color: #765;
 }
 .NEO .tool_color_button {
-  color: #567;
+  color: #877;
 }
 .NEO .tool_color_button2 {
-  color: #234;
+  color: #544;
 }
 .NEO .tool_color_text {
   color: #FFF;
 }
 .NEO .tool_color_bar {
-  color: #333;
+  color: #A98;
 }
 .NEO .tool_color_frame {
-  color: #222;
+  color: #765;
 }
 
 .palette {
@@ -385,7 +385,7 @@ button {
   font-size: smaller;
 }
 .delfo th, .delfo td {
-  border: 1px solid #112211;
+  border: 1px solid #263;
 }
 
 .ppost {
@@ -425,4 +425,4 @@ button {
   #appstage {
     display: block;
   }
-}/*# sourceMappingURL=mono_dev.css.map */
+}/*# sourceMappingURL=mono_pop.css.map */

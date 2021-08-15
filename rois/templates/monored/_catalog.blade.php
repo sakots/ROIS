@@ -10,7 +10,8 @@
 		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_deep.min.css" id="css3" disabled>
 		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_mayo.min.css" id="css4" disabled>
 		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_dev.min.css" id="css5" disabled>
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_dql.min.css" id="css6" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_sql.min.css" id="css6" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_pop.min.css" id="css7" disabled>
 		<script src="templates/{{$themedir}}/switchcss.js"></script>
 	</head>
 	<body>
@@ -194,15 +195,17 @@
 								<option value="del">削除</option>
 							</select>
 							<input class="button" type="submit" value=" OK ">
+							<label for="mystyle">Color</label>
 							<span class="stylechanger">
 								<select class="form" name="select" id="mystyle" onchange="SetCss(this);">
-									<option value="mono_red.min.css"> RED</option>
+									<option value="mono_red.min.css">RED</option>
 									<option value="mono_main.min.css">MONO</option>
 									<option value="mono_dark.min.css">dark</option>
 									<option value="mono_deep.min.css">deep</option>
 									<option value="mono_mayo.min.css">MAYO</option>
-									<option value="mono_dev.min.css"> DEV</option>
-									<option value="mono_sql.min.css"> SQL</option>
+									<option value="mono_dev.min.css">DEV</option>
+									<option value="mono_sql.min.css">SQL</option>
+									<option value="mono_pop.min.css">POP</option>
 								</select>
 							</span>
 						</p>

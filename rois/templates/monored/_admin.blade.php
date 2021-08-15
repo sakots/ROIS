@@ -10,7 +10,8 @@
 		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_deep.min.css" id="css3" disabled>
 		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_mayo.min.css" id="css4" disabled>
 		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_dev.min.css" id="css5" disabled>
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_dql.min.css" id="css6" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_sql.min.css" id="css6" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_pop.min.css" id="css7" disabled>
 		<script src="templates/{{$themedir}}/switchcss.js"></script>
 	</head>
 	<body>
