@@ -5,7 +5,7 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.99.5'); //lot.210815.2
+define('ROIS_VER','v0.99.6'); //lot.210815.3
 
 //設定の読み込み
 require(__DIR__.'/config.php');
@@ -1208,19 +1208,17 @@ function paintform($rep){
 	//パレット設定
 	//初期パレット
 	$initial_palette = 'Palettes[0] = "#000000\n#FFFFFF\n#B47575\n#888888\n#FA9696\n#C096C0\n#FFB6FF\n#8080FF\n#25C7C9\n#E7E58D\n#E7962D\n#99CB7B\n#FCECE2\n#F9DDCF";';
-	$ni = 0;
 	foreach($pallets_dat as $p_value){
-		if($pallets_dat[$ni][1] == filter_input(INPUT_POST, 'palettes')){ // キーと入力された値が同じなら
-			$set_palettec = $pallets_dat[$ni][1];
+		if($p_value[1] == filter_input(INPUT_POST, 'palettes')){ // キーと入力された値が同じなら
+			$set_palettec = $p_value[1];
 			setcookie("palettec", $set_palettec, time()+(86400*SAVE_COOKIE)); // Cookie保存
 			if(is_array($p_value)){
-				$lines = file($pallets_dat[$ni][1]);
+				$lines = file($p_value[1]);
 			}else{
 				$lines = file($p_value);
 			}
 			break;
 		}
-		$ni++;
 	}
 
 	$pal = array();
