@@ -5,7 +5,7 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.99.4'); //lot.210815.1
+define('ROIS_VER','v0.99.5'); //lot.210815.2
 
 //設定の読み込み
 require(__DIR__.'/config.php');
@@ -1116,6 +1116,7 @@ function paintform($rep){
 	global $pallets_dat;
 
 	$pwd = trim(filter_input(INPUT_POST, 'pwd'));
+	$imgfile = filter_input(INPUT_POST, 'img');
 
 	//ツール
 	if (isset($_POST["tools"])) {
@@ -1129,6 +1130,12 @@ function paintform($rep){
 
 	$picw = filter_input(INPUT_POST, 'picw',FILTER_VALIDATE_INT);
 	$pich = filter_input(INPUT_POST, 'pich',FILTER_VALIDATE_INT);
+	
+	if($mode === "contpaint"){
+		list($picw,$pich) = getimagesize(IMG_DIR.$imgfile); //キャンバスサイズ
+
+	}
+
 	$anime = isset($_POST["anime"]) ? true : false;
 	$var_b['anime'] = $anime;
 	
@@ -1448,7 +1455,7 @@ function incontinue($no) {
 
 	try{
 		$db = new PDO("sqlite:rois.db");
-		$sql = "SELECT * FROM tablelog WHERE picfile=$no ORDER BY tree DESC";
+		$sql = "SELECT * FROM tablelog WHERE picfile='$no' ORDER BY tree DESC";
 		$posts = $db->query($sql);
 
 		$oya = array();
@@ -1516,7 +1523,7 @@ function delmode(){
 		$db = new PDO("sqlite:rois.db");
 
 		//パスワードを取り出す
-		$sql ="SELECT pwd FROM $deltable WHERE $idk = $delno";
+		$sql ="SELECT pwd FROM $deltable WHERE $idk = '$delno'";
 		$msgs = $db->prepare($sql);
 		if ($msgs == false) {
 			error('そんな記事ない気がします。');
@@ -1528,7 +1535,7 @@ function delmode(){
 		}
 
 		//削除記事の画像を取り出す
-		$sqlp ="SELECT picfile FROM $deltable WHERE $idk = $delno";
+		$sqlp ="SELECT picfile FROM $deltable WHERE $idk = '$delno'";
 		$msgsp = $db->prepare($sqlp);
 		$msgsp->execute();
 		$msgp = $msgsp->fetch();
@@ -1596,13 +1603,13 @@ function delmode(){
 			}
 			//↑画像とか削除処理完了
 			//データベースから削除
-			$sql = "DELETE FROM $deltable WHERE $idk=$delno;";
+			$sql = "DELETE FROM $deltable WHERE $idk = '$delno'";
 			$db = $db->exec($sql);
 			$var_b['message'] = '削除しました。';
 		} elseif ($admin_pass == $ppwd && $admindelmode != 1) {
 			//管理モード以外での管理者削除は
 			//データベースから削除はせずに非表示
-			$sql = "UPDATE $deltable SET invz=1 WHERE $idk=$delno";
+			$sql = "UPDATE $deltable SET invz=1 WHERE $idk = '$delno'";
 			$db = $db->exec($sql);
 			$var_b['message'] = '削除しました。';
 		} else {
@@ -1915,7 +1922,7 @@ function editexec(){
 
 	try {
 		$db = new PDO("sqlite:rois.db");
-		$sql = "UPDATE $edittable set modified = datetime('now', 'localtime'), name = '$name', mail = '$mail', sub = '$sub', com = '$com', url = '$url', host = '$host', exid = '$exid', pwd = '$pwdh' where $eid = $e_no";
+		$sql = "UPDATE $edittable set modified = datetime('now', 'localtime'), name = '$name', mail = '$mail', sub = '$sub', com = '$com', url = '$url', host = '$host', exid = '$exid', pwd = '$pwdh' where $eid = '$e_no'";
 		$db = $db->exec($sql);
 		$db = null;
 		$var_b['message'] = '編集完了しました。';
