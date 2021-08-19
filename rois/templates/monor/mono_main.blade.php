@@ -51,7 +51,7 @@
 							@if ($select_palettes)
 							<select name="palettes" id="palettes" onchange="SetPal(this);">
 								@foreach ($pallets_dat as $palette)
-								<option value="{{$pallets_dat[$loop->index][1]}}" id="palette_no{{$loop->index}}">{{$pallets_dat[$loop->index][0]}}</option>
+								<option value="{{$pallets_dat[$loop->index][1]}}">{{$pallets_dat[$loop->index][0]}}</option>
 								@endforeach
 							</select>
 							@else
