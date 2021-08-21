@@ -358,6 +358,10 @@ button {
   font-weight: bold;
 }
 
+#cp {
+  scroll-behavior: smooth;
+}
+
 #catalog {
   display: flex;
   flex-direction: row;

@@ -5,13 +5,6 @@
 		<title>{{$btitle}}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="stylesheet" href="./templates/{{$themedir}}/css/mono_main.css" type="text/css">
-		<script>
-			function SetPal(obj){
-				var palIdx = obj.selectedIndex;
-				SetCookie("palettIdx",palIdx);
-				window.location.reload();
-			}
-		</script>
 	</head>
 	<body>
 		<header id="header">
@@ -49,13 +42,13 @@
 							</select>
 							<label for="palettes">パレット</label>
 							@if ($select_palettes)
-							<select name="palettes" id="palettes" onchange="SetPal(this);">
+							<select name="palettes" id="palettes">
 								@foreach ($pallets_dat as $palette)
-								<option value="{{$pallets_dat[$loop->index][1]}}">{{$pallets_dat[$loop->index][0]}}</option>
+								<option value="{{$pallets_dat[$loop->index][1]}}" id="{{$loop->index}}">{{$pallets_dat[$loop->index][0]}}</option>
 								@endforeach
 							</select>
 							@else
-							<select name="palettes" id="palettes" onchange="SetPal(this);">
+							<select name="palettes" id="palettes">
 								<option value="neo">標準</option>
 							</select>
 							@endif
@@ -263,10 +256,6 @@
 							<input class="button" type="submit" value=" OK ">
 						</p>
 					</form>
-					<script>
-						palIdx = GetCookie('palettIdx');
-						document.getElementById("palettes").selectedIndex = palIdx;
-					</script>
 				</section>
 			</div>
 			<script src="loadcookie.js"></script>

@@ -94,6 +94,9 @@
 			<hr>
 			<h2 class="oekaki">OEKAKI MODE</h2>
 			<hr>
+			@if ($tool == 'chicken')
+			<p><a href="#cp">ChickenPaintへ</a></p>
+			@endif
 		</header>
 		<main>
 			@if ($tool != 'chicken')
@@ -704,29 +707,31 @@
 				</div>
 			</section>
 			@else
-			<div id="chickenpaint-parent"></div>
-			<p></p>
-			<script>
-				document.addEventListener("DOMContentLoaded", function() {
-					new ChickenPaint({
-						uiElem: document.getElementById("chickenpaint-parent"),
-						canvasWidth: {{$picw}},
-						canvasHeight: {{$pich}},
-				
-					@if (isset($imgfile)) loadImageUrl: "{{$imgfile}}", @endif
-					@if (isset($pchfile)) loadChibiFileUrl: "{{$pchfile}}", @endif
-					saveUrl: "save.php?usercode={!!$usercode!!}",
-					postUrl: "{{$self}}?mode={!!$mode!!}&stime={{$stime}}",
-					exitUrl: "{{$self}}",
-				
-						allowDownload: true,
-						resourcesRoot: "chickenpaint/",
-						disableBootstrapAPI: true,
-						fullScreenMode: "auto"
+			<section id="cp">
+				<div id="chickenpaint-parent"></div>
+				<p></p>
+				<script>
+					document.addEventListener("DOMContentLoaded", function() {
+						new ChickenPaint({
+							uiElem: document.getElementById("chickenpaint-parent"),
+							canvasWidth: {{$picw}},
+							canvasHeight: {{$pich}},
+					
+						@if (isset($imgfile)) loadImageUrl: "{{$imgfile}}", @endif
+						@if (isset($pchfile)) loadChibiFileUrl: "{{$pchfile}}", @endif
+						saveUrl: "save.php?usercode={!!$usercode!!}",
+						postUrl: "{{$self}}?mode={!!$mode!!}&stime={{$stime}}",
+						exitUrl: "{{$self}}",
+					
+							allowDownload: true,
+							resourcesRoot: "chickenpaint/",
+							disableBootstrapAPI: true,
+							fullScreenMode: "auto"
 
-					});
-				})
-			</script>
+						});
+					})
+				</script>
+			</section>
 			@endif
 		</main>
 		<footer id="footer">

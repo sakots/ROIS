@@ -8,9 +8,12 @@
 define('THEME_NAME', "MONOR");
 
 //テーマのバージョン
-define('THEME_VER', "v0.99.7b lot.210819.1");
+define('THEME_VER', "v0.99.8 lot.210821.0");
 
 /* -------------------- */
+
+//テーマがXHTMLか 1:XTHML 0:HTML
+define('TH_XHTML', 0);
 
 /* テンプレートファイル名に".blade.php"は不要 */
 
