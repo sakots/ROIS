@@ -42,7 +42,10 @@ function l() {
             checkd_if_formval_equal_cookieval(document.forms[i].pich, PH);
         }
         if (document.forms[i].palettes) {
-            document.forms[i].palettes.selectedIndex = PL;
+            if (PL != "") {
+                document.forms[i].palettes.selectedIndex = PL;
+            }
+            checkd_if_formval_equal_cookieval(document.forms[i].palettes, PL);
         }
     }
 };

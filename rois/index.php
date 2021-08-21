@@ -5,7 +5,7 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.99.7'); //lot.210819.0
+define('ROIS_VER','v0.99.8'); //lot.210821.0
 
 //設定の読み込み
 require(__DIR__.'/config.php');
@@ -94,16 +94,15 @@ $var_b['share_button'] = SHARE_BUTTON;
 
 $var_b['use_hashtag'] = USE_HASHTAG;
 
-if(!defined('A_NAME_SAN')) {
-	define('A_NAME_SAN','さん');
-}
+defined('A_NAME_SAN') or define('A_NAME_SAN','さん');
 
 //ペイント画面の$pwdの暗号化
-if(!defined('CRYPT_PASS')){//config.phpで未定義なら初期値が入る
-	define('CRYPT_PASS','qRyFf1V6nyU4gSi');//暗号鍵初期値
-	}
+defined('CRYPT_PASS') or define('CRYPT_PASS','qRyFf1V6nyU4gSi');
 define('CRYPT_METHOD','aes-128-cbc');
 define('CRYPT_IV','T3pkYxNyjN7Wz3pu');//半角英数16文字
+
+//テーマがXHTMLか設定されてないなら
+defined('TH_XHTML') or define('TH_XHTML', 0);
 
 /* オートリンク */
 function auto_link($proto){
@@ -122,8 +121,9 @@ function hashtag_link($hashtag) {
 	return $hashtag;
 }
 
-//初期設定
-init();		//←初期設定後は不要なので削除可
+//初期設定(初期設定後は不要なので削除可)
+init();
+
 deltemp();
 
 $message ="";
@@ -369,6 +369,7 @@ function regist() {
 	$pwd = trim(filter_input(INPUT_POST, 'pwd'));
 	$pwdh = password_hash($pwd,PASSWORD_DEFAULT);
 	$exid = trim(filter_input(INPUT_POST, 'exid',FILTER_VALIDATE_INT));
+	$pal = filter_input(INPUT_POST, 'palettes');
 
 	if($req_method !== "POST") {error(MSG006);}
 
@@ -414,7 +415,7 @@ function regist() {
 			$tree = ($parent * 1000000000) - $utime;
 
 			// 二重投稿チェック
-			if (empty($_POST["modid"])==true) {
+			if (empty($_POST["modid"])) {
 				// スレ立ての場合
 				$table = 'tablelog';
 				$wid = 'tid';
@@ -424,7 +425,7 @@ function regist() {
 				$wid = 'iid';
 			}
 			//最新コメント取得
-			$sqlw = "SELECT sub, com, host, picfile FROM $table ORDER BY $wid DESC LIMIT 1";
+			$sqlw = "SELECT * FROM $table ORDER BY $wid DESC LIMIT 1";
 			$msgw = $db->prepare($sqlw);
 			$msgw->execute();
 			$msgwc = $msgw->fetch();
@@ -438,16 +439,17 @@ function regist() {
 					$msgw = null;
 					$db = null; //db切断
 					error('二重投稿ですか？');
-					exit;
 				}
-				//画像番号が一致の場合(投稿してブラウザバック、また投稿とか)
+				//スレ立て時　画像番号が一致の場合(投稿してブラウザバック、また投稿とか)
 				//二重投稿と判別(画像がない場合は処理しない)
-				if($msgwc["picfile"] !== "" && $picfile == $msgwc["picfile"]){
-					error('二重投稿ですか？');
-					exit;
+				if(!empty($_POST["modid"])) {
+					if($msgwc["picfile"] !== "" && $picfile == $msgwc["picfile"]){
+						$db = null; //db切断
+						error('二重投稿ですか？');
+					}
 				}
 			}
-			//↑二重投稿チェックおわり
+			//↑ 二重投稿チェックおわり
 
 			//画像ファイルとか処理
 			if ($picfile) {
@@ -494,20 +496,7 @@ function regist() {
 			// 連続する空行を一行
 			$com = preg_replace("/\n((　| )*\n){3,}/","\n",$com);
 
-			//age_sageカウント 兼 レス数カウント
-			$sql = "SELECT COUNT(*) as cnt FROM tabletree WHERE invz=0";
-			$counts = $db->query("$sql");
-			$count = $counts->fetch();
-			$age = $count["cnt"];
-
-			//スレッド数カウント
-			$sql = "SELECT COUNT(*) as cnti FROM tablelog WHERE invz=0";
-			$countsi = $db->query("$sql");
-			$counti = $countsi->fetch();
-			$logt = $counti["cnti"];
-
 			// 値を追加する
-
 			// 'のエスケープ(入りうるところがありそうなとこだけにしといた)
 			$name = str_replace("'","''",$name);
 			$sub = str_replace("'","''",$sub);
@@ -516,163 +505,50 @@ function regist() {
 			$url = str_replace("'","''",$url);
 			$host = str_replace("'","''",$host);
 
+			//id生成
+			$id = substr(crypt(md5($host.ID_SEED.date("Ymd", $utime)),'id'),-8);
+
 			// スレ建ての場合
-			if (empty($_POST["modid"])==true && $logt <= LOG_MAX_T) {
-				//id生成
-				$id = substr(crypt(md5($host.ID_SEED.date("Ymd", $utime)),'id'),-8);
-				$sql = "INSERT INTO tablelog (created, modified, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, age, invz, host) VALUES (datetime('now', 'localtime'), datetime('now', 'localtime'), '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$time', '$pwdh', '$id', '$exid', '$tree', '$age', '$invz', '$host')";
-				$db = $db->exec($sql);
-			} elseif(empty($_POST["modid"])==true && $logt > LOG_MAX_T) {
-				//ログ行数オーバーの場合
-				//id生成
-				$id = substr(crypt(md5($host.ID_SEED.date("Ymd", $utime)),'id'),-8);
+			if (empty($_POST["modid"]) === true) {
+				$age = 0;
 				$sql = "INSERT INTO tablelog (created, modified, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, age, invz, host) VALUES (datetime('now', 'localtime'), datetime('now', 'localtime'), '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$time', '$pwdh', '$id', '$exid', '$tree', '$age', '$invz', '$host')";
 				$db->exec($sql);
-				//最初の行にある画像の名前を取得
-				$sqlimg = "SELECT picfile FROM tablelog ORDER BY tid LIMIT 1";
-				$msgs = $db->prepare($sqlimg);
-				$msgs->execute();
-				$msg = $msgs->fetch();
-				$msgpic = $msg["picfile"]; //画像の名前取得できた
-				//画像とかの削除処理
-				if (is_file(IMG_DIR.$msgpic)) {
-					$msgdat =pathinfo($msgpic, PATHINFO_FILENAME );//拡張子除去
-					if (is_file(IMG_DIR.$msgdat.'.png')) {
-						unlink(IMG_DIR.$msgdat.'.png');
-					}
-					if (is_file(IMG_DIR.$msgdat.'.jpg')) {
-						unlink(IMG_DIR.$msgdat.'.jpg'); //一応jpgも
-					}
-					if (is_file(IMG_DIR.$msgdat.'.pch')) {
-						unlink(IMG_DIR.$msgdat.'.pch'); 
-					}
-					if (is_file(IMG_DIR.$msgdat.'.spch')) {
-						unlink(IMG_DIR.$msgdat.'.spch'); 
-					}
-					if (is_file(IMG_DIR.$msgdat.'.dat')) {
-						unlink(IMG_DIR.$msgdat.'.dat'); 
-					}
-					if (is_file(IMG_DIR.$msgdat.'.chi')) {
-						unlink(IMG_DIR.$msgdat.'.chi'); 
-					}
-				}
-				//↑画像とか削除処理完了
-				//db最初の行を削除
-				$sqldel = "DELETE FROM tablelog ORDER BY tid LIMIT 1";
-				$db = $db->exec($sqldel);
 			} elseif(empty($_POST["modid"])!=true && strpos($mail,'sage')!==false ) {
 				//レスの場合でメール欄にsageが含まれる
 				$tid = filter_input(INPUT_POST, 'modid');
-				//id生成
-				$id = substr(crypt(md5($host.ID_SEED.date("Ymd", $utime)),'id'),-8);
-				if ($age <= LOG_MAX_R) {
-					$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, invz, host) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$time', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host')";
-					$db = $db->exec($sql);
-				} else {
-					//ログ行数オーバーの場合
-					$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, invz, host) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$time', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host')";
-					$db->exec($sql);
-					//レス画像貼りは今のところ未対応だけど念のため
-					//最初の行にある画像の名前を取得
-					$sqlimg = "SELECT picfile FROM tabletree ORDER BY iid LIMIT 1";
-					$sqlimg = $db->prepare($sqlimg);
-					$msgs->execute();
-					$msg = $msgs->fetch();
-					$msgpic = $msg["picfile"]; //画像の名前取得できた
-					//画像とかの削除処理
-					if (is_file(IMG_DIR.$msgpic)) {
-						$msgdat =pathinfo($msgpic, PATHINFO_FILENAME );//拡張子除去
 
-						if (is_file(IMG_DIR.$msgdat.'.png')) {
-						unlink(IMG_DIR.$msgdat.'.png');
-						}
-						if (is_file(IMG_DIR.$msgdat.'.jpg')) {
-							unlink(IMG_DIR.$msgdat.'.jpg'); //一応jpgも
-						}
-						if (is_file(IMG_DIR.$msgdat.'.pch')) {
-							unlink(IMG_DIR.$msgdat.'.pch'); 
-						}
-						if (is_file(IMG_DIR.$msgdat.'.spch')) {
-							unlink(IMG_DIR.$msgdat.'.spch'); 
-						}
-						if (is_file(IMG_DIR.$msgdat.'.dat')) {
-							unlink(IMG_DIR.$msgdat.'.dat'); 
-						}
-						if (is_file(IMG_DIR.$msgdat.'.chi')) {
-							unlink(IMG_DIR.$msgdat.'.chi'); 
-						}
-					}
-					//↑画像とか削除処理完了
-					//db最初の行を削除
-					$sqlresdel = "DELETE FROM tabletree ORDER BY iid LIMIT 1";
-					$db = $db->exec($sqlresdel);
-				}
+				$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, invz, host) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$time', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host')";
+				$db = $db->exec($sql);
 			} else {
 				//レスの場合でメール欄にsageが含まれない
 				$tid = filter_input(INPUT_POST, 'modid');
-				//id生成
-				$id = substr(crypt(md5($host.ID_SEED.date("Ymd", $utime)),'id'),-8);
 				//age処理するかどうか
 				//スレのレス数を数える
-				$sqlr = "SELECT COUNT(*) as cntres FROM tabletree WHERE tid =  '$tid' AND invz=0";
+				$sqlr = "SELECT COUNT('iid') as cntres FROM tabletree WHERE tid = $tid AND invz=0";
 				$countsr = $db->query("$sqlr");
 				$countr = $countsr->fetch();
 				$resn = $countr["cntres"]; //スレのレス数取得できた
 
-				if ($age <= LOG_MAX_R) {
-					if($resn < MAX_RES){ //レス数が指定値より少ないならage
-						$nage = $age +1;
-						$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, invz, host) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$time', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host'); UPDATE tablelog set age = '$nage' where tid = '$tid'";
-					} else {
-						$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, invz, host) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$time', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host')";
-					}
-					$db = $db->exec($sql);
+				//レス数カウント
+				$sql = "SELECT COUNT('iid') as cnt FROM tabletree WHERE tid = $tid";
+				$counts = $db->query("$sql");
+				$count = $counts->fetch();
+				$age = $count["cnt"];
+
+				//レス数が指定値より少ないならage
+				if($resn < MAX_RES){
+					$nage = $age +1;
+					$tree = time() * 999999999;
+					$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, invz, host) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$time', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host'); UPDATE tablelog set age = '$nage', tree = '$tree' where tid = '$tid'";
 				} else {
-					//ログ行数オーバーの場合
 					$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, invz, host) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$time', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host')";
-					$db->exec($sql);
-					//レス画像貼りは今のところ未対応だけど念のため
-					//最初の行にある画像の名前を取得
-					$sqlimg = "SELECT picfile FROM tabletree ORDER BY iid LIMIT 1";
-					$msgs = $db->prepare($sqlimg);
-					$msgs->execute();
-					$msg = $msgs->fetch();
-					$msgpic = $msg["picfile"]; //画像の名前取得できた
-					//画像とかの削除処理
-					if (is_file(IMG_DIR.$msgpic)) {
-						$msgdat = str_replace( strrchr($msgpic,"."), "", $msgpic); //拡張子除去
-						if (is_file(IMG_DIR.$msgdat.'.png')) {
-						unlink(IMG_DIR.$msgdat.'.png');
-						}
-						if (is_file(IMG_DIR.$msgdat.'.jpg')) {
-							unlink(IMG_DIR.$msgdat.'.jpg'); //一応jpgも
-						}
-						if (is_file(IMG_DIR.$msgdat.'.pch')) {
-							unlink(IMG_DIR.$msgdat.'.pch'); 
-						}
-						if (is_file(IMG_DIR.$msgdat.'.spch')) {
-							unlink(IMG_DIR.$msgdat.'.spch'); 
-						}
-						if (is_file(IMG_DIR.$msgdat.'.dat')) {
-							unlink(IMG_DIR.$msgdat.'.dat'); 
-						}
-						if (is_file(IMG_DIR.$msgdat.'.chi')) {
-							unlink(IMG_DIR.$msgdat.'.chi'); 
-						}
-					}
-					//↑画像とか削除処理完了
-					//db最初の行を削除
-					$sqlresdel = "DELETE FROM tabletree ORDER BY iid LIMIT 1";
-					$db = $db->exec($sqlresdel);
 				}
+				$db = $db->exec($sql);
 			}
-
 			$c_pass = $pwd;
-			$names = $name;
-
 			//-- クッキー保存 --
 			//クッキー項目："クッキー名 クッキー値"
-			$cookies = ["namec\t".$name,"emailc\t".$mail,"urlc\t".$url,"pwdc\t".$c_pass];
+			$cookies = ["namec\t".$name,"emailc\t".$mail,"urlc\t".$url,"pwdc\t".$c_pass."palettec\t".$pal];
 
 			foreach ( $cookies as $cookie ) {
 				list($c_name,$c_cookie) = explode("\t",$cookie);
@@ -680,7 +556,6 @@ function regist() {
 			}
 
 			$var_b['message'] = '書き込みに成功しました。';
-			$msgs = null;
 			$msgw = null;
 			$count = null;
 			$counts = null;
@@ -699,6 +574,78 @@ function def() {
 	global $var_b,$blade;
 	$dsp_res = DSP_RES;
 	$page_def = PAGE_DEF;
+
+	//ログの行数が最大値を超えていたら削除　が、うまく動かない
+	/*
+	try {
+		$db = new PDO("sqlite:rois.db");
+		//スレッド数カウント
+		$sql = "SELECT COUNT(*) as cnti FROM tablelog WHERE invz=0;";
+		$countsi = $db->query("$sql");
+		$counti = $countsi->fetch();
+		$logt = $counti["cnti"];
+		$sql = null;
+		$db = null; //db切断
+	} catch (PDOException $e) {
+		echo "DB接続エラー:" .$e->getMessage();
+	}
+	if($logt > LOG_MAX_T) {
+		try {
+			$db = new PDO("sqlite:rois.db");
+			//オーバーした行の画像とスレ番号を取得
+			$sqlimg = "SELECT * FROM tablelog ORDER BY tid LIMIT 1";
+			$msgs = $db->prepare($sqlimg);
+			$msgs->execute();
+			$msg = $msgs->fetch();
+
+			$dtid = (int)$msg["tid"]; //消す行のスレ番号
+			$msgpic = $msg["picfile"]; //画像の名前取得できた
+			//画像とかの削除処理
+			if (is_file(IMG_DIR.$msgpic)) {
+				$msgdat =pathinfo($msgpic, PATHINFO_FILENAME );//拡張子除去
+				if (is_file(IMG_DIR.$msgdat.'.png')) {
+					unlink(IMG_DIR.$msgdat.'.png');
+				}
+				if (is_file(IMG_DIR.$msgdat.'.jpg')) {
+					unlink(IMG_DIR.$msgdat.'.jpg'); //一応jpgも
+				}
+				if (is_file(IMG_DIR.$msgdat.'.pch')) {
+					unlink(IMG_DIR.$msgdat.'.pch'); 
+				}
+				if (is_file(IMG_DIR.$msgdat.'.spch')) {
+					unlink(IMG_DIR.$msgdat.'.spch'); 
+				}
+				if (is_file(IMG_DIR.$msgdat.'.dat')) {
+					unlink(IMG_DIR.$msgdat.'.dat'); 
+				}
+				if (is_file(IMG_DIR.$msgdat.'.chi')) {
+					unlink(IMG_DIR.$msgdat.'.chi'); 
+				}
+			}
+
+			//レス削除
+			$delres = "DELETE FROM tablelog WHERE tid = '$dtid'";
+			$db->exec($delres);
+			//スレ削除
+			$delths = "DELETE FROM tabletree WHERE tid = '$dtid'";
+			$db = $db->exec($delths);
+			
+			$msgres = null;
+			$sqlres = null;
+			$sqlimg = null;
+			$delths = null;
+			$msg = null;
+			$dtid = null;
+			$stmt = null;
+			$db = null; //db切断
+
+		} catch (PDOException $e) {
+			echo "DB接続エラー:" .$e->getMessage();
+		}
+
+	} 
+
+	*/
 
 	//古いスレのレスボタンを表示しない
 	$elapsed_time = ELAPSED_DAYS * 86400; //デフォルトの1年だと31536000
@@ -776,7 +723,7 @@ function def() {
 	try {
 		$db = new PDO("sqlite:rois.db");
 		//1ページの全スレッド取得
-		$sql = "SELECT tid, created, modified, name, mail, sub, com, url, host, exid, id, pwd, utime, picfile, pchfile, img_w, img_h, time, tree, parent, age, utime FROM tablelog WHERE invz=0 ORDER BY age DESC, tree DESC LIMIT $start,$page_def"; 
+		$sql = "SELECT tid, created, modified, name, mail, sub, com, url, host, exid, id, pwd, utime, picfile, pchfile, img_w, img_h, time, tree, parent, age, utime FROM tablelog WHERE invz=0 ORDER BY tree DESC LIMIT $start,$page_def"; 
 		$posts = $db->query($sql);
 
 		$ko = array();
@@ -1601,21 +1548,30 @@ function delmode(){
 			}
 			//↑画像とか削除処理完了
 			//データベースから削除
-			$sql = "DELETE FROM $deltable WHERE $idk = '$delno'";
-			$db = $db->exec($sql);
+			//スレの場合
+			if($delt === 0) {
+				$sql = "DELETE FROM tablelog WHERE $idk = '$delno'";
+				$db->exec($sql);
+				$sql = "DELETE FROM tabletree WHERE tid = '$delno'";
+				$db = $db->exec($sql);
+			} else {
+				//レスの場合
+				$sql = "DELETE FROM tabletree WHERE $idk = '$delno'";
+				$db = $db->exec($sql);
+			}
 			$var_b['message'] = '削除しました。';
 		} elseif ($admin_pass == $ppwd && $admindelmode != 1) {
 			//管理モード以外での管理者削除は
 			//データベースから削除はせずに非表示
 			$sql = "UPDATE $deltable SET invz=1 WHERE $idk = '$delno'";
 			$db = $db->exec($sql);
-			$var_b['message'] = '削除しました。';
+			$var_b['message'] = '非表示にしました。';
 		} else {
 			error('パスワードまたは記事番号が違います。');
 		}
-		$db = null; 
 		$msgp = null;
-		$msg = null;//db切断 
+		$msg = null;
+		$db = null; //db切断 
 	} catch (PDOException $e) {
 		echo "DB接続エラー:" .$e->getMessage();
 	}
@@ -1669,7 +1625,7 @@ function picreplace(){
 	try {
 		$db = new PDO("sqlite:rois.db");
 		//記事を取り出す
-		$sql = "SELECT *  FROM tablelog WHERE tid = $no";
+		$sql = "SELECT * FROM tablelog WHERE tid = $no";
 		$msgs = $db->prepare($sql);
 		$msgs->execute();
 		$msg_d = $msgs->fetch();
@@ -1816,13 +1772,13 @@ function editform() {
 		} else {
 			$db = null; 
 			$msgs = null;
-			$msg = null;//db切断 
+			$db = null; //db切断 
 			error('パスワードまたは記事番号が違います。');
 		}
 		$db = null; 
 		$msgs = null;
 		$posts = null;
-		$msg = null;//db切断 
+		$db = null; //db切断 
 
 		$var_b['othermode'] = 'edit'; //編集モード
 		echo $blade->run(OTHERFILE,$var_b);
@@ -1959,7 +1915,7 @@ function admin() {
 			$posts = $db->query($sql);
 			while ($bbsline = $posts->fetch() ) {
 				if(empty($bbsline)){break;} //スレがなくなったら抜ける
-				$oid = $bbsline["tid"]; //スレのtid(親番号)を取得
+				//$oid = $bbsline["tid"]; //スレのtid(親番号)を取得
 				$bbsline['com'] = htmlentities($bbsline['com'],ENT_QUOTES | ENT_HTML5);
 				$oya[] = $bbsline;
 			} 
