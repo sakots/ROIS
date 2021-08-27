@@ -5,7 +5,7 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.99.8'); //lot.210821.0
+define('ROIS_VER','v0.99.9'); //lot.210828.0
 
 //設定の読み込み
 require(__DIR__.'/config.php');
@@ -566,6 +566,21 @@ function regist() {
 	}
 	unset($name,$mail,$sub,$com,$url,$pwd,$pwdh,$resto,$pictmp,$picfile,$mode);
 	//header('Location:'.PHP_SELF);
+	//ログ行数オーバー処理
+	//スレ数カウント
+	try {
+		$db = new PDO("sqlite:rois.db");
+		$sqlth = "SELECT COUNT(*) as cnt FROM tablelog";
+		$countth = $db->query("$sqlth");
+		$countth = $countth->fetch();
+		$th_cnt = $countth["cnt"];
+	} catch (PDOException $e) {
+		echo "DB接続エラー:" .$e->getMessage();
+	}
+	if($th_cnt > LOG_MAX_T) {
+		logdel();
+	}
+
 	ok('書き込みに成功しました。画面を切り替えます。');
 }
 
@@ -575,77 +590,20 @@ function def() {
 	$dsp_res = DSP_RES;
 	$page_def = PAGE_DEF;
 
-	//ログの行数が最大値を超えていたら削除　が、うまく動かない
-	/*
+	//ログ行数オーバー処理
+	//スレ数カウント
 	try {
 		$db = new PDO("sqlite:rois.db");
-		//スレッド数カウント
-		$sql = "SELECT COUNT(*) as cnti FROM tablelog WHERE invz=0;";
-		$countsi = $db->query("$sql");
-		$counti = $countsi->fetch();
-		$logt = $counti["cnti"];
-		$sql = null;
-		$db = null; //db切断
+		$sqlth = "SELECT COUNT(*) as cnt FROM tablelog";
+		$countth = $db->query("$sqlth");
+		$countth = $countth->fetch();
+		$th_cnt = $countth["cnt"];
 	} catch (PDOException $e) {
 		echo "DB接続エラー:" .$e->getMessage();
 	}
-	if($logt > LOG_MAX_T) {
-		try {
-			$db = new PDO("sqlite:rois.db");
-			//オーバーした行の画像とスレ番号を取得
-			$sqlimg = "SELECT * FROM tablelog ORDER BY tid LIMIT 1";
-			$msgs = $db->prepare($sqlimg);
-			$msgs->execute();
-			$msg = $msgs->fetch();
-
-			$dtid = (int)$msg["tid"]; //消す行のスレ番号
-			$msgpic = $msg["picfile"]; //画像の名前取得できた
-			//画像とかの削除処理
-			if (is_file(IMG_DIR.$msgpic)) {
-				$msgdat =pathinfo($msgpic, PATHINFO_FILENAME );//拡張子除去
-				if (is_file(IMG_DIR.$msgdat.'.png')) {
-					unlink(IMG_DIR.$msgdat.'.png');
-				}
-				if (is_file(IMG_DIR.$msgdat.'.jpg')) {
-					unlink(IMG_DIR.$msgdat.'.jpg'); //一応jpgも
-				}
-				if (is_file(IMG_DIR.$msgdat.'.pch')) {
-					unlink(IMG_DIR.$msgdat.'.pch'); 
-				}
-				if (is_file(IMG_DIR.$msgdat.'.spch')) {
-					unlink(IMG_DIR.$msgdat.'.spch'); 
-				}
-				if (is_file(IMG_DIR.$msgdat.'.dat')) {
-					unlink(IMG_DIR.$msgdat.'.dat'); 
-				}
-				if (is_file(IMG_DIR.$msgdat.'.chi')) {
-					unlink(IMG_DIR.$msgdat.'.chi'); 
-				}
-			}
-
-			//レス削除
-			$delres = "DELETE FROM tablelog WHERE tid = '$dtid'";
-			$db->exec($delres);
-			//スレ削除
-			$delths = "DELETE FROM tabletree WHERE tid = '$dtid'";
-			$db = $db->exec($delths);
-			
-			$msgres = null;
-			$sqlres = null;
-			$sqlimg = null;
-			$delths = null;
-			$msg = null;
-			$dtid = null;
-			$stmt = null;
-			$db = null; //db切断
-
-		} catch (PDOException $e) {
-			echo "DB接続エラー:" .$e->getMessage();
-		}
-
-	} 
-
-	*/
+	if($th_cnt > LOG_MAX_T) {
+		logdel();
+	}
 
 	//古いスレのレスボタンを表示しない
 	$elapsed_time = ELAPSED_DAYS * 86400; //デフォルトの1年だと31536000
@@ -2123,4 +2081,64 @@ function safe_unlink ($path) {
 		return unlink($path);
 	}
 	return false;
+}
+
+//ログの行数が最大値を超えていたら削除
+function logdel() {
+	//オーバーした行の画像とスレ番号を取得
+	try {
+		$db = new PDO("sqlite:rois.db");
+		$sqlimg = "SELECT * FROM tablelog ORDER BY tid LIMIT 1";
+		$msgs = $db->prepare($sqlimg);
+		$msgs->execute();
+		$msg = $msgs->fetch();
+
+		$dtid = (int)$msg["tid"]; //消す行のスレ番号
+		$msgpic = $msg["picfile"]; //画像の名前取得できた
+		//画像とかの削除処理
+		if (is_file(IMG_DIR.$msgpic)) {
+			$msgdat =pathinfo($msgpic, PATHINFO_FILENAME );//拡張子除去
+			if (is_file(IMG_DIR.$msgdat.'.png')) {
+				unlink(IMG_DIR.$msgdat.'.png');
+			}
+			if (is_file(IMG_DIR.$msgdat.'.jpg')) {
+				unlink(IMG_DIR.$msgdat.'.jpg'); //一応jpgも
+			}
+			if (is_file(IMG_DIR.$msgdat.'.pch')) {
+				unlink(IMG_DIR.$msgdat.'.pch'); 
+			}
+			if (is_file(IMG_DIR.$msgdat.'.spch')) {
+				unlink(IMG_DIR.$msgdat.'.spch'); 
+			}
+			if (is_file(IMG_DIR.$msgdat.'.dat')) {
+				unlink(IMG_DIR.$msgdat.'.dat'); 
+			}
+			if (is_file(IMG_DIR.$msgdat.'.chi')) {
+				unlink(IMG_DIR.$msgdat.'.chi'); 
+			}
+		}
+
+		//レスあれば削除
+		//カウント
+		$sqlc = "SELECT COUNT(*) as cnti FROM tablelog WHERE tid = $dtid";
+		$countres = $db->query("$sqlc");
+		$countres = $countres->fetch();
+		$logcount = $countres["cnti"];
+		//削除
+		if($logcount !== 0) {
+			$delres = "DELETE FROM tablelog WHERE tid = $dtid";
+			$db->exec($delres);
+		}
+		//スレ削除
+		$delths = "DELETE FROM tabletree WHERE tid = $dtid";
+		$db->exec($delths);
+
+		$sqlimg = null;
+		$delths = null;
+		$msg = null;
+		$dtid = null;
+		$db = null; //db切断
+	} catch (PDOException $e) {
+		echo "DB接続エラー:" .$e->getMessage();
+	}
 }
