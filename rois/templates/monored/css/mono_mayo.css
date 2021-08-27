@@ -83,6 +83,10 @@ main {
   margin-top: 12px;
   margin-bottom: 12px;
 }
+.thread section figure img, footer section figure img {
+  max-width: 400px;
+  height: auto;
+}
 
 .delf {
   text-align: right;
@@ -429,4 +433,5 @@ button {
   #appstage {
     display: block;
   }
-}/*# sourceMappingURL=mono_mayo.css.map */
+}
+/*# sourceMappingURL=mono_mayo.css.map */
