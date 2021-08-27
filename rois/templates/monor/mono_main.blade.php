@@ -122,11 +122,12 @@
 									</a></span>
 								</h4>
 								@if ($bbsline['picfile'])
-									@if ($dptime)
+									<h5>
+										({{$bbsline['img_w']}} x {{$bbsline['img_h']}})
 										@if ($bbsline['time'] != null)
-											<h5>描画時間：{{$bbsline['time']}}</h5>
+											描画時間：{{$bbsline['time']}}
 										@endif
-									@endif
+									</h5>
 									<figure>
 										<figcaption><a href="{{$path}}{$bbsline['picfile']}" target="_blank">{{$bbsline['picfile']}}</a>
 										@if ($bbsline['pchfile'])
@@ -136,7 +137,7 @@
 											<a href="{{$self}}?mode=continue&amp;no={{$bbsline['picfile']}}">●続きを描く</a>
 										@endif
 										</figcaption>
-										<a href="{{$path}}{{$bbsline['picfile']}}" target="_blank"><img src="{{$path}}{{$bbsline['picfile']}}" alt="{{$bbsline['picfile']}}"></a>
+										<a href="{{$path}}{{$bbsline['picfile']}}" target="_blank"><img src="{{$path}}{{$bbsline['picfile']}}" alt="{{$bbsline['picfile']}}" loading="lazy"></a>
 									</figure>
 								@endif
 								<p class="comment oya">{!!$bbsline['com']!!}</p>
