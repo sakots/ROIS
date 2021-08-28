@@ -5,7 +5,7 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.99.9'); //lot.210828.0
+define('ROIS_VER','v0.99.10'); //lot.210828.1
 
 //設定の読み込み
 require(__DIR__.'/config.php');
@@ -107,17 +107,21 @@ defined('TH_XHTML') or define('TH_XHTML', 0);
 /* オートリンク */
 function auto_link($proto){
 	if(!(stripos($proto,"script")!==false)){//scriptがなければ続行
-	$proto = preg_replace("{(https?|ftp)(://[[:alnum:]\+\$\;\?\.%,!#~*/:@&=_-]+)}","<a href=\"\\1\\2\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">\\1\\2</a>",$proto);
-	return $proto;
+		$pattern = '/((?:https?|ftp):\/\/[-_.!~*\'()a-zA-Z0-9;\/?:@&=+$,%#]+)/';
+		$replace = '<a href="${0}">${0}</a>';
+		$proto = preg_replace( $pattern, $replace, $proto);
+		return $proto;
 	}else{
-	return $proto;
+		return $proto;
 	}
 }
 
 /* ハッシュタグリンク */
 function hashtag_link($hashtag) {
 	$self = PHP_SELF;
-	$hashtag = preg_replace("/(?:^|[^ｦ-ﾟー゛゜々ヾヽぁ-ヶ一-龠ａ-ｚＡ-Ｚ０-９a-zA-Z0-9&_\/]+)[#＃]([ｦ-ﾟー゛゜々ヾヽぁ-ヶ一-龠ａ-ｚＡ-Ｚ０-９a-zA-Z0-9_]*[ｦ-ﾟー゛゜々ヾヽぁ-ヶ一-龠ａ-ｚＡ-Ｚ０-９a-zA-Z]+[ｦ-ﾟー゛゜々ヾヽぁ-ヶ一-龠ａ-ｚＡ-Ｚ０-９a-zA-Z0-9_]*)/u", " <a href=\"{$self}?mode=search&amp;tag=tag&amp;search=\\1\">#\\1</a>", $hashtag);
+	$pattern = '/#(w*[一-龠_ぁ-ん_ァ-ヴー]+|[a-zA-Z0-9]+|[a-zA-Z0-9]w*)/u';
+	$replace = '<a href=\"'.'{'.$self.'}?mode=search&amp;tag=tag&amp;search=#${0}">#${0}</a>';
+	$hashtag = preg_replace( $pattern, $replace, $hashtag);
 	return $hashtag;
 }
 
@@ -485,11 +489,6 @@ function regist() {
 				$pchfile = "";
 			}
 
-			// URLとメールにリンク
-			if(AUTOLINK) $com = auto_link($com);
-			//ハッシュタグ
-			if(USE_HASHTAG) $com = hashtag_link($com);
-
 			// '>'色設定
 			$com = preg_replace("/(^|>)((&gt;|＞)[^<]*)/i", "\\1".RE_START."\\2".RE_END, $com);
 
@@ -693,7 +692,7 @@ function def() {
 			$bbsline = $posts->fetch();
 			if(empty($bbsline)){break;} //スレがなくなったら抜ける
 			$oid = $bbsline["tid"]; //スレのtid(親番号)を取得
-			$sqli = "SELECT iid, tid, created, modified, name, mail, sub, com, url, host, exid, id, pwd, utime, picfile, pchfile, img_w, img_h, time, tree, parent FROM tabletree WHERE tid = $oid and invz=0 ORDER BY tree DESC";
+			$sqli = "SELECT iid, tid, created, modified, name, mail, sub, com, url, host, exid, id, pwd, utime, picfile, pchfile, img_w, img_h, time, tree, parent FROM tabletree WHERE tid = $oid and invz=0 ORDER BY tree ASC";
 			//レス取得
 			$postsi = $db->query($sqli);
 			$j = 0;
@@ -721,7 +720,15 @@ function def() {
 				if(!filter_var($res['url'], FILTER_VALIDATE_URL) || !preg_match('|^https?://.*$|', $res['url'])) {
 					$res['url'] = "";
 				}
-				$res['com'] = nl2br(htmlentities($res['com'],ENT_QUOTES | ENT_HTML5), false);
+				$res['com'] = htmlentities($res['com'], ENT_QUOTES | ENT_HTML5);
+				//オートリンク
+				if(AUTOLINK) {
+					$res['com'] = auto_link($res['com']);
+				}
+				//ハッシュタグ
+				if(USE_HASHTAG) {
+					$res['com'] = hashtag_link($res['com']);
+				}
 				$ko[] = $res;
 				$j++;
 			}
@@ -729,7 +736,15 @@ function def() {
 			if(!filter_var($bbsline['url'], FILTER_VALIDATE_URL) || !preg_match('|^https?://.*$|', $bbsline['url'])) {
 				$bbsline['url'] = "";
 			}
-			$bbsline['com'] = nl2br(htmlentities($bbsline['com'],ENT_QUOTES | ENT_HTML5), false);
+			$bbsline['com'] = htmlentities($bbsline['com'], ENT_QUOTES | ENT_HTML5);
+			// URLとメールにリンク
+			if(AUTOLINK) {
+				$bbsline['com'] = auto_link($bbsline['com']);
+			}
+			//ハッシュタグ
+			if(USE_HASHTAG) {
+				$bbsline['com'] = hashtag_link($bbsline['com']);
+			}
 			$oya[] = $bbsline;
 			$i++;
 		}
@@ -831,7 +846,8 @@ function catalog() {
 function search() {
 	global $blade,$var_b;
 
-	$search = filter_input(INPUT_GET, 'search');
+	$searchf = filter_input(INPUT_GET, 'search');
+	$search = str_replace("'","''",$searchf); //SQL
 	//部分一致検索
 	$bubun =  filter_input(INPUT_GET, 'bubun');
 	//本文検索
@@ -856,7 +872,7 @@ function search() {
 				$sql = "SELECT tid, created, modified, name, mail, sub, com, url, host, exid, id, pwd, utime, picfile, pchfile, img_w, img_h, time, tree, parent, age, utime FROM tablelog WHERE name LIKE '$search' AND invz=0 ORDER BY age DESC, tree DESC"; 
 			}
 			$var_b['catalogmode'] = 'search';
-			$var_b['author'] = $search;
+			$var_b['author'] = $searchf;
 		}
 		
 		$posts = $db->query($sql);
@@ -1798,10 +1814,6 @@ function editexec(){
 	}
 	//↑セキュリティ関連ここまで
 
-	// URLとメールにリンク
-	if(AUTOLINK) $com = auto_link($com);
-	//ハッシュタグ
-	if(USE_HASHTAG) $com = hashtag_link($com);
 	// '>'色設定
 	$com = preg_replace("/(^|>)((&gt;|＞)[^<]*)/i", "\\1".RE_START."\\2".RE_END, $com);
 
