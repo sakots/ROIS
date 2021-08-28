@@ -123,7 +123,7 @@
 								</h4>
 								@if ($bbsline['picfile'])
 									<h5>
-										({{$bbsline['img_w']}} x {{$bbsline['img_h']}})
+										({{$bbsline['img_w']}}x{{$bbsline['img_h']}})
 										@if ($bbsline['time'] != null)
 											描画時間：{{$bbsline['time']}}
 										@endif
@@ -140,7 +140,7 @@
 										<a href="{{$path}}{{$bbsline['picfile']}}" target="_blank"><img src="{{$path}}{{$bbsline['picfile']}}" alt="{{$bbsline['picfile']}}" loading="lazy"></a>
 									</figure>
 								@endif
-								<p class="comment oya">{!!$bbsline['com']!!}</p>
+								<p class="comment oya">{!! nl2br($bbsline['com']) !!}</p>
 								@if (($m_tid - $bbsline['tid']) > $thid)
 								<div class="res">
 									<p class="limit">このスレは古いのでもうすぐ消えます。</p>
@@ -183,7 +183,7 @@
 															@endif
 															</a></span>
 														</h4>
-														<p class="comment">{!!$res['com']!!}</p>
+														<p class="comment">{!! nl2br($res['com']) !!}</p>
 													</section>
 												</section>
 											@endif

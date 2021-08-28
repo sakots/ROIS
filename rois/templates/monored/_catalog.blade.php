@@ -136,7 +136,7 @@
 										</p>
 									@endif
 									<p>
-										[{{$res['tid']}}]({[$res['iid']]})
+										[{{$res['tid']}}]({{$res['iid']}})
 									</p>
 								</div>
 							</div>
