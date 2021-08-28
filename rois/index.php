@@ -104,27 +104,6 @@ define('CRYPT_IV','T3pkYxNyjN7Wz3pu');//半角英数16文字
 //テーマがXHTMLか設定されてないなら
 defined('TH_XHTML') or define('TH_XHTML', 0);
 
-/* オートリンク */
-function auto_link($proto){
-	if(!(stripos($proto,"script")!==false)){//scriptがなければ続行
-		$pattern = '/((?:https?|ftp):\/\/[-_.!~*\'()a-zA-Z0-9;\/?:@&=+$,%#]+)/';
-		$replace = '<a href="${0}">${0}</a>';
-		$proto = preg_replace( $pattern, $replace, $proto);
-		return $proto;
-	}else{
-		return $proto;
-	}
-}
-
-/* ハッシュタグリンク */
-function hashtag_link($hashtag) {
-	$self = PHP_SELF;
-	$pattern = '/#(w*[一-龠_ぁ-ん_ァ-ヴー]+|[a-zA-Z0-9]+|[a-zA-Z0-9]w*)/u';
-	$replace = '<a href=\"'.'{'.$self.'}?mode=search&amp;tag=tag&amp;search=#${0}">#${0}</a>';
-	$hashtag = preg_replace( $pattern, $replace, $hashtag);
-	return $hashtag;
-}
-
 //初期設定(初期設定後は不要なので削除可)
 init();
 
@@ -720,7 +699,7 @@ function def() {
 				if(!filter_var($res['url'], FILTER_VALIDATE_URL) || !preg_match('|^https?://.*$|', $res['url'])) {
 					$res['url'] = "";
 				}
-				$res['com'] = htmlentities($res['com'], ENT_QUOTES | ENT_HTML5);
+				$res['com'] = htmlspecialchars($res['com'], ENT_QUOTES | ENT_HTML5);
 				//オートリンク
 				if(AUTOLINK) {
 					$res['com'] = auto_link($res['com']);
@@ -736,8 +715,8 @@ function def() {
 			if(!filter_var($bbsline['url'], FILTER_VALIDATE_URL) || !preg_match('|^https?://.*$|', $bbsline['url'])) {
 				$bbsline['url'] = "";
 			}
-			$bbsline['com'] = htmlentities($bbsline['com'], ENT_QUOTES | ENT_HTML5);
-			// URLとメールにリンク
+			$bbsline['com'] = htmlspecialchars($bbsline['com'], ENT_QUOTES | ENT_HTML5);
+			//オートリンク
 			if(AUTOLINK) {
 				$bbsline['com'] = auto_link($bbsline['com']);
 			}
@@ -2153,4 +2132,25 @@ function logdel() {
 	} catch (PDOException $e) {
 		echo "DB接続エラー:" .$e->getMessage();
 	}
+}
+
+/* オートリンク */
+function auto_link($proto){
+	if(!(stripos($proto,"script")!==false)){//scriptがなければ続行
+		$pattern = '/((?:https?|ftp):\/\/[-_.!~*\'()a-zA-Z0-9;\/?:@&=+$,%#]+)/';
+		$replace = '<a href="${0}">${0}</a>';
+		$proto = preg_replace( $pattern, $replace, $proto);
+		return $proto;
+	}else{
+		return $proto;
+	}
+}
+
+/* ハッシュタグリンク */
+function hashtag_link($hashtag) {
+	$self = PHP_SELF;
+	$pattern = '/#(w*[一-龠_ぁ-ん_ァ-ヴー]+|[a-zA-Z0-9]+|[a-zA-Z0-9]w*)/u';
+	$replace = '<a href="'.$self.'?mode=search&amp;tag=tag&amp;search=${0}">${0}</a>';
+	$hashtag = preg_replace( $pattern, $replace, $hashtag);
+	return $hashtag;
 }
