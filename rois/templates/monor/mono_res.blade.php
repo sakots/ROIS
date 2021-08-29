@@ -74,7 +74,7 @@
 								</h4>
 									@if ($bbsline['picfile'])
 										<h5>
-											({{$bbsline['img_w']}}x{{$bbsline['img_h']}})
+											{{$bbsline['tool']}} ({{$bbsline['img_w']}}x{{$bbsline['img_h']}})
 											@if ($bbsline['time'] != null)
 												描画時間：{{$bbsline['time']}}
 											@endif
