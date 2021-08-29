@@ -5,7 +5,7 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.99.10'); //lot.210828.1
+define('ROIS_VER','v0.99.11'); //lot.210829.1
 
 //設定の読み込み
 require(__DIR__.'/config.php');
@@ -293,11 +293,12 @@ function init(){
 			// はじめての実行なら、テーブルを作成
 			$db = new PDO("sqlite:rois.db");
 			$db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);  
-			$sql = "CREATE TABLE tablelog (tid integer primary key autoincrement, created timestamp, modified TIMESTAMP, name VARCHAR(1000), mail VARCHAR(1000), sub VARCHAR(1000), com VARCHAR(10000), url VARCHAR(1000), host TEXT, exid TEXT, id TEXT, pwd TEXT, utime INT, picfile TEXT, pchfile TEXT, img_w INT, img_h INT, time TEXT, tree BIGINT, parent INT, age INT, invz VARCHAR(1))";
+			$sql = "CREATE TABLE tablelog (tid integer primary key autoincrement, created timestamp, modified TIMESTAMP, name VARCHAR(1000), mail VARCHAR(1000), sub VARCHAR(1000), com VARCHAR(10000), url VARCHAR(1000), host TEXT, exid TEXT, id TEXT, pwd TEXT, utime INT, picfile TEXT, pchfile TEXT, img_w INT, img_h INT, time TEXT, tree BIGINT, parent INT, age INT, invz VARCHAR(1), tool TEXT, ext01 TEXT, ext02 TEXT, ext03 TEXT, ext04 TEXT)";
 			$db = $db->query($sql);
 			$db = null; //db切断
 			$db = new PDO("sqlite:rois.db");
-			$sql = "CREATE TABLE tabletree (iid integer primary key autoincrement, tid INT, created timestamp, modified TIMESTAMP, name VARCHAR(1000), mail VARCHAR(1000), sub VARCHAR(1000), com VARCHAR(10000), url VARCHAR(1000), host TEXT, exid TEXT, id TEXT, pwd TEXT, utime INT, picfile TEXT, pchfile TEXT, img_w INT, img_h INT, time TEXT, tree BIGINT, parent INT, invz VARCHAR(1))";
+			$db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+			$sql = "CREATE TABLE tabletree (iid integer primary key autoincrement, tid INT, created timestamp, modified TIMESTAMP, name VARCHAR(1000), mail VARCHAR(1000), sub VARCHAR(1000), com VARCHAR(10000), url VARCHAR(1000), host TEXT, exid TEXT, id TEXT, pwd TEXT, utime INT, picfile TEXT, pchfile TEXT, img_w INT, img_h INT, time TEXT, tree BIGINT, parent INT, invz VARCHAR(1), tool TEXT, ext01 TEXT, ext02 TEXT, ext03 TEXT, ext04 TEXT)";
 			$db = $db->query($sql);
 			$db = null; //db切断
 		} else {
@@ -451,25 +452,26 @@ function regist() {
 				if ( is_file(TEMP_DIR.$pchfile) ) {
 					rename( TEMP_DIR.$pchfile, IMG_DIR.$pchfile );
 					chmod( IMG_DIR.$pchfile , PERMISSION_FOR_DEST);
+					$used_tool = 'PaintBBS NEO';
 				} elseif( is_file(TEMP_DIR.$spchfile) ) {
 					rename( TEMP_DIR.$spchfile, IMG_DIR.$spchfile );
 					chmod( IMG_DIR.$spchfile , PERMISSION_FOR_DEST);
 					$pchfile = $spchfile;
+					$used_tool = 'Shi-Painter';
 				} elseif( is_file(TEMP_DIR.$chifile) ) {
 					rename( TEMP_DIR.$chifile, IMG_DIR.$chifile );
 					chmod( IMG_DIR.$chifile, PERMISSION_FOR_DEST);
 					$pchfile = $chifile;
+					$used_tool = 'Chicken Paint';
 				} else {
 					$pchfile = "";
+					$used_tool = "Chicken Paint?";
 				}
 			} else {
 				$img_w = 0;
 				$img_h = 0;
 				$pchfile = "";
 			}
-
-			// '>'色設定
-			$com = preg_replace("/(^|>)((&gt;|＞)[^<]*)/i", "\\1".RE_START."\\2".RE_END, $com);
 
 			// 連続する空行を一行
 			$com = preg_replace("/\n((　| )*\n){3,}/","\n",$com);
@@ -489,13 +491,13 @@ function regist() {
 			// スレ建ての場合
 			if (empty($_POST["modid"]) === true) {
 				$age = 0;
-				$sql = "INSERT INTO tablelog (created, modified, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, age, invz, host) VALUES (datetime('now', 'localtime'), datetime('now', 'localtime'), '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$time', '$pwdh', '$id', '$exid', '$tree', '$age', '$invz', '$host')";
+				$sql = "INSERT INTO tablelog (created, modified, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, age, invz, host, tool) VALUES (datetime('now', 'localtime'), datetime('now', 'localtime'), '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$time', '$pwdh', '$id', '$exid', '$tree', '$age', '$invz', '$host', '$used_tool')";
 				$db->exec($sql);
 			} elseif(empty($_POST["modid"])!=true && strpos($mail,'sage')!==false ) {
 				//レスの場合でメール欄にsageが含まれる
 				$tid = filter_input(INPUT_POST, 'modid');
 
-				$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, invz, host) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$time', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host')";
+				$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, invz, host, tool) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$time', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host', '$used_tool')";
 				$db = $db->exec($sql);
 			} else {
 				//レスの場合でメール欄にsageが含まれない
@@ -517,9 +519,9 @@ function regist() {
 				if($resn < MAX_RES){
 					$nage = $age +1;
 					$tree = time() * 999999999;
-					$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, invz, host) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$time', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host'); UPDATE tablelog set age = '$nage', tree = '$tree' where tid = '$tid'";
+					$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, invz, host, tool) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$time', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host', '$used_tool'); UPDATE tablelog set age = '$nage', tree = '$tree' where tid = '$tid'";
 				} else {
-					$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, invz, host) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$time', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host')";
+					$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, invz, host, tool) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$time', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host', '$used_tool')";
 				}
 				$db = $db->exec($sql);
 			}
@@ -659,7 +661,7 @@ function def() {
 	try {
 		$db = new PDO("sqlite:rois.db");
 		//1ページの全スレッド取得
-		$sql = "SELECT tid, created, modified, name, mail, sub, com, url, host, exid, id, pwd, utime, picfile, pchfile, img_w, img_h, time, tree, parent, age, utime FROM tablelog WHERE invz=0 ORDER BY tree DESC LIMIT $start,$page_def"; 
+		$sql = "SELECT * FROM tablelog WHERE invz=0 ORDER BY tree DESC LIMIT $start,$page_def"; 
 		$posts = $db->query($sql);
 
 		$ko = array();
@@ -671,7 +673,7 @@ function def() {
 			$bbsline = $posts->fetch();
 			if(empty($bbsline)){break;} //スレがなくなったら抜ける
 			$oid = $bbsline["tid"]; //スレのtid(親番号)を取得
-			$sqli = "SELECT iid, tid, created, modified, name, mail, sub, com, url, host, exid, id, pwd, utime, picfile, pchfile, img_w, img_h, time, tree, parent FROM tabletree WHERE tid = $oid and invz=0 ORDER BY tree ASC";
+			$sqli = "SELECT * FROM tabletree WHERE tid = $oid and invz=0 ORDER BY tree ASC";
 			//レス取得
 			$postsi = $db->query($sqli);
 			$j = 0;
@@ -708,6 +710,8 @@ function def() {
 				if(USE_HASHTAG) {
 					$res['com'] = hashtag_link($res['com']);
 				}
+				//引用の色
+				$res['com'] = quote($res['com']);
 				$ko[] = $res;
 				$j++;
 			}
@@ -724,6 +728,8 @@ function def() {
 			if(USE_HASHTAG) {
 				$bbsline['com'] = hashtag_link($bbsline['com']);
 			}
+			//引用の色
+			$bbsline['com'] = quote($bbsline['com']);
 			$oya[] = $bbsline;
 			$i++;
 		}
@@ -804,7 +810,7 @@ function catalog() {
 		while ( $i < CATALOG_N) {
 			$bbsline = $posts->fetch();
 			if(empty($bbsline)){break;} //スレがなくなったら抜ける
-			$bbsline['com'] = nl2br(htmlentities($bbsline['com'],ENT_QUOTES | ENT_HTML5), false);
+			$bbsline['com'] = nl2br(htmlspecialchars($bbsline['com'],ENT_QUOTES | ENT_HTML5), false);
 			$oya[] = $bbsline;
 			$i++;
 		}
@@ -860,7 +866,7 @@ function search() {
 
 		$i = 0;
 		while ($bbsline = $posts->fetch()) {
-			$bbsline['com'] = nl2br(htmlentities($bbsline['com'],ENT_QUOTES | ENT_HTML5), false);
+			$bbsline['com'] = nl2br(htmlspecialchars($bbsline['com'],ENT_QUOTES | ENT_HTML5), false);
 			$oya[] = $bbsline;
 			$i++;
 		}
@@ -953,7 +959,16 @@ function res(){
 			$postsi = $db->query($sqli);
 			$rresname = array();
 			while ($res = $postsi->fetch()){
-				$res['com'] = nl2br(htmlentities($res['com'],ENT_QUOTES | ENT_HTML5), false);
+				$res['com'] = htmlspecialchars($res['com'],ENT_QUOTES | ENT_HTML5);
+				if(AUTOLINK) {
+					$res['com'] = auto_link($res['com']);
+				}
+				//ハッシュタグ
+				if(USE_HASHTAG) {
+					$res['com'] = hashtag_link($res['com']);
+				}
+				//引用の色
+				$res['com'] = quote($res['com']);
 				$ko[] = $res;
 				//投稿者名取得
 				if (!in_array($res['name'], $rresname)) {//重複除外
@@ -964,7 +979,16 @@ function res(){
 					$res['url'] = "";
 				}
 			}
-			$bbsline['com'] = nl2br(htmlentities($bbsline['com'],ENT_QUOTES | ENT_HTML5), false);
+			$bbsline['com'] = htmlspecialchars($bbsline['com'],ENT_QUOTES | ENT_HTML5);
+			if(AUTOLINK) {
+				$bbsline['com'] = auto_link($bbsline['com']);
+			}
+			//ハッシュタグ
+			if(USE_HASHTAG) {
+				$bbsline['com'] = hashtag_link($bbsline['com']);
+			}
+			//引用の色
+			$bbsline['com'] = quote($bbsline['com']);
 			$oya[] = $bbsline;
 			if (!in_array($bbsline['name'], $rresname)) {
 				$rresname[] = $bbsline['name'];
@@ -1322,6 +1346,7 @@ function paintcom($tmpmode){
 			$src = TEMP_DIR.$tmpfile;
 			$srcname = $tmpfile;
 			$date = gmdate("Y/m/d H:i", filemtime($src)+9*60*60);
+			$tool = $tmpfile;
 			$temp[] = compact('src','srcname','date');
 		}
 		$var_b['temp'] = $temp;
@@ -1539,7 +1564,7 @@ function picreplace(){
 	global $type;
 	global $path,$badip;
 	global $blade,$var_b;
-	$stime = filter_input(INPUT_GET, 'stime',FILTER_VALIDATE_INT); 
+	$stime = filter_input(INPUT_GET, 'stime',FILTER_VALIDATE_INT);
 	$no = filter_input(INPUT_GET, 'no',FILTER_VALIDATE_INT);
 	$repcode = filter_input(INPUT_GET, 'repcode');
 	$pwdf = filter_input(INPUT_GET, 'pwd');
@@ -2153,4 +2178,10 @@ function hashtag_link($hashtag) {
 	$replace = '<a href="'.$self.'?mode=search&amp;tag=tag&amp;search=${0}">${0}</a>';
 	$hashtag = preg_replace( $pattern, $replace, $hashtag);
 	return $hashtag;
+}
+
+/* '>'色設定 */
+function quote($quote) {
+	$quote = preg_replace("/(^|>)((&gt;|＞)[^<]*)/i", "\\1".RE_START."\\2".RE_END, $quote);
+	return $quote;
 }
