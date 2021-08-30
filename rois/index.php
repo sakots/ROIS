@@ -5,7 +5,7 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.99.11'); //lot.210829.1
+define('ROIS_VER','v0.99.12'); //lot.210830.0
 
 //設定の読み込み
 require(__DIR__.'/config.php');
@@ -345,12 +345,15 @@ function regist() {
 	$url = filter_input(INPUT_POST, 'url');
 	$com = filter_input(INPUT_POST, 'com');
 	$parent = trim(filter_input(INPUT_POST, 'parent'));
-	$picfile = trim(filter_input(INPUT_POST, 'picfile'));
+	$picfiles = filter_input(INPUT_POST, 'picfile');
+	$picfiles_explode = explode('|', $picfiles);
+	isset($picfiles_explode[0]) ? $picfile = $picfiles_explode[0] : $picfile = '';
+	isset($picfiles_explode[1]) ? $time = $picfiles_explode[1] : $time = '';
+	isset($picfiles_explode[2]) ? $tool_id = $picfiles_explode[2] : $tool_id = '';
 	$invz = trim(filter_input(INPUT_POST, 'invz'));
 	$img_w = trim(filter_input(INPUT_POST, 'img_w',FILTER_VALIDATE_INT));
 	$img_h = trim(filter_input(INPUT_POST, 'img_h',FILTER_VALIDATE_INT));
-	$time = trim(filter_input(INPUT_POST, 'time',FILTER_VALIDATE_INT));
-	$pwd = trim(filter_input(INPUT_POST, 'pwd'));
+	$pwd = filter_input(INPUT_POST, 'pwd');
 	$pwdh = password_hash($pwd,PASSWORD_DEFAULT);
 	$exid = trim(filter_input(INPUT_POST, 'exid',FILTER_VALIDATE_INT));
 	$pal = filter_input(INPUT_POST, 'palettes');
@@ -377,10 +380,6 @@ function regist() {
 		if(preg_match("/$value$/i",$host)) {error(MSG016);}
 	}
 	//セキュリティ関連ここまで
-
-	//描画時間
-	$pptime = (filter_input(INPUT_POST, 'pptime'));
-	$time = (int)$pptime;
 	
 	try {
 		$db = new PDO("sqlite:rois.db");
@@ -452,26 +451,34 @@ function regist() {
 				if ( is_file(TEMP_DIR.$pchfile) ) {
 					rename( TEMP_DIR.$pchfile, IMG_DIR.$pchfile );
 					chmod( IMG_DIR.$pchfile , PERMISSION_FOR_DEST);
-					$used_tool = 'PaintBBS NEO';
 				} elseif( is_file(TEMP_DIR.$spchfile) ) {
 					rename( TEMP_DIR.$spchfile, IMG_DIR.$spchfile );
 					chmod( IMG_DIR.$spchfile , PERMISSION_FOR_DEST);
 					$pchfile = $spchfile;
-					$used_tool = 'Shi-Painter';
 				} elseif( is_file(TEMP_DIR.$chifile) ) {
 					rename( TEMP_DIR.$chifile, IMG_DIR.$chifile );
 					chmod( IMG_DIR.$chifile, PERMISSION_FOR_DEST);
 					$pchfile = $chifile;
-					$used_tool = 'Chicken Paint';
 				} else {
 					$pchfile = "";
-					$used_tool = "Chicken Paint?";
 				}
 			} else {
 				$img_w = 0;
 				$img_h = 0;
 				$pchfile = "";
 			}
+
+			//使ったツール
+			if ($tool_id === 'neo') {
+				$used_tool = 'PaintBBS NEO';
+			} elseif ($tool_id === 'shi') {
+				$used_tool = 'Shi-Painter';
+			} elseif ($tool_id === 'chicken') {
+				$used_tool = 'Chicken Paint';
+			} else {
+				$used_tool = '';
+			}
+			
 
 			// 連続する空行を一行
 			$com = preg_replace("/\n((　| )*\n){3,}/","\n",$com);
@@ -493,7 +500,7 @@ function regist() {
 				$age = 0;
 				$sql = "INSERT INTO tablelog (created, modified, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, age, invz, host, tool) VALUES (datetime('now', 'localtime'), datetime('now', 'localtime'), '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$time', '$pwdh', '$id', '$exid', '$tree', '$age', '$invz', '$host', '$used_tool')";
 				$db->exec($sql);
-			} elseif(empty($_POST["modid"])!=true && strpos($mail,'sage')!==false ) {
+			} elseif(empty($_POST["modid"]) !== true && strpos($mail,'sage') !== false ) {
 				//レスの場合でメール欄にsageが含まれる
 				$tid = filter_input(INPUT_POST, 'modid');
 
@@ -843,18 +850,18 @@ function search() {
 		$db = new PDO("sqlite:rois.db");
 		//全スレッド取得
 		//まずtagがあれば本文検索
-		if ($tag === 'tag') {
-			$sql = "SELECT tid, created, modified, name, mail, sub, com, url, host, exid, id, pwd, utime, picfile, pchfile, img_w, img_h, time, tree, parent, age, utime FROM tablelog WHERE com LIKE '%$search%' AND invz=0 ORDER BY age DESC, tree DESC";
+		if ($tag == 'tag') {
+			$sql = "SELECT * FROM tablelog WHERE com LIKE '%$search%' AND invz=0 ORDER BY age DESC, tree DESC";
 			//レスも
-			$sqli = "SELECT iid, tid, created, modified, name, mail, sub, com, url, host, exid, id, pwd, utime, picfile, pchfile, img_w, img_h, time, tree, parent FROM tabletree WHERE com LIKE '%$search%' and invz=0 ORDER BY tree DESC";
+			$sqli = "SELECT * FROM tabletree WHERE com LIKE '%$search%' and invz=0 ORDER BY tree ASC";
 			$var_b['catalogmode'] = 'hashsearch';
-			$var_b['tag'] = $search;
+			$var_b['tag'] = $searchf;
 		} else {
 			//tagがなければ作者名検索
-			if($bubun === "bubun"){
-				$sql = "SELECT tid, created, modified, name, mail, sub, com, url, host, exid, id, pwd, utime, picfile, pchfile, img_w, img_h, time, tree, parent, age, utime FROM tablelog WHERE name LIKE '%$search%' AND invz=0 ORDER BY age DESC, tree DESC"; 
+			if($bubun == "bubun"){
+				$sql = "SELECT * FROM tablelog WHERE name LIKE '%$search%' AND invz=0 ORDER BY age DESC, tree DESC"; 
 			} else {
-				$sql = "SELECT tid, created, modified, name, mail, sub, com, url, host, exid, id, pwd, utime, picfile, pchfile, img_w, img_h, time, tree, parent, age, utime FROM tablelog WHERE name LIKE '$search' AND invz=0 ORDER BY age DESC, tree DESC"; 
+				$sql = "SELECT * FROM tablelog WHERE name LIKE '$search' AND invz=0 ORDER BY age DESC, tree DESC"; 
 			}
 			$var_b['catalogmode'] = 'search';
 			$var_b['author'] = $searchf;
@@ -955,7 +962,7 @@ function res(){
 		while ($bbsline = $posts->fetch() ) {
 			$bbsline['time']=is_numeric($bbsline['time']) ? calcPtime($bbsline['time']) : $bbsline['time'];
 			//スレッドの記事を取得
-			$sqli = "SELECT * FROM tabletree WHERE (invz = 0 AND tid = $resno ) ORDER BY tree DESC";
+			$sqli = "SELECT * FROM tabletree WHERE (invz = 0 AND tid = $resno ) ORDER BY tree ASC";
 			$postsi = $db->query($sqli);
 			$rresname = array();
 			while ($res = $postsi->fetch()){
@@ -1185,7 +1192,7 @@ function paintform($rep){
 		$imgfile = filter_input(INPUT_POST, 'img');
 		$var_b['imgfile'] = IMG_DIR.$imgfile;
 	}
-	$usercode.='&stime='.time();//拡張ヘッダに描画開始時間をセット
+	$usercode.= '&tool='.$tool.'&stime='.time(); //拡張ヘッダにツールと描画開始時間をセット
 
 	//差し換え時の認識コード追加
 	if($type === 'rep'){
@@ -1264,11 +1271,10 @@ function openpch($pch,$sp="") {
 
 //お絵かき投稿
 function paintcom($tmpmode){
-	global $usercode,$stime,$ptime;
+	global $usercode,$ptime;
 	global $blade,$var_b;
 
 	$var_b['parent'] = $_SERVER['REQUEST_TIME'];
-	$var_b['stime'] = $stime;
 	$var_b['usercode'] = $usercode;
 
 	//----------
@@ -1290,17 +1296,6 @@ function paintcom($tmpmode){
 		$var_b['picmode'] = 'pict_up';
 	}
 
-	//描画時間(表示用)
-	if($stime){
-		$ptime = calcPtime(time()-$stime);
-	}
-	$var_b['ptime'] = $ptime;
-	//描画時間(内部用)
-	if($stime){
-		$pptime = time()-$stime;
-		$var_b['pptime'] = $pptime;
-	}
-
 	//----------
 
 	//var_dump($_POST);
@@ -1313,10 +1308,16 @@ function paintcom($tmpmode){
 			$fp = fopen(TEMP_DIR.$file, "r");
 			$userdata = fread($fp, 1024);
 			fclose($fp);
-			list($uip,$uhost,$uagent,$imgext,$ucode,) = explode("\t", rtrim($userdata));
+			list($uip,$uhost,$uagent,$imgext,$ucode,,$tool,$starttime,$postedtime,$uresto) = explode("\t", rtrim($userdata)."\t");
 			$file_name = preg_replace("/\.(dat)\z/i","",$file); //拡張子除去
 			if(is_file(TEMP_DIR.$file_name.$imgext)) //画像があればリストに追加
-				$tmplist[] = $ucode."\t".$uip."\t".$file_name.$imgext;
+			//描画時間を$userdataをもとに計算
+			//(表示用)
+			$ptime = calcPtime((int)$postedtime - (int)$starttime);
+			//描画時間(内部用)
+			$pptime = (int)$postedtime - (int)$starttime;
+			$tmplist[] = $ucode."\t".$uip."\t".$file_name.$imgext."\t".$tool."\t".$ptime."\t".$pptime;
+			
 		}
 	}
 	closedir($handle);
@@ -1324,7 +1325,7 @@ function paintcom($tmpmode){
 	if(count($tmplist)!=0){
 		//user-codeとipアドレスでチェック
 		foreach($tmplist as $tmpimg){
-			list($ucode,$uip,$ufilename) = explode("\t", $tmpimg);
+			list($ucode,$uip,$ufilename,$tool,$ptime,$pptime) = explode("\t", $tmpimg);
 			if($ucode == $usercode||$uip == $userip){
 				$tmp[] = $ufilename;
 			}
@@ -1346,8 +1347,9 @@ function paintcom($tmpmode){
 			$src = TEMP_DIR.$tmpfile;
 			$srcname = $tmpfile;
 			$date = gmdate("Y/m/d H:i", filemtime($src)+9*60*60);
-			$tool = $tmpfile;
-			$temp[] = compact('src','srcname','date');
+			$ptime = $ptime;
+			$pptime = $pptime;
+			$temp[] = compact('src','srcname','date','tool','ptime','pptime');
 		}
 		$var_b['temp'] = $temp;
 	}
@@ -1699,12 +1701,15 @@ function editform() {
 		$var_b['token'] = $token;
 	}
 
+	//入力されたパスワード
+	$postpwd = filter_input(INPUT_POST, 'pwd');
+
 	$editno = filter_input(INPUT_POST, 'delno');
 	if ($editno == "") {
 		error('記事番号を入力してください');
 	}
 	$editt = filter_input(INPUT_POST, 'delt'); //0親1レス
-	if ($editt == 0) {
+	if ($editt === 0) {
 		$edittable = 'tablelog';
 		$idk = "tid";
 	} else {
@@ -1724,7 +1729,6 @@ function editform() {
 		if (empty($msg)) {
 			error('そんな記事ないです。');
 		}
-		$postpwd = filter_input(INPUT_POST, 'pwd');
 		if (password_verify($postpwd,$msg['pwd'])) {
 			//パスワードがあってたら
 			$sqli ="SELECT * FROM $edittable WHERE $idk = $editno";
@@ -2162,8 +2166,8 @@ function logdel() {
 /* オートリンク */
 function auto_link($proto){
 	if(!(stripos($proto,"script")!==false)){//scriptがなければ続行
-		$pattern = '/((?:https?|ftp):\/\/[-_.!~*\'()a-zA-Z0-9;\/?:@&=+$,%#]+)/';
-		$replace = '<a href="${0}">${0}</a>';
+		$pattern = "{(https?|ftp)(://[[:alnum:]\+\$\;\?\.%,!#~*/:@&=_-]+)}";
+		$replace = "<a href=\"\\1\\2\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">\\1\\2</a>";
 		$proto = preg_replace( $pattern, $replace, $proto);
 		return $proto;
 	}else{
@@ -2174,8 +2178,8 @@ function auto_link($proto){
 /* ハッシュタグリンク */
 function hashtag_link($hashtag) {
 	$self = PHP_SELF;
-	$pattern = '/#(w*[一-龠_ぁ-ん_ァ-ヴー]+|[a-zA-Z0-9]+|[a-zA-Z0-9]w*)/u';
-	$replace = '<a href="'.$self.'?mode=search&amp;tag=tag&amp;search=${0}">${0}</a>';
+	$pattern = "/(?:^|[^ｦ-ﾟー゛゜々ヾヽぁ-ヶ一-龠ａ-ｚＡ-Ｚ０-９a-zA-Z0-9&_\/]+)[#＃]([ｦ-ﾟー゛゜々ヾヽぁ-ヶ一-龠ａ-ｚＡ-Ｚ０-９a-zA-Z0-9_]*[ｦ-ﾟー゛゜々ヾヽぁ-ヶ一-龠ａ-ｚＡ-Ｚ０-９a-zA-Z]+[ｦ-ﾟー゛゜々ヾヽぁ-ヶ一-龠ａ-ｚＡ-Ｚ０-９a-zA-Z0-9_]*)/u";
+	$replace = " <a href=\"{$self}?mode=search&amp;tag=tag&amp;search=\\1\">#\\1</a>";
 	$hashtag = preg_replace( $pattern, $replace, $hashtag);
 	return $hashtag;
 }

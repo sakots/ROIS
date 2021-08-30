@@ -8,6 +8,7 @@
 // このスクリプトはPaintBBS（藍珠CGI）のPNG保存ルーチンを参考に
 // PHP用に作成したものです。
 //----------------------------------------------------------------------
+// 2021-08/30 使用ツールも記録 by sakots
 // 2021/05/17 エラーが発生した時はお絵かき画面から移動せず、エラーの内容を表示する。
 // 2021/02/17 $badfileが未定義の時は拒絶画像の処理をしない。
 // 2021/01/30 picpost.systemlogの設定をpicpost.phpに移動。raw POST データ取得処理を整理。
@@ -242,10 +243,11 @@ if($sendheader){
 	}
 	$usercode = isset($u['usercode']) ? $u['usercode'] : '';
 	$repcode = isset($u['repcode']) ? $u['repcode'] : '';
+	$tool = isset($u['tool']) ? $u['tool'] : ''; // 210830 sakots
 	$stime = isset($u['stime']) ? $u['stime'] : '';
 	$resto = isset($u['resto']) ? $u['resto'] : '';
-	//usercode 差し換え認識コード 描画開始 完了時間 レス先 を追加
-	$userdata .= "\t$usercode\t$repcode\t$stime\t$time\t$resto";
+	//usercode 差し換え認識コード ツール 描画開始 完了時間 レス先 を追加
+	$userdata .= "\t$usercode\t$repcode\t$tool\t$stime\t$time\t$resto";
 }
 $userdata .= "\n";
 if(is_file(TEMP_DIR.$imgfile.".dat")){

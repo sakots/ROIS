@@ -1,7 +1,10 @@
 <?php
 
+// 210830 使用ツールも記録 by sakots
+
 //設定
 include(__DIR__.'/config.php');
+
 
 defined('PERMISSION_FOR_LOG') or define('PERMISSION_FOR_LOG', 0600); //config.phpで未定義なら0600
 defined('PERMISSION_FOR_DEST') or define('PERMISSION_FOR_DEST', 0606); //config.phpで未定義なら0606
@@ -12,6 +15,7 @@ date_default_timezone_set(DEFAULT_TIMEZONE);
 
 $time = time();
 $imgfile = $time.substr(microtime(),2,3);	//画像ファイル名
+
 
 function chibi_die($message) {
 	die("CHIBIERROR $message");
@@ -55,11 +59,12 @@ $userdata = "$u_ip\t$u_host\t$u_agent\t$imgext";
 
 	$usercode = (string)filter_input(INPUT_GET, 'usercode');
 	$repcode = (string)filter_input(INPUT_GET, 'repcode');
+	$tool = (string)filter_input(INPUT_GET, 'tool'); // 210830 sakots
 	$stime = (string)filter_input(INPUT_GET, 'stime');
 	$resto = (string)filter_input(INPUT_GET, 'resto');
 
-	//usercode 差し換え認識コード 描画開始 完了時間 レス先 を追加
-	$userdata .= "\t$usercode\t$repcode\t$stime\t$time\t$resto";
+	//usercode 差し換え認識コード ツール 描画開始 完了時間 レス先 を追加
+	$userdata .= "\t$usercode\t$repcode\t$tool\t$stime\t$time\t$resto";
 $userdata .= "\n";
 // 情報データをファイルに書き込む
 $fp = fopen(TEMP_DIR.$imgfile.".dat","w");
@@ -74,4 +79,8 @@ if(!$fp){
 	fclose($fp);
 	chmod(TEMP_DIR.$imgfile.'.dat',PERMISSION_FOR_LOG);
 
+
 die("CHIBIOK\n");
+
+
+
