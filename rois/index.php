@@ -5,7 +5,7 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.99.12'); //lot.210830.0
+define('ROIS_VER','v0.99.13'); //lot.210830.1
 
 //設定の読み込み
 require(__DIR__.'/config.php');
@@ -103,6 +103,9 @@ define('CRYPT_IV','T3pkYxNyjN7Wz3pu');//半角英数16文字
 
 //テーマがXHTMLか設定されてないなら
 defined('TH_XHTML') or define('TH_XHTML', 0);
+
+//日付フォーマット
+defined('DATE_FORMAT') or define('DATE_FORMAT', 'Y/m/d H:i:s');
 
 //初期設定(初期設定後は不要なので削除可)
 init();
@@ -719,6 +722,9 @@ function def() {
 				}
 				//引用の色
 				$res['com'] = quote($res['com']);
+				//日付をUNIX時間に変換して設定どおりにフォーマット
+				$res['created'] = date(DATE_FORMAT, strtotime($res['created']));
+				$res['modified'] = date(DATE_FORMAT, strtotime($res['modified']));
 				$ko[] = $res;
 				$j++;
 			}
@@ -737,6 +743,9 @@ function def() {
 			}
 			//引用の色
 			$bbsline['com'] = quote($bbsline['com']);
+			//日付をUNIX時間に
+			$bbsline['created'] = date(DATE_FORMAT, strtotime($bbsline['created']));
+			$bbsline['modified'] = date(DATE_FORMAT, strtotime($bbsline['modified']));
 			$oya[] = $bbsline;
 			$i++;
 		}
@@ -976,6 +985,9 @@ function res(){
 				}
 				//引用の色
 				$res['com'] = quote($res['com']);
+				//日付をUNIX時間に
+				$res['created'] = date(DATE_FORMAT, strtotime($res['created']));
+				$res['modified'] = date(DATE_FORMAT, strtotime($res['modified']));
 				$ko[] = $res;
 				//投稿者名取得
 				if (!in_array($res['name'], $rresname)) {//重複除外
@@ -996,6 +1008,9 @@ function res(){
 			}
 			//引用の色
 			$bbsline['com'] = quote($bbsline['com']);
+			//日付をUNIX時間に
+			$bbsline['created'] = date(DATE_FORMAT, strtotime($bbsline['created']));
+			$bbsline['modified'] = date(DATE_FORMAT, strtotime($bbsline['modified']));
 			$oya[] = $bbsline;
 			if (!in_array($bbsline['name'], $rresname)) {
 				$rresname[] = $bbsline['name'];
@@ -1308,7 +1323,7 @@ function paintcom($tmpmode){
 			$fp = fopen(TEMP_DIR.$file, "r");
 			$userdata = fread($fp, 1024);
 			fclose($fp);
-			list($uip,$uhost,$uagent,$imgext,$ucode,,$tool,$starttime,$postedtime,$uresto) = explode("\t", rtrim($userdata)."\t");
+			list($uip,$uhost,$uagent,$imgext,$ucode,,$starttime,$postedtime,,$tool) = explode("\t", rtrim($userdata)."\t");
 			$file_name = preg_replace("/\.(dat)\z/i","",$file); //拡張子除去
 			if(is_file(TEMP_DIR.$file_name.$imgext)) //画像があればリストに追加
 			//描画時間を$userdataをもとに計算
@@ -1316,7 +1331,7 @@ function paintcom($tmpmode){
 			$ptime = calcPtime((int)$postedtime - (int)$starttime);
 			//描画時間(内部用)
 			$pptime = (int)$postedtime - (int)$starttime;
-			$tmplist[] = $ucode."\t".$uip."\t".$file_name.$imgext."\t".$tool."\t".$ptime."\t".$pptime;
+			$tmplist[] = $ucode."\t".$uip."\t".$file_name.$imgext."\t".$ptime."\t".$pptime."\t".$tool;
 			
 		}
 	}
@@ -1325,7 +1340,7 @@ function paintcom($tmpmode){
 	if(count($tmplist)!=0){
 		//user-codeとipアドレスでチェック
 		foreach($tmplist as $tmpimg){
-			list($ucode,$uip,$ufilename,$tool,$ptime,$pptime) = explode("\t", $tmpimg);
+			list($ucode,$uip,$ufilename,$ptime,$pptime,$tool) = explode("\t", $tmpimg);
 			if($ucode == $usercode||$uip == $userip){
 				$tmp[] = $ufilename;
 			}
@@ -1588,10 +1603,11 @@ function picreplace(){
 			$fp = fopen(TEMP_DIR.$file, "r");
 			$userdata = fread($fp, 1024);
 			fclose($fp);
-			list($uip,$uhost,$uagent,$imgext,$ucode,$urepcode,$starttime,$postedtime) = explode("\t", rtrim($userdata)."\t");//区切りの"\t"を行末にして配列へ格納
+			list($uip,$uhost,$uagent,$imgext,$ucode,$urepcode,$starttime,$postedtime,,$tool) = explode("\t", rtrim($userdata)."\t");//区切りの"\t"を行末にして配列へ格納
 			$file_name = pathinfo($file, PATHINFO_FILENAME ); //拡張子除去
 			if($file_name && is_file(TEMP_DIR.$file_name.$imgext) && $urepcode === $repcode){
-				$find=true;break;
+				$find = true;
+				break;
 			}
 
 		}

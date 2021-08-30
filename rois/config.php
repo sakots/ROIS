@@ -201,6 +201,9 @@ define('CATALOG_N', '30');
 //クッキー保存日数
 define('SAVE_COOKIE', '7');
 
+//日付フォーマット
+define('DATE_FORMAT', 'Y/m/d H:i:s');
+
 //強制sageレス数( 0 ですべてsage)
 define('MAX_RES', '20');
 
