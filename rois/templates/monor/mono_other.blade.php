@@ -35,7 +35,7 @@
 				<div class="thread">
 					<h1 class="oekaki">投稿フォーム</h1>
                     @foreach ($oya as $bbsline)
-					<form class="ppost postform" action="{{$self}}?mode=editexec" method="post" enctype="multipart/form-data">
+					<form class="ppost postform" action="{{$self}}?mode=editexec" method="post">
 						<table>
 							<tr>
 								<td>name</td>
@@ -53,14 +53,13 @@
 								<td>subject</td>
 								<td>
 									<input type="text" name="sub" size="35" autocomplete="section-sub" value="{{$bbsline['sub']}}">
-									<input type="submit" name="send" value="書き込む">
 									<input type="hidden" name="invz" value="0">
                                     <input type="hidden" name="exid" value="0">
 									@if (isset($resedit))
-									<input type="hidden" name="resedit" value="1">
-									<input type="hidden" name="e_no" value="{{$bbsline['iid']}}">
+										<input type="hidden" name="resedit" value="1">
+										<input type="hidden" name="e_no" value="{{$bbsline['iid']}}">
 									@else
-									<input type="hidden" name="e_no" value="{{$bbsline['tid']}}">
+										<input type="hidden" name="e_no" value="{{$bbsline['tid']}}">
 									@endif
 									@if ($token != null)
 										<input type="hidden" name="token" value="{{$token}}">
@@ -71,11 +70,15 @@
 							</tr>
 							<tr>
 								<td>comment</td>
-								<td><textarea name="com" cols="48" rows="4" wrap="soft">{{$bbsline['com']}}</textarea></td>
+								<td><textarea name="com" cols="48" rows="4" wrap="soft" onkeydown="if(event.ctrlKey&&event.keyCode==13){document.getElementById('send').click();return false};">{{$bbsline['com']}}</textarea></td>
 							</tr>
 							<tr>
 								<td>pass</td>
-								<td><input type="password" name="pwd" size="8" value="" autocomplete="current-password"></td>
+								<td><input type="password" name="pwd" size="8" value="" autocomplete="current-password" onkeydown="if(event.ctrlKey&&event.keyCode==13){document.getElementById('send').click();return false};"></td>
+							</tr>
+							<tr>
+								<td><input type="submit" name="send" id="send" value="書き込む"></td>
+								<td>(PCならCtrl + Enterでも書き込めます)</td>
 							</tr>
 						</table>
                     </form>

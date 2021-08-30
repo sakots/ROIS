@@ -43,7 +43,7 @@
 								@if (isset($tmp['src']) && isset($tmp['srcname']))
 									<figure>
 										<img src="{{$tmp['src']}}">
-										<figcaption>{{$tmp['srcname']}}[{{$tmp['date']}}]</figcaption>
+										<figcaption>{{$tmp['srcname']}}[{{$tmp['date']}}] 描画時間{{$tmp['ptime']}}</figcaption>
 									</figure>
 								@endif
 							@endforeach
@@ -54,11 +54,6 @@
 					</div>
 					@if (isset($temp))
 					<form class="ppost postform" action="{{$self}}?mode=regist" method="post" enctype="multipart/form-data">
-						@if (isset($ptime))
-						<p>
-							描画時間：{{$ptime}}
-						</p>
-						@endif
 						<table>
 							<tr>
 								<td>name @if ($use_name) * @endif</td>
@@ -88,7 +83,7 @@
 								<td>
 									<select name="picfile">
 									@foreach ($temp as $tmp)
-										@if (isset($tmp['srcname'])) <option value="{{$tmp['srcname']}}">{{$tmp['srcname']}}</option>
+										@if (isset($tmp['srcname'])) <option value="{{$tmp['srcname']}}|{{$tmp['pptime']}}|{{$tmp['tool']}}">{{$tmp['srcname']}}</option>
 										@endif
 									@endforeach
 								</select>
@@ -109,7 +104,6 @@
 									<input type="hidden" name="invz" value="0">
 									<input type="hidden" name="img_w" value="0">
 									<input type="hidden" name="img_h" value="0">
-									@if (isset($pptime)) <input type="hidden" name="pptime" value="{{$pptime}}"> @endif
 									<input type="hidden" name="exid" value="0">
 									@if ($token != null)
 										<input type="hidden" name="token" value="{{$token}}">
