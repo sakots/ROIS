@@ -5,7 +5,7 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.99.14'); //lot.210911.0
+define('ROIS_VER','v0.99.15b'); //lot.210911.1
 
 //設定の読み込み
 require(__DIR__.'/config.php');
@@ -493,9 +493,6 @@ function regist() {
 				$used_tool = "";
 			}			
 
-			// 連続する空行を一行
-			$com = preg_replace("/\n((　| )*\n){3,}/","\n",$com);
-
 			// 値を追加する
 			// 'のエスケープ(入りうるところがありそうなとこだけにしといた)
 			$name = str_replace("'","''",$name);
@@ -504,6 +501,9 @@ function regist() {
 			$mail = str_replace("'","''",$mail);
 			$url = str_replace("'","''",$url);
 			$host = str_replace("'","''",$host);
+
+			//不要改行圧縮
+			$com = preg_replace("/(\n|\r|\r\n){3,}/us", "\n\n", $com);
 
 			//id生成
 			$id = substr(crypt(md5($host.ID_SEED.date("Ymd", $utime)),'id'),-8);
@@ -722,12 +722,7 @@ function def() {
 					$res['url'] = "";
 				}
 				$res['com'] = htmlspecialchars($res['com'], ENT_QUOTES | ENT_HTML5 );
-				//改行
-				if(TH_XHTML === 1) {
-					$res['com'] = nl2br($res['com']);
-				} else {
-					$res['com'] = nl2br($res['com'], false);
-				}
+
 				//オートリンク
 				if(AUTOLINK) {
 					$res['com'] = auto_link($res['com']);
@@ -736,8 +731,14 @@ function def() {
 				if(USE_HASHTAG) {
 					$res['com'] = hashtag_link($res['com']);
 				}
+				//空行を縮める
+				$res['com'] = preg_replace('/(\n|\r|\r\n|\n\r){3,}/us',"\n\n", $res['com']);
+				//<br>に
+				$res['com'] = tobr($res['com']);
 				//引用の色
 				$res['com'] = quote($res['com']);
+				//さらに連続する<br>を縮める
+				$res['com'] = brsum($res['com']);
 				//日付をUNIX時間に変換して設定どおりにフォーマット
 				$res['created'] = date(DATE_FORMAT, strtotime($res['created']));
 				$res['modified'] = date(DATE_FORMAT, strtotime($res['modified']));
@@ -749,12 +750,7 @@ function def() {
 				$bbsline['url'] = "";
 			}
 			$bbsline['com'] = htmlspecialchars($bbsline['com'], ENT_QUOTES | ENT_HTML5 );
-			//改行
-			if(TH_XHTML === 1) {
-				$bbsline['com'] = nl2br($bbsline['com']);
-			} else {
-				$bbsline['com'] = nl2br($bbsline['com'], false);
-			}
+
 			//オートリンク
 			if(AUTOLINK) {
 				$bbsline['com'] = auto_link($bbsline['com']);
@@ -763,8 +759,14 @@ function def() {
 			if(USE_HASHTAG) {
 				$bbsline['com'] = hashtag_link($bbsline['com']);
 			}
+			//空行を縮める
+			$bbsline['com'] = preg_replace('/(\n|\r|\r\n){3,}/us',"\n\n", $bbsline['com']);
+			//<br>に
+			$bbsline['com'] = tobr($bbsline['com']);
 			//引用の色
 			$bbsline['com'] = quote($bbsline['com']);
+			//さらに連続する<br>を縮める
+			$bbsline['com'] = brsum($bbsline['com']);
 			//日付をUNIX時間に
 			$bbsline['created'] = date(DATE_FORMAT, strtotime($bbsline['created']));
 			$bbsline['modified'] = date(DATE_FORMAT, strtotime($bbsline['modified']));
@@ -998,12 +1000,7 @@ function res(){
 			$rresname = array();
 			while ($res = $postsi->fetch()){
 				$res['com'] = htmlspecialchars($res['com'],ENT_QUOTES | ENT_HTML5);
-				//改行
-				if(TH_XHTML === 1) {
-					$res['com'] = nl2br($res['com']);
-				} else {
-					$res['com'] = nl2br($res['com'], false);
-				}
+
 				if(AUTOLINK) {
 					$res['com'] = auto_link($res['com']);
 				}
@@ -1011,8 +1008,14 @@ function res(){
 				if(USE_HASHTAG) {
 					$res['com'] = hashtag_link($res['com']);
 				}
+				//空行を縮める
+				$res['com'] = preg_replace('/(\n|\r|\r\n){3,}/us',"\n\n", $res['com']);
+				//<br>に
+				$res['com'] = tobr($res['com']);
 				//引用の色
 				$res['com'] = quote($res['com']);
+				//さらに連続する<br>を縮める
+				$res['com'] = brsum($res['com']);
 				//日付をUNIX時間に
 				$res['created'] = date(DATE_FORMAT, strtotime($res['created']));
 				$res['modified'] = date(DATE_FORMAT, strtotime($res['modified']));
@@ -1027,12 +1030,7 @@ function res(){
 				}
 			}
 			$bbsline['com'] = htmlspecialchars($bbsline['com'],ENT_QUOTES | ENT_HTML5);
-			//改行
-			if(TH_XHTML === 1) {
-				$bbsline['com'] = nl2br($bbsline['com']);
-			} else {
-				$bbsline['com'] = nl2br($bbsline['com'], false);
-			}
+
 			if(AUTOLINK) {
 				$bbsline['com'] = auto_link($bbsline['com']);
 			}
@@ -1040,8 +1038,14 @@ function res(){
 			if(USE_HASHTAG) {
 				$bbsline['com'] = hashtag_link($bbsline['com']);
 			}
+			//空行を縮める
+			$bbsline['com'] = preg_replace('/(\n|\r|\r\n){3,}/us',"\n", $bbsline['com']);
+			//<br>に
+			$bbsline['com'] = tobr($bbsline['com']);
 			//引用の色
 			$bbsline['com'] = quote($bbsline['com']);
+			//さらに連続する<br>を縮める
+			$bbsline['com'] = brsum($bbsline['com']);
 			//日付をUNIX時間に
 			$bbsline['created'] = date(DATE_FORMAT, strtotime($bbsline['created']));
 			$bbsline['modified'] = date(DATE_FORMAT, strtotime($bbsline['modified']));
@@ -2224,4 +2228,25 @@ function hashtag_link($hashtag) {
 function quote($quote) {
 	$quote = preg_replace("/(^|>)((&gt;|＞)[^<]*)/i", "\\1".RE_START."\\2".RE_END, $quote);
 	return $quote;
+}
+
+/* 改行を<br>に */
+function tobr($com) {
+	if(TH_XHTML !== 1) {
+		$com = nl2br($com, false);
+	} else {
+		$com = nl2br($com);
+	}
+	return $com;
+}
+
+/* 連続する<br>をまとめる なぜ発生するのかわからん */
+function brsum($com) {
+	if(TH_XHTML === 0) {
+		$br = '<br>';
+	} elseif(TH_XHTML === 1) {
+		$br = '<br />';
+	}
+	$com = preg_replace('/(<br.*?>){3,}/ms', $br.$br, $com);
+	return $com;
 }
