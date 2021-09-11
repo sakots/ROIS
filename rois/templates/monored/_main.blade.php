@@ -57,7 +57,7 @@
 							</select>
 							@else
 							<select name="palettes" id="palettes">
-								<option value="neo">標準</option>
+								<option value="neo" id="0">標準</option>
 							</select>
 							@endif
 							@if ($useanime)

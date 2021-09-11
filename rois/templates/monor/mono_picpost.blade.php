@@ -79,7 +79,7 @@
 								<td>
 									<select name="picfile">
 									@foreach ($temp as $tmp)
-										@if (isset($tmp['srcname']))}<option value="{{$tmp['srcname']}}|{{$tmp['pptime']}}|{{$tmp['tool']}}">{{$tmp['srcname']}}</option>
+										@if (isset($tmp['srcname']))}<option value="{{$tmp['srcname']}}>{{$tmp['srcname']}}</option>
 										@endif
 									@endforeach
 								</select>

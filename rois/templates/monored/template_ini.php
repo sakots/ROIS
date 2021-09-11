@@ -8,7 +8,7 @@
 define('THEME_NAME', "MONORED");
 
 //テーマのバージョン
-define('THEME_VER', "v0.99.12 lot.210830.0");
+define('THEME_VER', "v0.99.14 lot.210911.0");
 
 /* -------------------- */
 
