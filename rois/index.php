@@ -5,7 +5,7 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.99.15b'); //lot.210911.1
+define('ROIS_VER','v0.99.15'); //lot.210913.0
 
 //設定の読み込み
 require(__DIR__.'/config.php');
@@ -737,8 +737,6 @@ function def() {
 				$res['com'] = tobr($res['com']);
 				//引用の色
 				$res['com'] = quote($res['com']);
-				//さらに連続する<br>を縮める
-				$res['com'] = brsum($res['com']);
 				//日付をUNIX時間に変換して設定どおりにフォーマット
 				$res['created'] = date(DATE_FORMAT, strtotime($res['created']));
 				$res['modified'] = date(DATE_FORMAT, strtotime($res['modified']));
@@ -765,8 +763,6 @@ function def() {
 			$bbsline['com'] = tobr($bbsline['com']);
 			//引用の色
 			$bbsline['com'] = quote($bbsline['com']);
-			//さらに連続する<br>を縮める
-			$bbsline['com'] = brsum($bbsline['com']);
 			//日付をUNIX時間に
 			$bbsline['created'] = date(DATE_FORMAT, strtotime($bbsline['created']));
 			$bbsline['modified'] = date(DATE_FORMAT, strtotime($bbsline['modified']));
@@ -1014,8 +1010,6 @@ function res(){
 				$res['com'] = tobr($res['com']);
 				//引用の色
 				$res['com'] = quote($res['com']);
-				//さらに連続する<br>を縮める
-				$res['com'] = brsum($res['com']);
 				//日付をUNIX時間に
 				$res['created'] = date(DATE_FORMAT, strtotime($res['created']));
 				$res['modified'] = date(DATE_FORMAT, strtotime($res['modified']));
@@ -1044,8 +1038,6 @@ function res(){
 			$bbsline['com'] = tobr($bbsline['com']);
 			//引用の色
 			$bbsline['com'] = quote($bbsline['com']);
-			//さらに連続する<br>を縮める
-			$bbsline['com'] = brsum($bbsline['com']);
 			//日付をUNIX時間に
 			$bbsline['created'] = date(DATE_FORMAT, strtotime($bbsline['created']));
 			$bbsline['modified'] = date(DATE_FORMAT, strtotime($bbsline['modified']));
@@ -2237,16 +2229,5 @@ function tobr($com) {
 	} else {
 		$com = nl2br($com);
 	}
-	return $com;
-}
-
-/* 連続する<br>をまとめる なぜ発生するのかわからん */
-function brsum($com) {
-	if(TH_XHTML === 0) {
-		$br = '<br>';
-	} elseif(TH_XHTML === 1) {
-		$br = '<br />';
-	}
-	$com = preg_replace('/(<br.*?>){3,}/ms', $br.$br, $com);
 	return $com;
 }
