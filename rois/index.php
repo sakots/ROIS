@@ -5,7 +5,7 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.99.15'); //lot.210913.0
+define('ROIS_VER','v0.99.16'); //lot.210918.0
 
 //設定の読み込み
 require(__DIR__.'/config.php');
@@ -25,7 +25,7 @@ if (CONF_VER < 9900 || !defined('CONF_VER')) {
 
 //管理パスが初期値(kanripass)の場合は動作させない
 if ($admin_pass === 'kanripass') {
-	die("管理パスが初期設定値のままです！危険なので動かしません。<br>\n The admin pass is still at its default value! This program can't run it until you fix it.");
+	die("管理パスが初期設定値のままです！危険なので動かせません。<br>\n The admin pass is still at its default value! This program can't run it until you fix it.");
 }
 
 //BladeOne v3.52
@@ -33,7 +33,7 @@ include (__DIR__.'/blade/lib/BladeOne.php');
 use eftec\bladeone\BladeOne;
 
 $views = __DIR__.'/templates/'.THEMEDIR; // テンプレートフォルダ
-$cache = __DIR__.'/cache'; // キャッシュフォルダ 
+$cache = __DIR__.'/cache'; // キャッシュフォルダ
 $blade = new BladeOne($views,$cache,BladeOne::MODE_AUTO); // MODE_DEBUGだと開発モード MODE_AUTOが速い。
 $blade->pipeEnable = true; // パイプのフィルターを使えるようにする
 
@@ -95,6 +95,8 @@ $dat['share_button'] = SHARE_BUTTON;
 $dat['use_hashtag'] = USE_HASHTAG;
 
 defined('A_NAME_SAN') or define('A_NAME_SAN','さん');
+defined('SODANE') or define('SODANE','そうだね');
+$dat['sodane'] = SODANE;
 
 //ペイント画面の$pwdの暗号化
 defined('CRYPT_PASS') or define('CRYPT_PASS','qRyFf1V6nyU4gSi');
@@ -151,7 +153,7 @@ function get_csrf_token(){
 	header('Pragma:');
 	return hash('sha256', session_id(), false);
 }
-//csrfトークンをチェック	
+//csrfトークンをチェック
 function check_csrf_token(){
 	session_start();
 	$token=filter_input(INPUT_POST,'token');
@@ -299,7 +301,7 @@ function init(){
 		if (!is_file('rois.db')) {
 			// はじめての実行なら、テーブルを作成
 			$db = new PDO("sqlite:rois.db");
-			$db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);  
+			$db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 			$sql = "CREATE TABLE tablelog (tid integer primary key autoincrement, created timestamp, modified TIMESTAMP, name VARCHAR(1000), mail VARCHAR(1000), sub VARCHAR(1000), com VARCHAR(10000), url VARCHAR(1000), host TEXT, exid TEXT, id TEXT, pwd TEXT, utime INT, picfile TEXT, pchfile TEXT, img_w INT, img_h INT, time TEXT, tree BIGINT, parent INT, age INT, invz VARCHAR(1), tool TEXT, ext01 TEXT, ext02 TEXT, ext03 TEXT, ext04 TEXT)";
 			$db = $db->query($sql);
 			$db = null; //db切断
@@ -383,7 +385,7 @@ function regist() {
 		if(preg_match("/$value$/i",$host)) {error(MSG016);}
 	}
 	//セキュリティ関連ここまで
-	
+
 	try {
 		$db = new PDO("sqlite:rois.db");
 		if (isset($_POST["send"] )) {
@@ -446,7 +448,7 @@ function regist() {
 				list($uip,$uhost,,,$ucode,,$starttime,$postedtime,$uresto,$tool) = explode("\t", rtrim($userdata)."\t");
 				//描画時間を$userdataをもとに計算
 				if($starttime && DSP_PAINTTIME){
-					$psec = $postedtime - $starttime;
+					$psec = $postedtime - $starttime; //内部保存用
 					$time = calcPtime($psec);
 				}
 				//ツール
@@ -462,13 +464,13 @@ function regist() {
 				list($img_w,$img_h) = getimagesize(TEMP_DIR.$picfile);
 				rename( TEMP_DIR.$picfile , IMG_DIR.$picfile );
 				chmod( IMG_DIR.$picfile , PERMISSION_FOR_DEST);
-				
+
 				$picdat = $path_filename.'.dat';
 
 				$chifile = $path_filename.'.chi';
 				$spchfile = $path_filename.'.spch';
 				$pchfile = $path_filename.'.pch';
-				
+
 				if ( is_file(TEMP_DIR.$pchfile) ) {
 					rename( TEMP_DIR.$pchfile, IMG_DIR.$pchfile );
 					chmod( IMG_DIR.$pchfile , PERMISSION_FOR_DEST);
@@ -491,7 +493,7 @@ function regist() {
 				$pchfile = "";
 				$time = "";
 				$used_tool = "";
-			}			
+			}
 
 			// 値を追加する
 			// 'のエスケープ(入りうるところがありそうなとこだけにしといた)
@@ -511,13 +513,13 @@ function regist() {
 			// スレ建ての場合
 			if (empty($_POST["modid"]) === true) {
 				$age = 0;
-				$sql = "INSERT INTO tablelog (created, modified, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, age, invz, host, tool) VALUES (datetime('now', 'localtime'), datetime('now', 'localtime'), '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$time', '$pwdh', '$id', '$exid', '$tree', '$age', '$invz', '$host', '$used_tool')";
+				$sql = "INSERT INTO tablelog (created, modified, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, age, invz, host, tool) VALUES (datetime('now', 'localtime'), datetime('now', 'localtime'), '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$psec', '$pwdh', '$id', '$exid', '$tree', '$age', '$invz', '$host', '$used_tool')";
 				$db->exec($sql);
 			} elseif(empty($_POST["modid"]) !== true && strpos($mail,'sage') !== false ) {
 				//レスの場合でメール欄にsageが含まれる
 				$tid = filter_input(INPUT_POST, 'modid');
 
-				$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, invz, host, tool) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$time', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host', '$used_tool')";
+				$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, invz, host, tool) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$psec', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host', '$used_tool')";
 				$db = $db->exec($sql);
 			} else {
 				//レスの場合でメール欄にsageが含まれない
@@ -539,9 +541,9 @@ function regist() {
 				if($resn < MAX_RES){
 					$nage = $age +1;
 					$tree = time() * 999999999;
-					$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, invz, host, tool) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$time', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host', '$used_tool'); UPDATE tablelog set age = '$nage', tree = '$tree' where tid = '$tid'";
+					$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, invz, host, tool) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$psec', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host', '$used_tool'); UPDATE tablelog set age = '$nage', tree = '$tree' where tid = '$tid'";
 				} else {
-					$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, invz, host, tool) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$time', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host', '$used_tool')";
+					$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, invz, host, tool) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$psec', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host', '$used_tool')";
 				}
 				$db = $db->exec($sql);
 			}
@@ -677,11 +679,11 @@ function def() {
 		echo "DB接続エラー:" .$e->getMessage();
 	}
 	//読み込み
-	
+
 	try {
 		$db = new PDO("sqlite:rois.db");
 		//1ページの全スレッド取得
-		$sql = "SELECT * FROM tablelog WHERE invz=0 ORDER BY tree DESC LIMIT $start,$page_def"; 
+		$sql = "SELECT * FROM tablelog WHERE invz=0 ORDER BY tree DESC LIMIT $start,$page_def";
 		$posts = $db->query($sql);
 
 		$ko = array();
@@ -833,11 +835,11 @@ function catalog() {
 		echo "DB接続エラー:" .$e->getMessage();
 	}
 	//読み込み
-	
+
 	try {
 		$db = new PDO("sqlite:rois.db");
 		//1ページの全スレッド取得
-		$sql = "SELECT tid, created, modified, name, mail, sub, com, url, host, exid, id, pwd, utime, picfile, pchfile, img_w, img_h, time, tree, parent, age, utime FROM tablelog WHERE invz=0 ORDER BY age DESC, tree DESC LIMIT $start,$page_def"; 
+		$sql = "SELECT tid, created, modified, name, mail, sub, com, url, host, exid, id, pwd, utime, picfile, pchfile, img_w, img_h, time, tree, parent, age, utime FROM tablelog WHERE invz=0 ORDER BY age DESC, tree DESC LIMIT $start,$page_def";
 		$posts = $db->query($sql);
 
 		$oya = array();
@@ -888,14 +890,14 @@ function search() {
 		} else {
 			//tagがなければ作者名検索
 			if($bubun == "bubun"){
-				$sql = "SELECT * FROM tablelog WHERE name LIKE '%$search%' AND invz=0 ORDER BY age DESC, tree DESC"; 
+				$sql = "SELECT * FROM tablelog WHERE name LIKE '%$search%' AND invz=0 ORDER BY age DESC, tree DESC";
 			} else {
-				$sql = "SELECT * FROM tablelog WHERE name LIKE '$search' AND invz=0 ORDER BY age DESC, tree DESC"; 
+				$sql = "SELECT * FROM tablelog WHERE name LIKE '$search' AND invz=0 ORDER BY age DESC, tree DESC";
 			}
 			$dat['catalogmode'] = 'search';
 			$dat['author'] = $searchf;
 		}
-		
+
 		$posts = $db->query($sql);
 
 		$oya = array();
@@ -985,7 +987,7 @@ function res(){
 		$db = new PDO("sqlite:rois.db");
 		$sql = "SELECT * FROM tablelog WHERE tid = $resno ORDER BY tree DESC";
 		$posts = $db->query($sql);
-	
+
 		$oya = array();
 		$ko = array();
 		while ($bbsline = $posts->fetch() ) {
@@ -1078,7 +1080,7 @@ function res(){
 	} catch (PDOException $e) {
 		echo "DB接続エラー:" .$e->getMessage();
 	}
-	
+
 	$dat['path'] = IMG_DIR;
 
 	echo $blade->run(RESFILE,$dat);
@@ -1106,7 +1108,7 @@ function paintform($rep){
 
 	$picw = filter_input(INPUT_POST, 'picw',FILTER_VALIDATE_INT);
 	$pich = filter_input(INPUT_POST, 'pich',FILTER_VALIDATE_INT);
-	
+
 	if($mode === "contpaint"){
 		list($picw,$pich) = getimagesize(IMG_DIR.$imgfile); //キャンバスサイズ
 
@@ -1114,7 +1116,7 @@ function paintform($rep){
 
 	$anime = isset($_POST["anime"]) ? true : false;
 	$dat['anime'] = $anime;
-	
+
 	if($picw < 300) $picw = 300;
 	if($pich < 300) $pich = 300;
 	if($picw > PMAX_W) $picw = PMAX_W;
@@ -1133,7 +1135,7 @@ function paintform($rep){
 	if($hh < 560){$hh = 560;}//共通の最低高
 	$dat['w'] = $ww;
 	$dat['h'] = $hh;
-	
+
 	$dat['undo'] = UNDO;
 	$dat['undo_in_mg'] = UNDO_IN_MG;
 
@@ -1142,7 +1144,7 @@ function paintform($rep){
 	$dat['path'] = IMG_DIR;
 
 	$dat['stime'] = time();
-	
+
 	$userip = get_uip();
 
 	//しぃペインター
@@ -1362,7 +1364,7 @@ function paintcom($tmpmode){
 			//描画時間(内部用)
 			$pptime = (int)$postedtime - (int)$starttime;
 			$tmplist[] = $ucode."\t".$uip."\t".$file_name.$imgext."\t".$ptime."\t".$pptime."\t".$tool;
-			
+
 		}
 	}
 	closedir($handle);
@@ -1531,16 +1533,16 @@ function delmode(){
 					unlink(IMG_DIR.$msgdat.'.jpg'); //一応jpgも
 				}
 				if (is_file(IMG_DIR.$msgdat.'.pch')) {
-					unlink(IMG_DIR.$msgdat.'.pch'); 
+					unlink(IMG_DIR.$msgdat.'.pch');
 				}
 				if (is_file(IMG_DIR.$msgdat.'.spch')) {
-					unlink(IMG_DIR.$msgdat.'.spch'); 
+					unlink(IMG_DIR.$msgdat.'.spch');
 				}
 				if (is_file(IMG_DIR.$msgdat.'.dat')) {
-					unlink(IMG_DIR.$msgdat.'.dat'); 
+					unlink(IMG_DIR.$msgdat.'.dat');
 				}
 				if (is_file(IMG_DIR.$msgdat.'.chi')) {
-					unlink(IMG_DIR.$msgdat.'.chi'); 
+					unlink(IMG_DIR.$msgdat.'.chi');
 				}
 			}
 			//↑画像とか削除処理完了
@@ -1559,16 +1561,16 @@ function delmode(){
 					unlink(IMG_DIR.$msgdat.'.jpg'); //一応jpgも
 				}
 				if (is_file(IMG_DIR.$msgdat.'.pch')) {
-					unlink(IMG_DIR.$msgdat.'.pch'); 
+					unlink(IMG_DIR.$msgdat.'.pch');
 				}
 				if (is_file(IMG_DIR.$msgdat.'.spch')) {
-					unlink(IMG_DIR.$msgdat.'.spch'); 
+					unlink(IMG_DIR.$msgdat.'.spch');
 				}
 				if (is_file(IMG_DIR.$msgdat.'.dat')) {
-					unlink(IMG_DIR.$msgdat.'.dat'); 
+					unlink(IMG_DIR.$msgdat.'.dat');
 				}
 				if (is_file(IMG_DIR.$msgdat.'.chi')) {
-					unlink(IMG_DIR.$msgdat.'.chi'); 
+					unlink(IMG_DIR.$msgdat.'.chi');
 				}
 			}
 			//↑画像とか削除処理完了
@@ -1596,7 +1598,7 @@ function delmode(){
 		}
 		$msgp = null;
 		$msg = null;
-		$db = null; //db切断 
+		$db = null; //db切断
 	} catch (PDOException $e) {
 		echo "DB接続エラー:" .$e->getMessage();
 	}
@@ -1617,7 +1619,7 @@ function picreplace(){
 	$pwdf = filter_input(INPUT_GET, 'pwd');
 	$pwdf = hex2bin($pwdf);//バイナリに
 	$pwdf = openssl_decrypt($pwdf,CRYPT_METHOD, CRYPT_PASS, true, CRYPT_IV);//復号化
-	
+
 	//ホスト取得
 	$host = gethostbyaddr(get_uip());
 
@@ -1798,15 +1800,15 @@ function editform() {
 			}
 			$dat['message'] = '管理者編集モード...';
 		} else {
-			$db = null; 
+			$db = null;
 			$msgs = null;
-			$db = null; //db切断 
+			$db = null; //db切断
 			error('パスワードまたは記事番号が違います。');
 		}
-		$db = null; 
+		$db = null;
 		$msgs = null;
 		$posts = null;
-		$db = null; //db切断 
+		$db = null; //db切断
 
 		$dat['othermode'] = 'edit'; //編集モード
 		echo $blade->run(OTHERFILE,$dat);
@@ -1928,7 +1930,7 @@ function admin() {
 				//$oid = $bbsline["tid"]; //スレのtid(親番号)を取得
 				$bbsline['com'] = htmlentities($bbsline['com'],ENT_QUOTES | ENT_HTML5);
 				$oya[] = $bbsline;
-			} 
+			}
 			$dat['oya'] = $oya;
 
 			//スレッドの記事を取得
@@ -2027,7 +2029,7 @@ function deltemp(){
 	closedir($handle);
 }
 
-// 文字コード変換 
+// 文字コード変換
 function charconvert($str){
 	mb_language(LANG);
 		return mb_convert_encoding($str, "UTF-8", "auto");
@@ -2157,16 +2159,16 @@ function logdel() {
 				unlink(IMG_DIR.$msgdat.'.jpg'); //一応jpgも
 			}
 			if (is_file(IMG_DIR.$msgdat.'.pch')) {
-				unlink(IMG_DIR.$msgdat.'.pch'); 
+				unlink(IMG_DIR.$msgdat.'.pch');
 			}
 			if (is_file(IMG_DIR.$msgdat.'.spch')) {
-				unlink(IMG_DIR.$msgdat.'.spch'); 
+				unlink(IMG_DIR.$msgdat.'.spch');
 			}
 			if (is_file(IMG_DIR.$msgdat.'.dat')) {
-				unlink(IMG_DIR.$msgdat.'.dat'); 
+				unlink(IMG_DIR.$msgdat.'.dat');
 			}
 			if (is_file(IMG_DIR.$msgdat.'.chi')) {
-				unlink(IMG_DIR.$msgdat.'.chi'); 
+				unlink(IMG_DIR.$msgdat.'.chi');
 			}
 		}
 
