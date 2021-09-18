@@ -8,7 +8,19 @@
 define('THEME_NAME', "MONOR");
 
 //テーマのバージョン
-define('THEME_VER', "v0.99.14 lot.210911.0");
+define('THEME_VER', "v0.99.16 lot.210918.0");
+
+/* -------------------- */
+
+//編集したときの目印
+//※記事を編集したら日付の後ろに付きます
+define('UPDATE_MARK', ' *');
+
+//名前引用時の「さん」
+define('A_NAME_SAN', 'さん');
+
+//「そうだね」
+define('SODANE', 'そうだね');
 
 /* -------------------- */
 
@@ -54,13 +66,6 @@ define('PTIME_S', '秒');
 //ここは変更せずにcssで設定するの推奨
 define('RE_START', '<span class="resma">');
 define('RE_END', '</span>');
-
-//編集したときの目印
-//※記事を編集したら日付の後ろに付きます
-define('UPDATE_MARK', ' *');
-
-//名前引用時の「さん」
-define('A_NAME_SAN', 'さん');
 
 //エラーメッセージ
 define('MSG001', "該当記事がみつかりません[Log is not found.]");

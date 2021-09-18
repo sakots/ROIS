@@ -32,7 +32,7 @@
 				</section>
 				<section>
 					<hr>
-					<p>RES MODE</p> 
+					<p>RES MODE</p>
 					<p class="sysmsg">{{$message}}</p>
 				</section>
 			</div>
@@ -64,7 +64,7 @@
 									@if ($dispid)
 										<span class="id">ID : {{$bbsline['id']}}</span>
 									@endif
-									<span class="sodane"><a href="{{$self}}?mode=sodane&amp;resto={{$bbsline['tid']}}">そうだね
+									<span class="sodane"><a href="{{$self}}?mode=sodane&amp;resto={{$bbsline['tid']}}">{{$sodane}}
 									@if ($bbsline['exid'] != 0)
 										x{{$bbsline['exid']}}
 									@else
@@ -92,7 +92,7 @@
 											<a href="{{$path}}{{$bbsline['picfile']}}" target="_blank"><img src="{{$path}}{{$bbsline['picfile']}}" alt="{{$bbsline['picfile']}}" loading="lazy"></a>
 										</figure>
 									@endif
-								<p class="comment oya">{!! nl2br($bbsline['com']) !!}</p>
+								<p class="comment oya">{!! $bbsline['com'] !!}</p>
 								@if (($m_tid - $bbsline['tid']) > $thid)
 									<div class="res">
 										<p class="limit">このスレは古いのでもうすぐ消えます。</p>
@@ -123,7 +123,7 @@
 														@if ($dispid)
 															<span class="id">ID：{{$res['id']}}</span>
 														@endif
-														<span class="sodane"><a href="{{$self}}?mode=rsodane&amp;resto={{$res['iid']}}">そうだね
+														<span class="sodane"><a href="{{$self}}?mode=rsodane&amp;resto={{$res['iid']}}">{{$sodane}}
 														@if ($res['exid'] != 0)
 															x{{$res['exid']}}
 														@else
@@ -131,7 +131,7 @@
 														@endif
 														</a></span>
 													</h4>
-													<p class="comment">{!! nl2br($res['com']) !!}</p>
+													<p class="comment">{!! $res['com'] !!}</p>
 												</section>
 											</section>
 										@endif
@@ -139,7 +139,7 @@
 								@else
 								@endif
 							</section>
-						<hr>	
+						<hr>
 						</section>
 						@if ($share_button)
 							<div class="thfoot">
@@ -245,7 +245,7 @@
 					Web Style by <a href="https://dev.oekakibbs.net/" target="_top" title="{{$tname}} {{$tver}} (by お絵かきBBSラボ)">{{$tname}}</a>
 				</p>
 				<p>
-					OekakiApplet - 
+					OekakiApplet -
 					<a href="https://github.com/funige/neo/" target="_top" rel="noopener noreferrer" title="by funige">PaintBBS NEO</a>
 					@if ($use_shi_p) ,<a href="http://hp.vector.co.jp/authors/VA016309/" target="_top" rel="noopener noreferrer" title="by しぃちゃん">Shi-Painter</a> @endif
 					@if ($use_chicken) ,<a href="https://github.com/thenickdude/chickenpaint" target="_blank" rel="nofollow noopener noreferrer" title="by Nicholas Sherlock">ChickenPaint</a> @endif
