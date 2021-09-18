@@ -1,28 +1,28 @@
 # ROIS
 
-ROISは全く新しいお絵かき掲示板スクリプトです。  
+ROISは全く新しいお絵かき掲示板スクリプトです。
 Rapid Oekaki Image System で「ROIS」です。
 
 [PaintBBS NEO](https://github.com/funige/neo/)
 
 ## 概要
 
-POTI-board改で使用しているテンプレートエンジン「htmltemplate.inc」は老朽化して今後が危ない…  
+POTI-board改で使用しているテンプレートエンジン「htmltemplate.inc」は老朽化して今後が危ない…
 ということでなんか新しいテンプレートエンジンはないか探したところ、
 
-[Skinny](http://skinny.sx68.net/) → [POTI-board EVO](https://github.com/satopian/POTI-board_EVO)  
-↓  
-[smarty](https://www.smarty.net/) → [noe](https://github.com/sakots/noe-board)  
-↓  
-重いからTwigにしたい…（今後）  
-↓  
+[Skinny](http://skinny.sx68.net/) → [POTI-board EVO](https://github.com/satopian/POTI-board_EVO)
+↓
+[smarty](https://www.smarty.net/) → [noe](https://github.com/sakots/noe-board)
+↓
+重いからTwigにしたい…（今後）
+↓
 BladeのほうがTwigより速いらしい！？
 
 という経緯です。
 
 ## 設置方法
 
-- パスワードその他を設定  
+- パスワードその他を設定
 - アップロード
 - OK！ index.phpにアクセスしてください。
 
@@ -43,9 +43,15 @@ BladeのほうがTwigより速いらしい！？
 
 ## 履歴
 
-### [2021/09/13] v0.99.15
+### [2021/09/18] v0.99.16
 
 __このバージョンでバグがなかったら次はv1.0.0とします__
+
+- 続きから描くと描画時間がリセットされるバグ修正
+- 新テーマ「neex」実装
+- 「そうだね」をテーマ設定で変更可能にした
+
+### [2021/09/13] v0.99.15
 
 - 連続する改行の調整完了
 
