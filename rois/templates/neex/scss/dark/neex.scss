@@ -191,7 +191,8 @@ figure {
 	background-color: $haikei;
 	margin-bottom: 1ex;
 	img {
-		max-width: 100%;
+		max-width: 400px;
+		height: auto;
 	}
 }
 figcaption {
