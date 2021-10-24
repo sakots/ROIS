@@ -30,14 +30,17 @@ $default='';
 
 include(__DIR__.'/config.php');//config.phpの設定を読み込む
 
+//データベース接続PDO
+define('DB_PDO', 'sqlite:'.DB_NAME.'.db');
+
 //db接続の前にdbがなかったらそもそも処理しない
 //これを入れないとテーブルも何もないdbが作られていろいろ困る
-if (!is_file("rois.db")) {
+if (!is_file(DB_NAME.'.db')) {
     $filename = $default;
 } else {
     try {
         //db接続
-        $db = new PDO("sqlite:rois.db");
+        $db = new PDO(DB_PDO);
         //ORDER BY picfile で picfile名（画像の最終更新）の順、DESCで大きい順を指定
         //LIMIT 1 で1行だけ取り出すので最新のものだけになる
         $sql ="SELECT picfile FROM tablelog WHERE invz=0 ORDER BY picfile DESC LIMIT 1";
@@ -49,7 +52,7 @@ if (!is_file("rois.db")) {
         if (empty($msg)) {
             $filename = $default;
         } else {
-            $filename = IMG_DIR.$msg["picfile"]; 
+            $filename = IMG_DIR.$msg["picfile"];
         }
         $db = null;// db切断
     } catch (PDOException $e) {
@@ -73,5 +76,5 @@ switch ($img_type):
 	default :
 		header('Content-Type: image/png');
 	endswitch;
-		
+
 readfile($filename);
