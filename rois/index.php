@@ -1,11 +1,11 @@
 <?php
 //--------------------------------------------------
-//　おえかきけいじばん「ROIS」
-//　by sakots & OekakiBBS reDev.Team  https://dev.oekakibbs.net/
+//  おえかきけいじばん「ROIS」
+//  by sakots & OekakiBBS reDev.Team  https://dev.oekakibbs.net/
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v0.99.16'); //lot.210918.0
+define('ROIS_VER','v1.0.0'); //lot.211024.0
 
 //設定の読み込み
 require(__DIR__.'/config.php');
@@ -19,7 +19,7 @@ if (($phpver = phpversion()) < "5.5.0") {
 	die("PHP version 5.5.0 or higher is required for this program to work. <br>\n(Current PHP version:{$phpver})");
 }
 //コンフィグのバージョンが古くて互換性がない場合動かさせない
-if (CONF_VER < 9900 || !defined('CONF_VER')) {
+if (CONF_VER < 9999 || !defined('CONF_VER')) {
 	die("コンフィグファイルに互換性がないようです。再設定をお願いします。<br>\n The configuration file is incompatible. Please reconfigure it.");
 }
 
@@ -112,6 +112,9 @@ defined('DATE_FORMAT') or define('DATE_FORMAT', 'Y/m/d H:i:s');
 //CheerpJ
 define('CHEERPJ_URL', 'https://cjrtnc.leaningtech.com/2.2/loader.js');
 $dat['cheerpj'] = CHEERPJ_URL;
+
+//データベース接続PDO
+define('DB_PDO', 'sqlite:'.DB_NAME.'.db');
 
 //初期設定(初期設定後は不要なので削除可)
 init();
@@ -298,20 +301,20 @@ exit;
 
 function init(){
 	try {
-		if (!is_file('rois.db')) {
+		if (!is_file(DB_NAME.'.db')) {
 			// はじめての実行なら、テーブルを作成
-			$db = new PDO("sqlite:rois.db");
+			$db = new PDO(DB_PDO);
 			$db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 			$sql = "CREATE TABLE tablelog (tid integer primary key autoincrement, created timestamp, modified TIMESTAMP, name VARCHAR(1000), mail VARCHAR(1000), sub VARCHAR(1000), com VARCHAR(10000), url VARCHAR(1000), host TEXT, exid TEXT, id TEXT, pwd TEXT, utime INT, picfile TEXT, pchfile TEXT, img_w INT, img_h INT, time TEXT, tree BIGINT, parent INT, age INT, invz VARCHAR(1), tool TEXT, ext01 TEXT, ext02 TEXT, ext03 TEXT, ext04 TEXT)";
 			$db = $db->query($sql);
 			$db = null; //db切断
-			$db = new PDO("sqlite:rois.db");
+			$db = new PDO(DB_PDO);
 			$db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 			$sql = "CREATE TABLE tabletree (iid integer primary key autoincrement, tid INT, created timestamp, modified TIMESTAMP, name VARCHAR(1000), mail VARCHAR(1000), sub VARCHAR(1000), com VARCHAR(10000), url VARCHAR(1000), host TEXT, exid TEXT, id TEXT, pwd TEXT, utime INT, picfile TEXT, pchfile TEXT, img_w INT, img_h INT, time TEXT, tree BIGINT, parent INT, invz VARCHAR(1), tool TEXT, ext01 TEXT, ext02 TEXT, ext03 TEXT, ext04 TEXT)";
 			$db = $db->query($sql);
 			$db = null; //db切断
 		} else {
-			$db = new PDO("sqlite:rois.db");
+			$db = new PDO(DB_PDO);
 			$db = null; //db切断
 		}
 	} catch (PDOException $e) {
@@ -387,7 +390,7 @@ function regist() {
 	//セキュリティ関連ここまで
 
 	try {
-		$db = new PDO("sqlite:rois.db");
+		$db = new PDO(DB_PDO);
 		if (isset($_POST["send"] )) {
 
 			$strlen_com = strlen($com);
@@ -428,7 +431,7 @@ function regist() {
 					$db = null; //db切断
 					error('二重投稿ですか？');
 				}
-				//スレ立て時　画像番号が一致の場合(投稿してブラウザバック、また投稿とか)
+				//スレ立て時、画像番号が一致の場合(投稿してブラウザバック、また投稿とか)
 				//二重投稿と判別(画像がない場合は処理しない)
 				if(!empty($_POST["modid"])) {
 					if($msgwc["picfile"] !== "" && $picfile == $msgwc["picfile"]){
@@ -508,7 +511,7 @@ function regist() {
 			$com = preg_replace("/(\n|\r|\r\n){3,}/us", "\n\n", $com);
 
 			//id生成
-			$id = substr(crypt(md5($host.ID_SEED.date("Ymd", $utime)),'id'),-8);
+			$id = gen_id($host, $utime);
 
 			// スレ建ての場合
 			if (empty($_POST["modid"]) === true) {
@@ -571,7 +574,7 @@ function regist() {
 	//ログ行数オーバー処理
 	//スレ数カウント
 	try {
-		$db = new PDO("sqlite:rois.db");
+		$db = new PDO(DB_PDO);
 		$sqlth = "SELECT COUNT(*) as cnt FROM tablelog";
 		$countth = $db->query("$sqlth");
 		$countth = $countth->fetch();
@@ -595,7 +598,7 @@ function def() {
 	//ログ行数オーバー処理
 	//スレ数カウント
 	try {
-		$db = new PDO("sqlite:rois.db");
+		$db = new PDO(DB_PDO);
 		$sqlth = "SELECT COUNT(*) as cnt FROM tablelog";
 		$countth = $db->query("$sqlth");
 		$countth = $countth->fetch();
@@ -616,7 +619,7 @@ function def() {
 
 	//ページング
 	try {
-		$db = new PDO("sqlite:rois.db");
+		$db = new PDO(DB_PDO);
 		if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 			$page = $_GET['page'];
 			$page = max($page,1);
@@ -681,7 +684,7 @@ function def() {
 	//読み込み
 
 	try {
-		$db = new PDO("sqlite:rois.db");
+		$db = new PDO(DB_PDO);
 		//1ページの全スレッド取得
 		$sql = "SELECT * FROM tablelog WHERE invz=0 ORDER BY tree DESC LIMIT $start,$page_def";
 		$posts = $db->query($sql);
@@ -791,7 +794,7 @@ function catalog() {
 
 	//ページング
 	try {
-		$db = new PDO("sqlite:rois.db");
+		$db = new PDO(DB_PDO);
 		if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 			$page = $_GET['page'];
 			$page = max($page,1);
@@ -837,7 +840,7 @@ function catalog() {
 	//読み込み
 
 	try {
-		$db = new PDO("sqlite:rois.db");
+		$db = new PDO(DB_PDO);
 		//1ページの全スレッド取得
 		$sql = "SELECT tid, created, modified, name, mail, sub, com, url, host, exid, id, pwd, utime, picfile, pchfile, img_w, img_h, time, tree, parent, age, utime FROM tablelog WHERE invz=0 ORDER BY age DESC, tree DESC LIMIT $start,$page_def";
 		$posts = $db->query($sql);
@@ -878,7 +881,7 @@ function search() {
 
 	//読み込み
 	try {
-		$db = new PDO("sqlite:rois.db");
+		$db = new PDO(DB_PDO);
 		//全スレッド取得
 		//まずtagがあれば本文検索
 		if ($tag == 'tag') {
@@ -935,7 +938,7 @@ function search() {
 function sodane(){
 	$resto = filter_input(INPUT_GET, 'resto');
 	try {
-		$db = new PDO("sqlite:rois.db");
+		$db = new PDO(DB_PDO);
 		$sql = "UPDATE tablelog set exid = exid+1 where tid = '$resto'";
 		$db = $db->exec($sql);
 		$db = null;
@@ -950,7 +953,7 @@ function sodane(){
 function rsodane(){
 	$resto = filter_input(INPUT_GET, 'resto');
 	try {
-		$db = new PDO("sqlite:rois.db");
+		$db = new PDO(DB_PDO);
 		$sql = "UPDATE tabletree set exid = exid+1 where iid = '$resto'";
 		$db = $db->exec($sql);
 		$db = null;
@@ -984,7 +987,7 @@ function res(){
 	$dat['nowtime'] = $nowtime;
 
 	try {
-		$db = new PDO("sqlite:rois.db");
+		$db = new PDO(DB_PDO);
 		$sql = "SELECT * FROM tablelog WHERE tid = $resno ORDER BY tree DESC";
 		$posts = $db->query($sql);
 
@@ -1407,7 +1410,7 @@ function paintcom($tmpmode){
 	echo $blade->run(PICFILE,$dat);
 }
 
-//コンティニュー画面in レス画像には非対応
+//コンティニュー画面in
 function incontinue($no) {
 	global $blade,$dat;
 	$dat['othermode'] = 'incontinue';
@@ -1426,7 +1429,7 @@ function incontinue($no) {
 	if(!CONTINUE_PASS) $dat['newpost_nopassword'] = true;
 
 	try{
-		$db = new PDO("sqlite:rois.db");
+		$db = new PDO(DB_PDO);
 		$sql = "SELECT * FROM tablelog WHERE picfile='$no' ORDER BY tree DESC";
 		$posts = $db->query($sql);
 
@@ -1492,7 +1495,7 @@ function delmode(){
 	}
 	//記事呼び出し
 	try {
-		$db = new PDO("sqlite:rois.db");
+		$db = new PDO(DB_PDO);
 
 		//パスワードを取り出す
 		$sql ="SELECT pwd FROM $deltable WHERE $idk = '$delno'";
@@ -1651,7 +1654,7 @@ function picreplace(){
 
 	// ログ読み込み
 	try {
-		$db = new PDO("sqlite:rois.db");
+		$db = new PDO(DB_PDO);
 		//記事を取り出す
 		$sql = "SELECT * FROM tablelog WHERE tid = $no";
 		$msgs = $db->prepare($sql);
@@ -1713,11 +1716,11 @@ function picreplace(){
 			//描画時間を$userdataをもとに計算
 			$ptime = (int)$msg_d['time']+((int)$postedtime-(int)$starttime);
 
-			//id生成
-			$id = substr(crypt(md5($host.ID_SEED.date("Ymd", time())),'id'),-8);
-
 			//ホスト名取得
 			$host = gethostbyaddr(get_uip());
+
+			//id生成
+			$id = gen_id($host, $ptime);
 
 			// 念のため'のエスケープ
 			$host = str_replace("'","''",$host);
@@ -1767,7 +1770,7 @@ function editform() {
 	}
 	//記事呼び出し
 	try {
-		$db = new PDO("sqlite:rois.db");
+		$db = new PDO(DB_PDO);
 
 		//パスワードを取り出す
 		$sql ="SELECT pwd FROM $edittable WHERE $idk = $editno";
@@ -1887,7 +1890,7 @@ function editexec(){
 	$host = str_replace("'","''",$host);
 
 	try {
-		$db = new PDO("sqlite:rois.db");
+		$db = new PDO(DB_PDO);
 		$sql = "UPDATE $edittable set modified = datetime('now', 'localtime'), name = '$name', mail = '$mail', sub = '$sub', com = '$com', url = '$url', host = '$host', exid = '$exid', pwd = '$pwdh' where $eid = '$e_no'";
 		$db = $db->exec($sql);
 		$db = null;
@@ -1918,7 +1921,7 @@ function admin() {
 	//最大何ページあるのか
 	//記事呼び出しから
 	try {
-		$db = new PDO("sqlite:rois.db");
+		$db = new PDO(DB_PDO);
 		//読み込み
 		$adminpass = filter_input(INPUT_POST, 'adminpass');
 		if ($adminpass === $admin_pass) {
@@ -1959,7 +1962,7 @@ function usrchk(){
 	$pwdf = filter_input(INPUT_POST, 'pwd');
 	$flag = FALSE;
 	try {
-		$db = new PDO("sqlite:rois.db");
+		$db = new PDO(DB_PDO);
 		//パスワードを取り出す
 		$sql ="SELECT pwd FROM tablelog WHERE tid = $no";
 		$msgs = $db->prepare($sql);
@@ -2141,7 +2144,7 @@ function safe_unlink ($path) {
 function logdel() {
 	//オーバーした行の画像とスレ番号を取得
 	try {
-		$db = new PDO("sqlite:rois.db");
+		$db = new PDO(DB_PDO);
 		$sqlimg = "SELECT * FROM tablelog ORDER BY tid LIMIT 1";
 		$msgs = $db->prepare($sqlimg);
 		$msgs->execute();
@@ -2226,10 +2229,28 @@ function quote($quote) {
 
 /* 改行を<br>に */
 function tobr($com) {
-	if(TH_XHTML !== 1) {
+	if (TH_XHTML !== 1) {
 		$com = nl2br($com, false);
 	} else {
 		$com = nl2br($com);
 	}
 	return $com;
+}
+
+/* ID生成 */
+function gen_id($userip, $time) {
+	if (ID_CYCLE === '0') {
+		return substr(crypt(md5($userip.ID_SEED),'id'),-8);
+	} elseif (ID_CYCLE === '1') {
+		return substr(crypt(md5($userip.ID_SEED.date("Ymd", $time)),'id'),-8);
+	} elseif (ID_CYCLE === '2') {
+		$week = ceil(date("d", $time) / 7);
+		return substr(crypt(md5($userip.ID_SEED.date("Ym", $time).$week),'id'),-8);
+	} elseif (ID_CYCLE === '3') {
+		return substr(crypt(md5($userip.ID_SEED.date("Ym", $time)),'id'),-8);
+	} elseif (ID_CYCLE === '4') {
+		return substr(crypt(md5($userip.ID_SEED.date("Y", $time)),'id'),-8);
+	} else {
+		return substr(crypt(md5($userip.ID_SEED),'id'),-8);
+	}
 }

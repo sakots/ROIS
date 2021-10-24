@@ -1,6 +1,6 @@
 <?php
 /*
-  * ROIS v0.99.3～
+  * ROIS v1.00.0～
   * by sakots >> https://dev.oekakibbs.net/
   *
   * ROISの設定ファイルです。
@@ -33,13 +33,19 @@ define('TITLE', 'お絵かき掲示板');
 // 自分のサイトのURL（絶対パスも可）をどうぞ。
 define('HOME', '../');
 
-// しぃペインターを使う 使う:1 使わない:0 
-define('USE_SHI_PAINTER', '1');
-// ChickenPaintを使う 使う:1 使わない:0 
+// しぃペインターを使う 使う:1 使わない:0
+define('USE_SHI_PAINTER', '0');
+// ChickenPaintを使う 使う:1 使わない:0
 define('USE_CHICKENPAINT', '1');
 // PaintBBS NEOはどの設定でも起動します。
 
 /*----------絶対に設定が必要な項目はここまでです。ここから下は必要に応じて。----------*/
+
+/* -------- データベース名 -------- */
+
+//初期設定のままの場合、rois.dbとなります。
+//拡張子は.dbで固定です。
+define('DB_NAME', 'rois');
 
 /* ---------- SNS連携 ---------- */
 
@@ -141,7 +147,7 @@ define('UNDO', '90');
 //アンドゥを幾つにまとめて保存しておくか(デフォルト)
 define('UNDO_IN_MG', '45');
 
-//　セキュリティ関連－URLとクリック数かタイマーのどちらかが設定されていれば有効
+//セキュリティ関連－URLとクリック数かタイマーのどちらかが設定されていれば有効
 //※アプレットのreadmeを参照し、十分テストした上で設定して下さい
 //セキュリティクリック数。設定しないなら''で
 define('SECURITY_CLICK', '');
@@ -209,6 +215,9 @@ define('MAX_RES', '20');
 
 //ID生成の種
 define('ID_SEED', 'IDの種');
+
+//ID変更周期 なし(IDはずっと同じ):0 1日:1 1週間:2 1か月:3 1年:4
+define('ID_CYCLE', '2');
 
 //URLを自動リンクする する:1 しない:0
 define('AUTOLINK', '1');
@@ -318,4 +327,4 @@ define('PHP_SELF', 'index.php');
 
 /* ------------- コンフィグ互換性管理 ------------- */
 
-define('CONF_VER', 9903);
+define('CONF_VER', 9999);
