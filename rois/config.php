@@ -18,7 +18,7 @@ define('LOG_MAX_T', '300');
 
 //テーマ(テンプレート)のディレクトリ名。'/'は不要。
 //別のディレクトリにしたい場合は設定してください。
-//初期値は monored です。色選択のない monor もあります。
+//初期値は monored です。色選択のない monor、おしゃれな neex もあります。
 define('THEMEDIR', 'monored');
 
 //設置URL phpのあるディレクトリの'/'まで
@@ -58,6 +58,12 @@ define('SHARE_BUTTON', '0');
 //IDを表示する する:1 しない:0
 //違う名前でも同一人物だとわかります。
 define('DISP_ID', '1');
+
+//ID生成の種
+define('ID_SEED', 'IDの種');
+
+//ID変更周期 なし(IDはずっと同じ):0 1日:1 1週間:2 1か月:3 1年:4
+define('ID_CYCLE', '2');
 
 /* ---------- スパム対策 ---------- */
 
@@ -212,12 +218,6 @@ define('DATE_FORMAT', 'Y/m/d H:i:s');
 
 //強制sageレス数( 0 ですべてsage)
 define('MAX_RES', '20');
-
-//ID生成の種
-define('ID_SEED', 'IDの種');
-
-//ID変更周期 なし(IDはずっと同じ):0 1日:1 1週間:2 1か月:3 1年:4
-define('ID_CYCLE', '2');
 
 //URLを自動リンクする する:1 しない:0
 define('AUTOLINK', '1');
