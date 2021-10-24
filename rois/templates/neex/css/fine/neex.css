@@ -13,9 +13,6 @@ body {
   background-attachment: unset;
   background: #EEEEEE;
   color: #79160A;
-  font-family: sans-serif;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
 }
 
 a {
@@ -35,39 +32,13 @@ a:hover {
 }
 
 hr {
-  border-style: dashed;
-  border-width: 1px 0 0 0;
   border-color: #79160A;
-  margin: 1ex auto;
-  clear: left;
 }
 
 header > .titlebox {
-  position: fixed;
-  width: 300px;
-  padding: 10px;
   background-color: #FFFFEF;
-  border-radius: 16px;
-  top: 10px;
-  left: 20px;
-}
-header > .titlebox ul {
-  font-size: smaller;
-  margin-left: 12px;
-}
-header > .titlebox + div {
-  border-radius: 16px;
-  background-color: #FFFFEF;
-  margin-left: 360px;
-  margin-right: 20px;
-  padding: 1em;
-  text-align: right;
-  margin-top: 10px;
 }
 
-h1 a {
-  text-decoration: none;
-}
 h1 a:visited {
   color: #79160A;
 }
@@ -75,76 +46,29 @@ h1 a:hover {
   color: #D12D1A;
 }
 
-main {
-  display: block;
-}
-
 input, textarea {
-  border-style: solid;
-  border-radius: 6px;
-  border-width: 1px;
-  padding: 2px;
   border-color: #000000 #000000 #000000 #000000;
   color: #000;
   background-color: #FFFFFF;
 }
 
 select {
-  border-style: solid;
-  border-radius: 6px;
-  border-width: 1px;
-  padding: 2px;
   border-color: #000000 #000000 #000000 #000000;
   color: #000;
   background-color: #FFFFFF;
   vertical-align: middle;
 }
 
-input[name=picw], input[name=pich], input[name=delno] {
-  width: 3em;
-}
-
-input[name=pwd] {
-  width: 6em;
-}
-
 input[type=submit] {
-  border-style: solid;
-  border-radius: 6px;
-  border-width: 1px;
-  padding: 2px;
   border-color: #000000 #000000 #000000 #000000;
   color: #000;
   background-color: #E5E5E5;
-  padding-left: 4px;
-  padding-right: 4px;
 }
 
 input[name=upfile] {
-  border-style: solid;
-  border-radius: 6px;
-  border-width: 1px;
-  padding: 2px;
   border-color: #000000 #000000 #000000 #000000;
   color: #000;
   background-color: #E5E5E5;
-  width: 10em;
-}
-
-input[type=color] {
-  height: 1em;
-}
-
-input[type=number] {
-  -moz-appearance: textfield;
-}
-input[type=number]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-input[type=number]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
 }
 
 em.thispage {
@@ -152,40 +76,8 @@ em.thispage {
   font-weight: bold;
 }
 
-.thread {
-  border-radius: 16px;
-  background-color: #FFFFEF;
-  margin-left: 360px;
-  margin-right: 20px;
-  padding: 1em;
-  margin-top: 1.5em;
-  margin-bottom: 1.5em;
-}
-.thread .thfoot {
-  text-align: right;
-}
-
-.search_box {
-  font-size: smaller;
-}
-
-.delf {
-  font-size: smaller;
-}
-
-p.sysmsg {
-  display: inline;
-}
-
 figure {
-  float: left;
-  padding-right: 8px;
   background-color: #FFFFEF;
-  margin-bottom: 1ex;
-}
-figure img {
-  max-width: 400px;
-  height: auto;
 }
 
 figcaption {
@@ -202,141 +94,53 @@ p.oya {
 }
 
 .oyaname {
-  line-height: 1em;
-  border: solid 1px #E5E5E5;
-  border-radius: 5px;
-  display: inline-block;
-}
-.oyaname a {
-  text-decoration: none;
-  display: block;
-  padding: 5px;
-  color: inherit;
+  border-color: #E5E5E5;
 }
 
 .oyaname:hover {
   background-color: #EEEEEE;
 }
 
-h4#oya {
-  margin-top: 1ex;
-}
-
 .res {
-  border-top: dashed 1px #79160A;
-  margin-top: 1em;
-}
-.res section {
-  margin-top: 1em;
-  display: inline-block;
-  max-width: 100%;
-}
-.res h3 {
-  font-size: 100%;
-  margin-bottom: 0ex;
-}
-.res h4 {
-  font-size: 100%;
-  margin-bottom: 1ex;
-}
-.res figure {
-  float: none;
+  border-color: #79160A;
 }
 
 .limit {
-  margin-top: 1em;
   background-color: #52745E;
 }
 
-h5 {
-  font-weight: normal;
-}
-
 .resma {
-  display: block;
   color: #52745E;
   background-color: #EEEEEE;
 }
 
 button {
-  border-style: solid;
-  border-radius: 6px;
-  border-width: 1px;
-  padding: 2px;
   border-color: #000000 #000000 #000000 #000000;
   color: #000;
   background-color: #E5E5E5;
-  padding-left: 4px;
-  padding-right: 4px;
   background-color: #E5E5E5;
   color: #000;
 }
 
 .button {
-  border-style: solid;
-  border-radius: 6px;
-  border-width: 1px;
-  padding: 2px;
   border-color: #000000 #000000 #000000 #000000;
   color: #000;
   background-color: #E5E5E5;
-  padding: 2px 6px;
-  display: inline-block;
 }
 .button a {
-  text-decoration: none;
   color: #000;
 }
 .button a svg {
   fill: #000;
-  width: 12px;
-  height: 12px;
 }
 
 .oyat, .siihelp h2 {
   border-left: solid 1ex #79160A;
   background: #EEE0D7;
-  padding: 0.2em;
   color: #2F7448;
 }
 
-footer {
-  border-radius: 16px;
-  background-color: #FFFFEF;
-  margin-left: 360px;
-  margin-right: 20px;
-  padding: 1em;
-  text-align: right;
-  margin-bottom: 20px;
-  margin-top: 20px;
-}
-
-.oekaki {
-  font-size: smaller;
-}
-
-#appstage {
-  border-radius: 16px;
-  background-color: #FFFFEF;
-  margin-left: 360px;
-  margin-right: 20px;
-  padding: 1em;
-  margin-top: 1.5em;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-}
 #appstage .palette .palette_set {
-  border-style: solid;
-  border-radius: 6px;
-  border-width: 1px;
-  padding: 2px;
   border-color: #000000 #000000 #000000 #000000;
   color: #000;
   background-color: #FFFFFF;
@@ -379,113 +183,10 @@ footer {
   color: #AEB3D2;
 }
 
-.palette {
-  width: 180px;
-}
-.palette fieldset {
-  text-align: center;
-}
-
-.c {
-  text-align: center;
-}
-
-.siihelp dt {
-  font-weight: bold;
-}
-.siihelp ul {
-  margin-left: 20px;
-}
-
-#cp {
-  margin-top: 160px;
-  scroll-behavior: smooth;
-  margin-bottom: 1.5em;
-}
-
-#catalog {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
-}
-#catalog div {
-  width: 166px;
-  text-align: center;
-  overflow: hidden;
-}
-#catalog p {
-  margin: 0.5ex auto;
-}
-#catalog img {
-  width: 150px;
-}
-
 .delfo {
   font-size: smaller;
 }
 .delfo th, .delfo td {
-  border: 1px solid #EEEEEE;
-}
-
-.ppost {
-  clear: left;
-}
-
-@media screen and (max-width: 1024px) {
-  .res {
-    clear: left;
-  }
-}
-@media screen and (max-width: 450px) {
-  header {
-    width: auto;
-    position: relative;
-  }
-  header .titlebox {
-    width: auto;
-    margin: 20px;
-    position: relative;
-    top: unset;
-    left: unset;
-  }
-  header .titlebox + div {
-    width: auto;
-    position: relative;
-    margin: 20px;
-  }
-
-  .thread {
-    display: block;
-    margin: 20px;
-  }
-
-  #paintmode header {
-    width: auto;
-    position: relative;
-    margin: 20px;
-  }
-
-  #appstage {
-    display: block;
-  }
-
-  #cp {
-    margin-top: 1.5em;
-    scroll-behavior: smooth;
-    margin-bottom: 1.5em;
-  }
-
-  footer {
-    width: auto;
-    position: relative;
-    text-align: right;
-    margin: 20px;
-  }
+  border-color: #EEEEEE;
 }
 /*# sourceMappingURL=neex.css.map */

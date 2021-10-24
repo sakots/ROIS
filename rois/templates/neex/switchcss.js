@@ -1,4 +1,4 @@
-var colorIdx = GetCookie("colorIdx");
+var colorIdx = GetCookie("_neex_colorIdx");
 switch (Number(colorIdx)) {
     case 1:
         document.getElementById("css1").removeAttribute("disabled");
@@ -21,10 +21,10 @@ switch (Number(colorIdx)) {
     case 7:
         document.getElementById("css7").removeAttribute("disabled");
         break;
-} 
+}
 function SetCss(obj){
     var idx = obj.selectedIndex;
-    SetCookie("colorIdx",idx);
+    SetCookie("_neex_colorIdx",idx);
     window.location.reload();
 }
 function GetCookie(key){

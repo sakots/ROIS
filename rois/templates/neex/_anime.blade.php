@@ -4,6 +4,7 @@
 		<meta charset="utf-8">
 		<title>{{$btitle}}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/neex_index.min.css">
 		<link rel="stylesheet" href="templates/{{$themedir}}/css/nanj/neex.min.css">
 		<link rel="stylesheet" href="templates/{{$themedir}}/css/dark/neex.min.css" id="css1" disabled>
 		<link rel="stylesheet" href="templates/{{$themedir}}/css/fine/neex.min.css" id="css2" disabled>
@@ -93,7 +94,7 @@
 					Web Style by <a href="https://dev.oekakibbs.net/" target="_top" title="{{$tname}} {{$tver}} (by お絵かきBBSラボ)">{{$tname}}</a>
 				</p>
 				<p>
-					OekakiApplet - 
+					OekakiApplet -
 					<a href="https://github.com/funige/neo/" target="_top" rel="noopener noreferrer" title="by funige">PaintBBS NEO</a>
 					@if ($use_shi_p) ,<a href="http://hp.vector.co.jp/authors/VA016309/" target="_top" rel="noopener noreferrer" title="by しぃちゃん">Shi-Painter</a> @endif
 					@if ($use_chicken) ,<a href="https://github.com/thenickdude/chickenpaint" target="_blank" rel="nofollow noopener noreferrer" title="by Nicholas Sherlock">ChickenPaint</a> @endif

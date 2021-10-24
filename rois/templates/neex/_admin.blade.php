@@ -4,6 +4,7 @@
 		<meta charset="utf-8">
 		<title>{{$btitle}}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/neex_index.min.css">
 		<link rel="stylesheet" href="templates/{{$themedir}}/css/nanj/neex.min.css">
 		<link rel="stylesheet" href="templates/{{$themedir}}/css/dark/neex.min.css" id="css1" disabled>
 		<link rel="stylesheet" href="templates/{{$themedir}}/css/fine/neex.min.css" id="css2" disabled>
