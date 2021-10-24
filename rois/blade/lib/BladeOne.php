@@ -1,4 +1,7 @@
-<?php /** @noinspection PhpUnusedParameterInspection */
+<?php /** @noinspection PhpMissingParamTypeInspection */
+/** @noinspection ReturnTypeCanBeDeclaredInspection */
+/** @noinspection PhpMissingReturnTypeInspection */
+/** @noinspection PhpUnusedParameterInspection */
 
 /** @noinspection SyntaxError
  * @noinspection ForgottenDebugOutputInspection
@@ -15,7 +18,6 @@
  * @noinspection PhpUnused
  * @noinspection PhpFullyQualifiedNameUsageInspection
  * @noinspection PhpComposerExtensionStubsInspection
- * @noinspection Php
  */
 
 namespace eftec\bladeone;
@@ -35,26 +37,26 @@ use InvalidArgumentException;
  * @copyright Copyright (c) 2016-2021 Jorge Patricio Castro Castillo MIT License.
  *            Don't delete this comment, its part of the license.
  *            Part of this code is based in the work of Laravel PHP Components.
- * @version   3.52
+ * @version   4.1
  * @link      https://github.com/EFTEC/BladeOne
  */
 class BladeOne
 {
     //<editor-fold desc="fields">
 
-    /** @var int BladeOne reads if the compiled file has changed. If has changed,then the file is replaced. */
-    const MODE_AUTO = 0;
+    /** @var int BladeOne reads if the compiled file has changed. If it has changed,then the file is replaced. */
+    public const MODE_AUTO = 0;
     /** @var int Then compiled file is always replaced. It's slow and it's useful for development. */
-    const MODE_SLOW = 1;
+    public const MODE_SLOW = 1;
     /** @var int The compiled file is never replaced. It's fast and it's useful for production. */
-    const MODE_FAST = 2;
+    public const MODE_FAST = 2;
     /** @var int DEBUG MODE, the file is always compiled and the filename is identifiable. */
-    const MODE_DEBUG = 5;
+    public const MODE_DEBUG = 5;
     /** @var array Hold dictionary of translations */
     public static $dictionary = [];
     /** @var string PHP tag. You could use < ?php or < ? (if shorttag is active in php.ini) */
     public $phpTag = '<?php '; // hello hello hello.
-    public $phpTagEcho = '<?php echo ';
+    public $phpTagEcho = '<?php'.' echo ';
     /** @var string $currentUser Current user. Example: john */
     public $currentUser;
     /** @var string $currentRole Current role. Example: admin */
@@ -67,17 +69,17 @@ class BladeOne
     public $authAnyCallBack;
     /** @var callable callback of errors. It is used for @error */
     public $errorCallBack;
-    /** @var bool if true then if the operation fails and it is critic, then it throws an error */
+    /** @var bool if true then, if the operation fails, and it is critic, then it throws an error */
     public $throwOnError = false;
     /** @var string security token */
     public $csrf_token = '';
     /** @var string The path to the missing translations log file. If empty then every missing key is not saved. */
     public $missingLog = '';
     public $pipeEnable = false;
-    /** @var array Alias (with or without namespace) of the classes) */
+    /** @var array Alias (with or without namespace) of the classes */
     public $aliasClasses = [];
     /**
-     * @var bool if true then the variables defined in the include as argumentsare scoped to work only
+     * @var bool if true then the variables defined in the "include" as arguments are scoped to work only
      * inside the include.<br>
      * If false (default value), then the variables defined in the include as arguments are defined globally.<br>
      * <b>Example: (includeScope=false)</b><br>
@@ -128,7 +130,7 @@ class BladeOne
         'Comments',
         'Echos',
     ];
-    /** @var string|null it allows to sets the stack */
+    /** @var string|null it allows to set the stack */
     protected $viewStack;
     /** @var array used by $this->composer() */
     protected $composerStack = [];
@@ -286,27 +288,25 @@ class BladeOne
      * @param string $id          Title of the error
      * @param string $text        Message of the error
      * @param bool   $critic      if true then the compilation is ended, otherwise it continues
-     * @param bool   $alwaysThrow if true then it always throw a runtime exception.
+     * @param bool   $alwaysThrow if true then it always throws a runtime exception.
      * @return string
      * @throws \RuntimeException
      */
     public function showError($id, $text, $critic = false, $alwaysThrow = false)
     {
         \ob_get_clean();
-        if (($this->throwOnError || $alwaysThrow) && $critic === true) {
+        if ($this->throwOnError || $alwaysThrow || $critic === true) {
             throw new \RuntimeException("BladeOne Error [$id] $text");
         } else {
-            echo "<div style='background-color: red; color: black; padding: 3px; border: solid 1px black;'>";
-            echo "BladeOne Error [$id]:<br>";
-            echo "<span style='color:white'>$text</span><br></div>\n";
+            $msg= "<div style='background-color: red; color: black; padding: 3px; border: solid 1px black;'>";
+            $msg.= "BladeOne Error [$id]:<br>";
+            $msg.= "<span style='color:white'>$text</span><br></div>\n";
+            echo $msg;
             if ($critic) {
                 die(1);
             }
-            if ($this->throwOnError) {
-                error_log("BladeOne Error [$id] $text");
-            }
+            return $msg;
         }
-        return '';
     }
 
     /**
@@ -335,10 +335,10 @@ class BladeOne
     public function format($variable, $format = null)
     {
         if ($variable instanceof \DateTime) {
-            $format = $format === null ? 'Y/m/d' : $format;
+            $format = $format ?? 'Y/m/d';
             return $variable->format($format);
         }
-        $format = $format === null ? '%s' : $format;
+        $format = $format ?? '%s';
         return sprintf($format, $variable);
     }
 
@@ -479,7 +479,7 @@ class BladeOne
     }
 
     /**
-     * If false then the file is not compiled and it is executed directly from the memory.<br>
+     * If false then the file is not compiled, and it is executed directly from the memory.<br>
      * By default the value is true<br>
      * It also sets the mode to MODE_SLOW
      *
@@ -614,7 +614,7 @@ class BladeOne
             $value = $this->storeVerbatimBlocks($value);
         }
         $this->footer = [];
-        // Here we will loop through all of the tokens returned by the Zend lexer and
+        // Here we will loop through all the tokens returned by the Zend lexer and
         // parse each one into the corresponding valid PHP. We will then have this
         // template as the correctly rendered PHP that can be rendered natively.
         foreach (\token_get_all($value) as $token) {
@@ -661,7 +661,7 @@ class BladeOne
      */
     protected function parseToken($token)
     {
-        list($id, $content) = $token;
+        [$id, $content] = $token;
         if ($id == T_INLINE_HTML) {
             foreach ($this->compilers as $type) {
                 $content = $this->{"compile$type"}($content);
@@ -694,15 +694,11 @@ class BladeOne
      */
     public function relative($relativeWeb)
     {
-        if (isset($this->assetDict[$relativeWeb])) {
-            return $this->assetDict[$relativeWeb];
-        }
-        // relativepath is calculated when
-        return $this->relativePath . $relativeWeb;
+        return $this->assetDict[$relativeWeb] ?? ($this->relativePath . $relativeWeb);
     }
 
     /**
-     * It add an alias to the link of the resources.<br>
+     * It adds an alias to the link of the resources.<br>
      * addAssetDict('name','url/res.jpg')<br>
      * addAssetDict(['name'=>'url/res.jpg','name2'=>'url/res2.jpg');
      *
@@ -968,7 +964,7 @@ class BladeOne
     public function __call($name, $args)
     {
         if ($name === 'if') {
-            return $this->registerIfStatement(isset($args[0]) ? $args[0] : null, isset($args[1]) ? $args[1] : null);
+            return $this->registerIfStatement($args[0] ?? null, $args[1] ?? null);
         }
         $this->showError('call', "function $name is not defined<br>", true, true);
         return '';
@@ -1073,7 +1069,7 @@ class BladeOne
      * @param array  $variables
      * @param bool   $forced  if true then it recompiles no matter if the compiled file exists or not.
      * @param bool   $isParent
-     * @param bool   $runFast if true then the code is not compiled neither checked and it runs directly the compiled
+     * @param bool   $runFast if true then the code is not compiled neither checked, and it runs directly the compiled
      *                        version.
      * @return string
      * @throws Exception
@@ -1092,8 +1088,8 @@ class BladeOne
             $this->variables = $variables;
         }
         if (!$runFast) {
-            // a) if the compile is forced then we compile the original file, then save the file.
-            // b) if the compile is not forced then we read the datetime of both file and we compared.
+            // a) if the "compile" is forced then we compile the original file, then save the file.
+            // b) if the "compile" is not forced then we read the datetime of both file, and we compared.
             // c) in both cases, if the compiled doesn't exist then we compile.
             if ($view) {
                 $this->fileName = $view;
@@ -1119,7 +1115,7 @@ class BladeOne
                     // if the method exists statically then $fn is the class and 'composer' is the name of the method
                     $fn::composer($this);
                 } elseif (is_object($fn) || class_exists($fn)) {
-                    // if $fn is an object or it is a class and the class exists.
+                    // if $fn is an object, or it is a class and the class exists.
                     $instance = (is_object($fn)) ? $fn : new $fn();
                     if (method_exists($instance, 'composer')) {
                         // and the method exists inside the instance.
@@ -1159,9 +1155,9 @@ class BladeOne
      */
     protected function wildCardComparison($text, $textWithWildcard)
     {
-        if (($textWithWildcard === null && $textWithWildcard === '')
+        if (($textWithWildcard === null || $textWithWildcard === '')
             || strpos($textWithWildcard, '*') === false) {
-            // if the text with wildcard is null or empty or it contains two ** or it contains no * then..
+            // if the text with wildcard is null or empty, or it contains two ** or it contains no * then..
             return $text == $textWithWildcard;
         }
         if ($textWithWildcard === '*' || $textWithWildcard === '**') {
@@ -1347,7 +1343,7 @@ class BladeOne
         if (\is_file($fullFileName)) {
             return \file_get_contents($fullFileName);
         }
-        $this->showError('getFile', "File does not exist at paths (separated by comma) [$this->notFoundPath] or permission denied", true);
+        $this->showError('getFile', "File does not exist at paths (separated by comma) [$this->notFoundPath] or permission denied");
         return '';
     }
 
@@ -1442,7 +1438,6 @@ class BladeOne
         // flush out any stray output that might get out before an error occurs or
         // an exception is thrown. This prevents any partial views from leaking.
         try {
-            /** @noinspection PhpIncludeInspection */
             include $compiledFile;
         } catch (Exception $e) {
             $this->handleViewException($e);
@@ -1534,7 +1529,7 @@ class BladeOne
             && \preg_match('/^([d]{1,3}).([d]{1,3}).([d]{1,3}).([d]{1,3})$/', $_SERVER['HTTP_X_FORWARDED_FOR'])) {
             return $_SERVER['HTTP_X_FORWARDED_FOR'];
         }
-        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+        return $_SERVER['REMOTE_ADDR'] ?? '';
     }
 
     /**
@@ -1554,8 +1549,8 @@ class BladeOne
     public function csrfIsValid($alwaysRegenerate = false, $tokenId = '_token')
     {
         if (@$_SERVER['REQUEST_METHOD'] === 'POST' && $alwaysRegenerate === false) {
-            $this->csrf_token = isset($_POST[$tokenId]) ? $_POST[$tokenId] : null; // ping pong the token.
-            return $this->csrf_token . '|' . $this->ipClient() === (isset($_SESSION[$tokenId]) ? $_SESSION[$tokenId] : null);
+            $this->csrf_token = $_POST[$tokenId] ?? null; // ping pong the token.
+            return $this->csrf_token . '|' . $this->ipClient() === ($_SESSION[$tokenId] ?? null);
         }
 
         if ($this->csrf_token == '' || $alwaysRegenerate) {
@@ -1573,7 +1568,7 @@ class BladeOne
     public function yieldSection()
     {
         $sc = $this->stopSection();
-        return isset($this->sections[$sc]) ? $this->sections[$sc] : null;
+        return $this->sections[$sc] ?? null;
     }
 
     /**
@@ -2003,7 +1998,7 @@ class BladeOne
      * <b>Example:<b><br>
      * <pre>
      * $this->composer('folder.view',function($bladeOne) { $bladeOne->share('newvalue','hi there'); });
-     * $this->composer('folder.view','namespace1\namespace2\SomeClass'); // SomeClass must exists and it must has the
+     * $this->composer('folder.view','namespace1\namespace2\SomeClass'); // SomeClass must exist and it must have the
      *                                                                   // method 'composer'
      * $this->composer('folder.*',$instance); // $instance must has the method called 'composer'
      * $this->composer(); // clear all composer.
@@ -2261,11 +2256,11 @@ class BladeOne
         if (!isset($_SERVER['HTTP_HOST'], $_SERVER['REQUEST_URI'])) {
             return '';
         }
-        $host = $this->baseDomain !== null ? $this->baseDomain : $_SERVER['HTTP_HOST']; // <-- it could be forged!
-        $link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
+        $host = $this->baseDomain ?? $_SERVER['HTTP_HOST']; // <-- it could be forged!
+        $link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http');
         $port = $_SERVER['SERVER_PORT'];
         $port2 = (($link === 'http' && $port === '80') || ($link === 'https' && $port === '443')) ? '' : ':' . $port;
-        $link .= "://$host{$port2}$_SERVER[REQUEST_URI]";
+        $link .= "://$host$port2$_SERVER[REQUEST_URI]";
         if ($noArgs) {
             $link = @explode('?', $link)[0];
         }
@@ -2305,7 +2300,7 @@ class BladeOne
      */
     public function getCanonicalUrl()
     {
-        return $this->canonicalUrl !== null ? $this->canonicalUrl : $this->getCurrentUrl();
+        return $this->canonicalUrl ?? $this->getCurrentUrl();
     }
 
     /**
@@ -2334,7 +2329,7 @@ class BladeOne
      */
     public function getCurrentUrl($noArgs = false)
     {
-        $link = $this->currentUrl !== null ? $this->currentUrl : $this->getCurrentUrlCalculated();
+        $link = $this->currentUrl ?? $this->getCurrentUrlCalculated();
         if ($noArgs) {
             $link = @explode('?', $link)[0];
         }
@@ -2503,7 +2498,7 @@ class BladeOne
 
     /**
      * if num is more than one then it returns the phrase in plural, otherwise the phrase in singular.
-     * Note: the translation should be as follow: $msg['Person']='Person' $msg=['Person']['p']='People'
+     * Note: the translation should be as follows: $msg['Person']='Person' $msg=['Person']['p']='People'
      *
      * @param string $phrase
      * @param string $phrases
@@ -2559,12 +2554,12 @@ class BladeOne
 
     protected function compileDump($expression)
     {
-        return $this->phpTagEcho . " \$this->dump$expression;?>";
+        return $this->phpTagEcho . "\$this->dump$expression;?>";
     }
 
     protected function compileRelative($expression)
     {
-        return $this->phpTagEcho . " \$this->relative$expression;?>";
+        return $this->phpTagEcho . "\$this->relative$expression;?>";
     }
 
     protected function compileMethod($expression)
@@ -2576,13 +2571,13 @@ class BladeOne
 
     protected function compilecsrf($expression = null)
     {
-        $expression = ($expression === null) ? "'_token'" : $expression;
+        $expression = $expression ?? "'_token'";
         return "<input type='hidden' name='$this->phpTag echo $expression; ?>' value='{$this->phpTag}echo \$this->csrf_token; " . "?>'/>";
     }
 
     protected function compileDd($expression)
     {
-        return $this->phpTagEcho . " '<pre>'; var_dump$expression; echo '</pre>';?>";
+        return $this->phpTagEcho . "'<pre>'; var_dump$expression; echo '</pre>';?>";
     }
 
     /**
@@ -2924,13 +2919,102 @@ class BladeOne
     }
 
     /**
-     * It separates a string using a separator and excluding quotes and double quotes.
+     * It separates a string using a separator and a identifier<br>
+     * It excludes quotes,double quotes and the "¬" symbol.<br>
+     * <b>Example</b><br>
+     * <pre>
+     * $this->parseArgs('a=2,b='a,b,c',d'); // ['a'=>'2','b'=>'a,b,c','d'=>null]
+     * $this->parseArgs('a=2,b=c,d'); // ['a'=>'2','b'=>'c','d'=>null]
+     * $this->parseArgs('a=2 b=c',' '); // ['a'=>'2','b'=>'c']
+     * $this->parseArgs('a:2 b:c',' ',':'); // ['a'=>'2','b'=>'c']
+     * </pre>
+     * Note: parseArgs('a = 2 b = c',' '); with return 4 values instead of 2.
      *
-     * @param string $text
-     * @param string $separator
+     * @param string $text the text to separate
+     * @param string $separator the separator of arguments
+     * @param string $assigment the character used to assign a new value
+     * @param bool   $emptyKey  if the argument is without value, we return it as key (true) or value (false) ?
      * @return array
      */
-    public function parseArgs($text, $separator = ',')
+    public function parseArgs($text, $separator = ',', $assigment = '=', $emptyKey = true)
+    {
+        if ($text === null || $text === '') {
+            return []; //nothing to convert.
+        }
+        $chars = $text; // str_split($text);
+        $parts = [];
+        $nextpart = '';
+        $strL = strlen($chars);
+        $stringArr='"\'¬';
+        $parenthesis='([{';
+        $parenthesisClose=')]}';
+        $insidePar=false;
+        for ($i = 0; $i < $strL; $i++) {
+            $char = $chars[$i];
+            // we check if the character is a parenthesis.
+            $pp=strpos($parenthesis, $char);
+            if ($pp!==false) {
+                // is a parenthesis, so we mark as inside a parenthesis.
+                $insidePar=$parenthesisClose[$pp];
+            }
+            if ($char===$insidePar) {
+                // we close the parenthesis.
+                $insidePar=false;
+            }
+            if (strpos($stringArr, $char)!==false) { // if ($char === '"' || $char === "'" || $char === "¬") {
+                // we found a string initializer
+                $inext = strpos($text, $char, $i + 1);
+                $inext = $inext === false ? $strL : $inext;
+                $nextpart .= substr($text, $i, $inext - $i + 1);
+                $i = $inext;
+            } else {
+                $nextpart .= $char;
+            }
+            if ($char === $separator && $insidePar==false) {
+                $parts[] = substr($nextpart, 0, -1);
+                $nextpart = '';
+            }
+        }
+        if ($nextpart !== '') {
+            $parts[] = $nextpart;
+        }
+        $result = [];
+        // duct taping for key= argument (it has a space). however, it doesn't work with key =argument
+        /*
+        foreach ($parts as $k=>$part) {
+            if(substr($part,-1)===$assigment && isset($parts[$k+1])) {
+                var_dump('ok');
+                $parts[$k].=$parts[$k+1];
+                unset($parts[$k+1]);
+            }
+        }
+        */
+        foreach ($parts as $part) {
+            if ($part) {
+                $part=trim($part);
+                $char = $part[0];
+                if (strpos($stringArr, $char)!==false) { // if ($char === '"' || $char === "'" || $char === "¬") {
+                    if ($emptyKey) {
+                        $result[$part] = null;
+                    } else {
+                        $result[] = $part;
+                    }
+                } else {
+                    $r = explode($assigment, $part, 2);
+                    if (count($r) === 2) {
+                        // key=value.
+                        $result[trim($r[0])] = trim($r[1]);
+                    } elseif ($emptyKey) {
+                        $result[trim($r[0])] = null;
+                    } else {
+                        $result[] = trim($r[0]);
+                    }
+                }
+            }
+        }
+        return $result;
+    }
+    public function parseArgsOld($text, $separator = ',')
     {
         if ($text === null || $text === '') {
             return []; //nothing to convert.
@@ -2965,7 +3049,6 @@ class BladeOne
         }
         return $result;
     }
-
     /**
      * Compile the "raw" echo statements.
      *
@@ -2993,7 +3076,7 @@ class BladeOne
      */
     protected function compileEchoDefaults($value)
     {
-        $result = \preg_replace('/^(?=\$)(.+?)(?:\s+or\s+)(.+?)$/s', 'isset($1) ? $1 : $2', $value);
+        $result = \preg_replace('/^(?=\$)(.+?)\s+or\s+(.+?)$/s', 'isset($1) ? $1 : $2', $value);
         if (!$this->pipeEnable) {
             return $this->fixNamespaceClass($result);
         }
@@ -3095,7 +3178,7 @@ class BladeOne
     }
 
     /**
-     * Compile the each statements into valid PHP.
+     * Compile the "@each" tag into valid PHP.
      *
      * @param string $expression
      * @return string
@@ -3695,8 +3778,8 @@ class BladeOne
     }
 
     /**
-     * It loads an compiled template and paste inside the code.<br>
-     * It uses more disk space but it decreases the number of includes<br>
+     * It loads a compiled template and paste inside the code.<br>
+     * It uses more disk space, but it decreases the number of includes<br>
      *
      * @param $expression
      * @return string
@@ -3707,7 +3790,7 @@ class BladeOne
         $expression = $this->stripParentheses($expression);
         $ex = $this->stripParentheses($expression);
         $exp = \explode(',', $ex);
-        $file = $this->stripQuotes(isset($exp[0]) ? $exp[0] : null);
+        $file = $this->stripQuotes($exp[0] ?? null);
         $fileC = $this->getCompiledFile($file);
         if (!@\is_file($fileC)) {
             // if the file doesn't exist then it's created
@@ -3873,7 +3956,7 @@ class BladeOne
 
     protected function compileAsset($expression)
     {
-        return $this->phpTagEcho . " (isset(\$this->assetDict[$expression]))?\$this->assetDict[$expression]:\$this->baseUrl.'/'.$expression; ?>";
+        return $this->phpTagEcho . "(isset(\$this->assetDict[$expression]))?\$this->assetDict[$expression]:\$this->baseUrl.'/'.$expression; ?>";
     }
 
     protected function compileJSon($expression)
@@ -3881,7 +3964,7 @@ class BladeOne
         $parts = \explode(',', $this->stripParentheses($expression));
         $options = isset($parts[1]) ? \trim($parts[1]) : JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
         $depth = isset($parts[2]) ? \trim($parts[2]) : 512;
-        return $this->phpTagEcho . " json_encode($parts[0], $options, $depth); ?>";
+        return $this->phpTagEcho . "json_encode($parts[0], $options, $depth); ?>";
     }
     //</editor-fold>
 
