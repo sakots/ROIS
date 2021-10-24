@@ -522,7 +522,7 @@ function regist() {
 				//レスの場合でメール欄にsageが含まれる
 				$tid = filter_input(INPUT_POST, 'modid');
 
-				$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, invz, host, tool) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$psec', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host', '$used_tool')";
+				$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, pwd, id, exid, tree, invz, host, tool) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host', '$used_tool')";
 				$db = $db->exec($sql);
 			} else {
 				//レスの場合でメール欄にsageが含まれない
@@ -544,9 +544,9 @@ function regist() {
 				if($resn < MAX_RES){
 					$nage = $age +1;
 					$tree = time() * 999999999;
-					$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, invz, host, tool) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$psec', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host', '$used_tool'); UPDATE tablelog set age = '$nage', tree = '$tree' where tid = '$tid'";
+					$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, pwd, id, exid, tree, invz, host, tool) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host', '$used_tool'); UPDATE tablelog set age = '$nage', tree = '$tree' where tid = '$tid'";
 				} else {
-					$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, time, pwd, id, exid, tree, invz, host, tool) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$psec', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host', '$used_tool')";
+					$sql = "INSERT INTO tabletree (created, modified, tid, name, sub, com, mail, url, picfile, pchfile, img_w, img_h, utime, parent, pwd, id, exid, tree, invz, host, tool) VALUES (datetime('now', 'localtime') , datetime('now', 'localtime') , '$tid', '$name', '$sub', '$com', '$mail', '$url', '$picfile', '$pchfile', '$img_w', '$img_h', '$utime', '$parent', '$pwdh', '$id', '$exid', '$tree', '$invz', '$host', '$used_tool')";
 				}
 				$db = $db->exec($sql);
 			}
