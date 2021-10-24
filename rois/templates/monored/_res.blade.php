@@ -175,7 +175,7 @@
 										<table>
 											<tr>
 												<td>name @if ($use_name) * @endif</td>
-												<td><input type="text" name="name" size="18" value="" autocomplete="username"></td>
+												<td><input type="text" name="name" size="18" value="" autocomplete="name"></td>
 											</tr>
 											<tr>
 												<td>mail</td>

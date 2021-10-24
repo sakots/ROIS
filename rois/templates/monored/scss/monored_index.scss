@@ -82,6 +82,9 @@ select {
 	@include txt_box;
 	vertical-align: middle;
 }
+input[type="text"] {
+	@include txt_box;
+}
 input[name="picw"], input[name="pich"], input[name="delno"] {
 	@include txt_box;
 	width: 3em;

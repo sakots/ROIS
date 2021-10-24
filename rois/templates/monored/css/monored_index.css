@@ -74,6 +74,12 @@ select {
   vertical-align: middle;
 }
 
+input[type=text] {
+  border-style: solid;
+  border-width: 1px;
+  padding: 2px;
+}
+
 input[name=picw], input[name=pich], input[name=delno] {
   border-style: solid;
   border-width: 1px;
