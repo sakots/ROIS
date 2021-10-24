@@ -10,9 +10,9 @@ Rapid Oekaki Image System で「ROIS」です。
 POTI-board改で使用しているテンプレートエンジン「htmltemplate.inc」は老朽化して今後が危ない…
 ということでなんか新しいテンプレートエンジンはないか探したところ、
 
-[Skinny](http://skinny.sx68.net/) → [POTI-board EVO](https://github.com/satopian/POTI-board_EVO)
+[Skinny](http://skinny.sx68.net/) -> [POTI-board EVO](https://github.com/satopian/POTI-board_EVO)
 ↓
-[smarty](https://www.smarty.net/) → [noe](https://github.com/sakots/noe-board)
+[smarty](https://www.smarty.net/) -> [noe](https://github.com/sakots/noe-board)
 ↓
 重いからTwigにしたい…（今後）
 ↓
@@ -29,7 +29,7 @@ BladeのほうがTwigより速いらしい！？
 ## 注意
 
 - まだいわゆるアルファ版です。テーマ等仕様がころころ変わる可能性があります。
-- noeとデータベースの互換性はありますが、テーマの互換性はありません。
+- noeとデータベースの互換性はありますが、テーマの互換性はありません。-> データベースの互換性もなくなりました。
 
 ## サンプルとサポート
 
@@ -43,9 +43,16 @@ BladeのほうがTwigより速いらしい！？
 
 ## 履歴
 
+### [2021/10/24] v1.0.0
+
+- データベース名を変更できるようにした
+  - configに変更があるので注意
+- IDの変更スパンを指定できるようにした
+  - 変更なし、1日、1週間、1か月、1年
+
 ### [2021/10/04] v0.99.16.b
 
-- 配布同梱のNEOを更新(v1.5.12→v1.5.14)
+- 配布同梱のNEOを更新(v1.5.12 -> v1.5.14)
 - テーマneexの不具合修正
 
 ### [2021/09/18] v0.99.16

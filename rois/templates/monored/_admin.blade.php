@@ -4,14 +4,15 @@
 		<meta charset="utf-8">
 		<title>{{$btitle}}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_red.min.css">
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_main.min.css" id="css1" disabled>
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_dark.min.css" id="css2" disabled>
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_deep.min.css" id="css3" disabled>
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_mayo.min.css" id="css4" disabled>
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_dev.min.css" id="css5" disabled>
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_sql.min.css" id="css6" disabled>
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_pop.min.css" id="css7" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/monored_index.min.css">
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/red/mono.min.css">
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/main/mono.min.css" id="css1" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/dark/mono.min.css" id="css2" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/deep/mono.min.css" id="css3" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/mayo/mono.min.css" id="css4" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/dev/mono.min.css" id="css5" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/sql/mono.min.css" id="css6" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/pop/mono.min.css" id="css7" disabled>
 		<script src="templates/{{$themedir}}/switchcss.js"></script>
 	</head>
 	<body>
@@ -140,7 +141,7 @@
 					Web Style by <a href="https://dev.oekakibbs.net/" target="_top" title="{{$tname}} {{$tver}} (by お絵かきBBSラボ)">{{$tname}}</a>
 				</p>
 				<p>
-					OekakiApplet - 
+					OekakiApplet -
 					<a href="https://github.com/funige/neo/" target="_top" rel="noopener noreferrer" title="by funige">PaintBBS NEO</a>
 					@if ($use_shi_p) ,<a href="http://hp.vector.co.jp/authors/VA016309/" target="_top" rel="noopener noreferrer" title="by しぃちゃん">Shi-Painter</a> @endif
 					@if ($use_chicken) ,<a href="https://github.com/thenickdude/chickenpaint" target="_blank" rel="nofollow noopener noreferrer" title="by Nicholas Sherlock">ChickenPaint</a> @endif

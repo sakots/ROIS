@@ -4,14 +4,15 @@
 		<meta charset="utf-8">
 		<title>{{$btitle}}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_red.min.css">
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_main.min.css" id="css1" disabled>
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_dark.min.css" id="css2" disabled>
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_deep.min.css" id="css3" disabled>
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_mayo.min.css" id="css4" disabled>
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_dev.min.css" id="css5" disabled>
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_sql.min.css" id="css6" disabled>
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_pop.min.css" id="css7" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/monored_index.min.css">
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/red/mono.min.css">
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/main/mono.min.css" id="css1" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/dark/mono.min.css" id="css2" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/deep/mono.min.css" id="css3" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/mayo/mono.min.css" id="css4" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/dev/mono.min.css" id="css5" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/sql/mono.min.css" id="css6" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/pop/mono.min.css" id="css7" disabled>
 		<script src="templates/{{$themedir}}/switchcss.js"></script>
 	</head>
 	<body>
@@ -268,20 +269,20 @@
 							<label for="mystyle">Color</label>
 							<span class="stylechanger">
 								<select class="form" name="select" id="mystyle" onchange="SetCss(this);">
-									<option value="mono_red.min.css">RED</option>
-									<option value="mono_main.min.css">MONO</option>
-									<option value="mono_dark.min.css">dark</option>
-									<option value="mono_deep.min.css">deep</option>
-									<option value="mono_mayo.min.css">MAYO</option>
-									<option value="mono_dev.min.css">DEV</option>
-									<option value="mono_sql.min.css">SQL</option>
-									<option value="mono_pop.min.css">POP</option>
+									<option value="red/mono.min.css">RED</option>
+									<option value="main/mono.min.css">MONO</option>
+									<option value="dark/mono.min.css">dark</option>
+									<option value="deep/mono.min.css">deep</option>
+									<option value="mayo/mono.min.css">MAYO</option>
+									<option value="dev/mono.min.css">DEV</option>
+									<option value="sql/mono.min.css">SQL</option>
+									<option value="pop/mono.min.css">POP</option>
 								</select>
 							</span>
 						</p>
 					</form>
 					<script>
-						colorIdx = GetCookie('colorIdx');
+						colorIdx = GetCookie('_monored_colorIdx');
 						document.getElementById("mystyle").selectedIndex = colorIdx;
 					</script>
 				</section>

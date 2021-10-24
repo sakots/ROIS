@@ -4,14 +4,15 @@
 		<meta charset="utf-8">
 		<title>{{$btitle}}</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_red.min.css">
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_main.min.css" id="css1" disabled>
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_dark.min.css" id="css2" disabled>
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_deep.min.css" id="css3" disabled>
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_mayo.min.css" id="css4" disabled>
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_dev.min.css" id="css5" disabled>
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_sql.min.css" id="css6" disabled>
-		<link rel="stylesheet" href="templates/{{$themedir}}/css/mono_pop.min.css" id="css7" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/monored_index.min.css">
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/red/mono.min.css">
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/main/mono.min.css" id="css1" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/dark/mono.min.css" id="css2" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/deep/mono.min.css" id="css3" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/mayo/mono.min.css" id="css4" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/dev/mono.min.css" id="css5" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/sql/mono.min.css" id="css6" disabled>
+		<link rel="stylesheet" href="templates/{{$themedir}}/css/pop/mono.min.css" id="css7" disabled>
 		<script src="templates/{{$themedir}}/switchcss.js"></script>
 		@foreach ($oya as $bbsline)
 		<meta name="twitter:card" content="summary">
