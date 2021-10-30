@@ -5,7 +5,7 @@
 //--------------------------------------------------
 
 //スクリプトのバージョン
-define('ROIS_VER','v1.0.0'); //lot.211024.0
+define('ROIS_VER','v1.1.0'); //lot.211030.0
 
 //設定の読み込み
 require(__DIR__.'/config.php');
@@ -15,8 +15,8 @@ require(__DIR__.'/templates/'.THEMEDIR.'/template_ini.php');
 date_default_timezone_set(DEFAULT_TIMEZONE);
 
 //phpのバージョンが古い場合動かさせない
-if (($phpver = phpversion()) < "5.5.0") {
-	die("PHP version 5.5.0 or higher is required for this program to work. <br>\n(Current PHP version:{$phpver})");
+if (($phpver = phpversion()) < "5.6.0") {
+	die("PHP version 5.6.0 or higher is required for this program to work. <br>\n(Current PHP version:{$phpver})");
 }
 //コンフィグのバージョンが古くて互換性がない場合動かさせない
 if (CONF_VER < 9999 || !defined('CONF_VER')) {
@@ -380,6 +380,7 @@ function regist() {
 	if(strlen($name) > MAX_NAME) {error(MSG012);}
 	if(strlen($mail) > MAX_EMAIL) {error(MSG013);}
 	if(strlen($sub) > MAX_SUB) {error(MSG014);}
+	if(strlen($url) > MAX_URL) {error(MSG015);}
 
 	//ホスト取得
 	$host = gethostbyaddr(get_uip());
