@@ -28,6 +28,12 @@ if (!isset ($_FILES["picture"]) || $_FILES['picture']['error'] != UPLOAD_ERR_OK
 
 header('Content-type: text/plain');
 
+$usercode = (string)filter_input(INPUT_GET, 'usercode');
+//csrf
+if($usercode && $usercode !== filter_input(INPUT_COOKIE, 'usercode')){
+	chibi_die("Your picture upload failed! Please try again!");
+}
+
 $rotation = isset($_POST['rotation']) && ((int) $_POST['rotation']) > 0 ? ((int) $_POST['rotation']) : 0;
 
 $success = TRUE;
@@ -57,14 +63,14 @@ $imgext='.png';
 $userdata = "$u_ip\t$u_host\t$u_agent\t$imgext";
 // 拡張ヘッダーを取り出す
 
-	$usercode = (string)filter_input(INPUT_GET, 'usercode');
-	$repcode = (string)filter_input(INPUT_GET, 'repcode');
-	$tool = (string)filter_input(INPUT_GET, 'tool'); // 210830 sakots
-	$stime = (string)filter_input(INPUT_GET, 'stime');
-	$resto = (string)filter_input(INPUT_GET, 'resto');
+$usercode = (string)filter_input(INPUT_GET, 'usercode');
+$repcode = (string)filter_input(INPUT_GET, 'repcode');
+$tool = (string)filter_input(INPUT_GET, 'tool'); // 210830 sakots
+$stime = (string)filter_input(INPUT_GET, 'stime');
+$resto = (string)filter_input(INPUT_GET, 'resto');
 
-	//usercode 差し換え認識コード ツール 描画開始 完了時間 レス先 を追加
-	$userdata .= "\t$usercode\t$repcode\t$stime\t$time\t$resto\t$tool";
+//usercode 差し換え認識コード ツール 描画開始 完了時間 レス先 を追加
+$userdata .= "\t$usercode\t$repcode\t$stime\t$time\t$resto\t$tool";
 $userdata .= "\n";
 // 情報データをファイルに書き込む
 $fp = fopen(TEMP_DIR.$imgfile.".dat","w");
@@ -72,13 +78,12 @@ if(!$fp){
     chibi_die("Your picture upload failed! Please try again!");
 }
 
-	flock($fp, LOCK_EX);
-	fwrite($fp, $userdata);
-	fflush($fp);
-	flock($fp, LOCK_UN);
-	fclose($fp);
-	chmod(TEMP_DIR.$imgfile.'.dat',PERMISSION_FOR_LOG);
-
+flock($fp, LOCK_EX);
+fwrite($fp, $userdata);
+fflush($fp);
+flock($fp, LOCK_UN);
+fclose($fp);
+chmod(TEMP_DIR.$imgfile.'.dat',PERMISSION_FOR_LOG);
 
 die("CHIBIOK\n");
 
