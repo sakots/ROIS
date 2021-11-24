@@ -8,6 +8,7 @@
 // このスクリプトはPaintBBS（藍珠CGI）のPNG保存ルーチンを参考に
 // PHP用に作成したものです。
 //----------------------------------------------------------------------
+// 2021/11/24 langの処理を修正、CSRF対策にusercodeを使用。cookieが確認できない場合は画像を保存しない。
 // 2021/08/30 使用ツールも記録 by sakots
 // 2021/05/17 エラーが発生した時はお絵かき画面から移動せず、エラーの内容を表示する。
 // 2021/02/17 $badfileが未定義の時は拒絶画像の処理をしない。
@@ -39,8 +40,7 @@
 //設定
 include(__DIR__.'/config.php');
 
-$lang = ($http_langs = $_SERVER['HTTP_ACCEPT_LANGUAGE'])
-  ? explode( ',', $http_langs )[0] : 'ja';
+$lang = ($http_langs = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $_SERVER['HTTP_ACCEPT_LANGUAGE'] : '') ? explode( ',', $http_langs )[0] : '';
 if($lang==="ja"){//ブラウザの言語が日本語の時
 	$errormsg_1 = "データの取得に失敗しました。時間を置いて再度投稿してみて下さい。";
 	$errormsg_2 = "規定容量オーバー。お絵かき画像は保存されません。";
@@ -75,7 +75,7 @@ date_default_timezone_set(DEFAULT_TIMEZONE);
 //容量違反チェックをする する:1 しない:0
 define('SIZE_CHECK', '1');
 //投稿容量制限 KB
-define('PICPOST_MAX_KB', '3072');//3MBまで
+define('PICPOST_MAX_KB', '5120');//5MBまで
 
 $time = time();
 $imgfile = $time.substr(microtime(),2,3);	//画像ファイル名
@@ -250,6 +250,12 @@ if($sendheader){
 	$userdata .= "\t$usercode\t$repcode\t$stime\t$time\t$resto\t$tool";
 }
 $userdata .= "\n";
+
+//CSRF
+if($usercode && $usercode !== filter_input(INPUT_COOKIE, 'usercode')){
+	die("error\n{$errormsg_1}");
+}
+
 if(is_file(TEMP_DIR.$imgfile.".dat")){
 	error("同名の情報ファイルが存在します。上書きします。");
 }
