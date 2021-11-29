@@ -5,17 +5,31 @@ Rapid Oekaki Image System で「ROIS」です。
 
 [PaintBBS NEO](https://github.com/funige/neo/)
 
+![php](https://img.shields.io/badge/php->5.6-green.svg)
+![php](https://img.shields.io/badge/php-7.x-green.svg)
+![php](https://img.shields.io/badge/php-8.0-green.svg)
+![Last commit](https://img.shields.io/github/last-commit/sakots/ROIS)
+![version](https://img.shields.io/github/v/release/sakots/ROIS)
+![Downloads](https://img.shields.io/github/downloads/sakots/ROIS/total)
+![Licence](https://img.shields.io/github/license/sakots/ROIS)
+
 ## 概要
 
 POTI-board改で使用しているテンプレートエンジン「htmltemplate.inc」は老朽化して今後が危ない…
 ということでなんか新しいテンプレートエンジンはないか探したところ、
 
 [Skinny](http://skinny.sx68.net/) -> [POTI-board EVO](https://github.com/satopian/POTI-board_EVO)
+
 ↓
+
 [smarty](https://www.smarty.net/) -> [noe](https://github.com/sakots/noe-board)
+
 ↓
+
 重いからTwigにしたい…（今後）
+
 ↓
+
 BladeのほうがTwigより速いらしい！？
 
 という経緯です。
