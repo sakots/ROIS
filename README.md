@@ -1,5 +1,9 @@
 # ROIS
 
+## 重要
+
+開発は終了して、[noReita](https://github.com/sakots/noReita) に移行しました。
+
 ROISは全く新しいお絵かき掲示板スクリプトです。
 Rapid Oekaki Image System で「ROIS」です。
 
@@ -18,7 +22,7 @@ Rapid Oekaki Image System で「ROIS」です。
 POTI-board改で使用しているテンプレートエンジン「htmltemplate.inc」は老朽化して今後が危ない…
 ということでなんか新しいテンプレートエンジンはないか探したところ、
 
-[Skinny](http://skinny.sx68.net/) -> [POTI-board EVO](https://github.com/satopian/POTI-board_EVO)
+[Skinny](http://skinny.sx68.net/) -> [POTI-board EVO](https://github.com/satopian/poti-kaini)
 
 ↓
 
