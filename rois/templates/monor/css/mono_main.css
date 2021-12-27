@@ -165,6 +165,7 @@ figure {
 }
 figure img {
   max-width: 100%;
+  height: auto;
 }
 
 figcaption {
@@ -363,9 +364,15 @@ button {
 }
 
 #catalog {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
 }
 #catalog div {
   width: 166px;

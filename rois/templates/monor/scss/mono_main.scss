@@ -11,9 +11,9 @@
 }
 
 //iOS対策
-label {  
+label {
 	cursor: pointer;
-}  
+}
 
 //全体的指定
 body {
@@ -133,15 +133,15 @@ input[name="upfile"] {
 	width: 10em;
 }
 //スポンボタン（上下の矢印ボタン）を非表示にする
-input[type="number"] { 
+input[type="number"] {
 	-moz-appearance: textfield;
 	&::-webkit-outer-spin-button {
-		-webkit-appearance: none; 
-		margin: 0; 
+		-webkit-appearance: none;
+		margin: 0;
 	}
 	&::-webkit-inner-spin-button {
-		-webkit-appearance: none; 
-		margin: 0; 
+		-webkit-appearance: none;
+		margin: 0;
 	}
 }
 em.thispage {
@@ -155,6 +155,7 @@ figure {
 	margin-bottom: 1ex;
 	img {
 		max-width: 100%;
+		height: auto;
 	}
 }
 figcaption {
@@ -300,7 +301,7 @@ button {
 	dt {
 		font-weight: bold;
 	}
-} 
+}
 
 #cp {
 	scroll-behavior: smooth;
