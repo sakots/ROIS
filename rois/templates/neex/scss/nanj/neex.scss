@@ -74,13 +74,8 @@ hr {
 
 //----------
 
-header {
-	> .titlebox {
-		background-color: $haikei;
-		+ div {
-			background-color: $haikei;
-		}
-	}
+header > .titlebox {
+	background-color: $haikei;
 }
 
 h1 {
@@ -113,10 +108,6 @@ em.thispage {
 	font-weight: bold;
 }
 //----------
-
-.thread {
-	background-color: $haikei;
-}
 
 figure {
 	background-color: $haikei;
@@ -200,7 +191,7 @@ button {
 
 .siihelp {
 	h2 {
-		@extend .oyat;
+		@extend .oyat
 	}
 }
 
@@ -211,8 +202,4 @@ button {
 	th, td {
 		border-color: $ushiro;
 	}
-}
-
-footer {
-	background-color: $haikei;
 }

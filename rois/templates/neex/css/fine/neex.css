@@ -38,9 +38,6 @@ hr {
 header > .titlebox {
   background-color: #FFFFEF;
 }
-header > .titlebox + div {
-  background-color: #FFFFEF;
-}
 
 h1 a:visited {
   color: #79160A;
@@ -77,10 +74,6 @@ input[name=upfile] {
 em.thispage {
   font-style: normal;
   font-weight: bold;
-}
-
-.thread {
-  background-color: #FFFFEF;
 }
 
 figure {
@@ -195,9 +188,5 @@ button {
 }
 .delfo th, .delfo td {
   border-color: #EEEEEE;
-}
-
-footer {
-  background-color: #FFFFEF;
 }
 /*# sourceMappingURL=neex.css.map */
