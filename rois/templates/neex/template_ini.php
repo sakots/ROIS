@@ -1,14 +1,14 @@
 <?php
 //--------------------------------------------------
-//　「ROIS」v0.99.1～用テーマ「neex」設定ファイル
-//　by sakots https://dev.oekakibbs.net/
+// 「ROIS」v0.99.1～用テーマ「neex」設定ファイル
+//  by sakots https://dev.oekakibbs.net/
 //--------------------------------------------------
 
 //テーマ名
 define('THEME_NAME', "neex");
 
 //テーマのバージョン
-define('THEME_VER', "v0.99.17 lot.211227.0");
+define('THEME_VER', "v0.99.18 lot.220103.0");
 
 /* -------------------- */
 
